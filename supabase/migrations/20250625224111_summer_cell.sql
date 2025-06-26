@@ -33,6 +33,9 @@ DROP POLICY IF EXISTS "users_insert_own" ON users;
 -- Re-enable RLS
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
+-- Drop the policy if it already exists to prevent errors
+DROP POLICY IF EXISTS "users_own_profile_only" ON users;
+
 -- Create the most restrictive possible SELECT policy
 -- This policy ONLY allows users to read their own profile data
 -- It does NOT reference any other tables or create any potential for recursion
@@ -40,10 +43,16 @@ CREATE POLICY "users_own_profile_only" ON users
   FOR SELECT TO authenticated
   USING (auth.uid() = id);
 
+-- Drop the policy if it already exists to prevent errors
+DROP POLICY IF EXISTS "users_update_own_profile" ON users;
+
 -- Create minimal UPDATE policy for users to update their own profile
 CREATE POLICY "users_update_own_profile" ON users
   FOR UPDATE TO authenticated
   USING (auth.uid() = id);
+
+-- Drop the policy if it already exists to prevent errors
+DROP POLICY IF EXISTS "users_insert_new_profile" ON users;
 
 -- Create minimal INSERT policy for new user creation (needed for auth trigger)
 CREATE POLICY "users_insert_new_profile" ON users
@@ -63,6 +72,9 @@ DROP POLICY IF EXISTS "extensions_delete_own" ON extensions;
 DROP POLICY IF EXISTS "extensions_all_own" ON extensions;
 ALTER TABLE extensions ENABLE ROW LEVEL SECURITY;
 
+-- Drop the policy if it already exists to prevent errors
+DROP POLICY IF EXISTS "extensions_owner_only" ON extensions;
+
 -- Create minimal extensions policies that don't reference other tables
 CREATE POLICY "extensions_owner_only" ON extensions
   FOR ALL TO authenticated
@@ -75,6 +87,10 @@ DROP POLICY IF EXISTS "review_assignments_update_reviewer" ON review_assignments
 DROP POLICY IF EXISTS "review_assignments_select_own" ON review_assignments;
 DROP POLICY IF EXISTS "review_assignments_update_own" ON review_assignments;
 ALTER TABLE review_assignments ENABLE ROW LEVEL SECURITY;
+
+-- Drop the policy if it already exists to prevent errors
+DROP POLICY IF EXISTS "review_assignments_reviewer_only" ON review_assignments;
+DROP POLICY IF EXISTS "review_assignments_reviewer_update" ON review_assignments;
 
 -- Create minimal review_assignments policies that don't reference other tables
 CREATE POLICY "review_assignments_reviewer_only" ON review_assignments
