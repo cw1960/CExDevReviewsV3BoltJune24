@@ -10,7 +10,7 @@ function getStatsFunctionUrl() {
      window.location.hostname.includes('chromeexdev.reviews') ||
      window.location.hostname.includes('chromexdev.reviews'))
   ) {
-    return '/.netlify/functions/fetch-platform-stats';
+    return '/.netlify/functions/fetch_platform_stats';
   }
   // Default to Supabase Edge Functions path (local dev or Supabase hosting)
   return '/functions/v1/fetch-platform-stats';
@@ -76,4 +76,4 @@ function StatItem({ label, value }: { label: string, value: any }) {
       <Text c="dimmed" size="sm" ta="center">{label}</Text>
     </Stack>
   );
-} 
+}
