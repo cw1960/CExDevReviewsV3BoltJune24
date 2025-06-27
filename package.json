@@ -9,14 +9,14 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-   "dependencies": {
+  "dependencies": {
     "@mantine/core": "^7.3.2",
     "@mantine/dates": "^7.3.2",
     "@mantine/form": "^7.3.2",
     "@mantine/hooks": "^7.3.2",
     "@mantine/notifications": "^7.3.2",
     "@revenuecat/purchases-js": "^1.5.2",
-    "@supabase/supabase-js": "^2.49.1",
+    "@supabase/supabase-js": "^2.50.2",
     "dayjs": "^1.11.10",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
