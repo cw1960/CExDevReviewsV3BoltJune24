@@ -15,6 +15,7 @@ import {
   Avatar,
   ThemeIcon,
   Center,
+  Drawer,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import {
@@ -32,6 +33,7 @@ import { supabase } from "../lib/supabase";
 import { WelcomeModal } from "../components/WelcomeModal";
 import { useSubscription } from "../hooks/useSubscription";
 import type { Database } from "../types/database";
+import { PlatformStatsPanel } from '../components/PlatformStatsPanel';
 
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
@@ -70,6 +72,7 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [requestingAssignment, setRequestingAssignment] = useState(false);
   const [welcomeModalOpened, setWelcomeModalOpened] = useState(false);
+  const [statsDrawerOpened, setStatsDrawerOpened] = useState(false);
 
   // Helper function to check if user needs monthly reset
   const checkAndResetMonthlyLimit = async () => {
@@ -488,7 +491,13 @@ export function DashboardPage() {
   }
 
   return (
-    <Container size="lg">
+    <Container size="xl" py="xl">
+      <Group justify="space-between" mb="md">
+        <Title order={1}>Dashboard</Title>
+        <Button variant="outline" onClick={() => setStatsDrawerOpened(true)}>
+          Platform Stats
+        </Button>
+      </Group>
       <Group justify="space-between" mb="xl">
         <Stack gap="xs">
           <Title order={1}>Welcome back, {profile?.name}!</Title>
@@ -834,6 +843,16 @@ export function DashboardPage() {
         profile={profile}
         extensions={extensions}
       />
+
+      <Drawer
+        opened={statsDrawerOpened}
+        onClose={() => setStatsDrawerOpened(false)}
+        position="right"
+        size="lg"
+        title="Platform Stats"
+      >
+        <PlatformStatsPanel />
+      </Drawer>
     </Container>
   );
 }

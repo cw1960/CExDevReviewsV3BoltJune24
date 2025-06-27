@@ -16,7 +16,8 @@ import {
   Center,
   Divider,
   List,
-  ThemeIcon
+  ThemeIcon,
+  Loader
 } from '@mantine/core'
 import { 
   Play, 
@@ -37,6 +38,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { CookieConsentModal } from '../components/CookieConsentModal'
+import { PlatformStatsPanel } from '../components/PlatformStatsPanel'
 
 export function LandingPage() {
   const navigate = useNavigate()
@@ -253,6 +255,9 @@ export function LandingPage() {
           </Grid>
         </Container>
       </Box>
+
+      {/* Platform Stats Panel */}
+      <PlatformStatsPanel />
 
       {/* Benefits Sections */}
       <Container size="lg" py={80}>

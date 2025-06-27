@@ -21,6 +21,7 @@ import {
   Progress,
   Avatar,
   Divider,
+  Drawer,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -43,6 +44,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import type { Database } from "../types/database";
+import { PlatformStatsPanel } from '../components/PlatformStatsPanel';
 
 type Extension = Database["public"]["Tables"]["extensions"]["Row"];
 type User = Database["public"]["Tables"]["users"]["Row"];
@@ -73,6 +75,7 @@ export function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string | null>("overview");
   const [assignmentsLoading, setAssignmentsLoading] = useState(false);
+  const [statsDrawerOpened, setStatsDrawerOpened] = useState(false);
 
   // Data states
   const [stats, setStats] = useState({
@@ -263,26 +266,16 @@ export function AdminDashboardPage() {
   console.log("📑 Active tab:", activeTab);
 
   return (
-    <Container size="xl">
-      {/* DEBUGGING: Add visible indicator that component is rendering */}
-      <div
-        style={{
-          position: "fixed",
-          top: 10,
-          right: 10,
-          background: "green",
-          color: "white",
-          padding: "5px",
-          zIndex: 9999,
-          fontSize: "12px",
-        }}
-      >
-        Admin Dashboard Loaded ✅
-      </div>
+    <Container size="xl" py="xl">
+      <Group justify="space-between" mb="md">
+        <Title order={1}>Admin Dashboard</Title>
+        <Button variant="outline" onClick={() => setStatsDrawerOpened(true)}>
+          Platform Stats
+        </Button>
+      </Group>
 
       <Group justify="space-between" mb="xl">
         <div>
-          <Title order={1}>Admin Dashboard</Title>
           <Text c="dimmed" size="lg">
             Manage users, extensions, and review assignments
           </Text>
@@ -793,6 +786,16 @@ export function AdminDashboardPage() {
           </Card>
         </Tabs.Panel>
       </Tabs>
+
+      <Drawer
+        opened={statsDrawerOpened}
+        onClose={() => setStatsDrawerOpened(false)}
+        position="right"
+        size="lg"
+        title="Platform Stats"
+      >
+        <PlatformStatsPanel />
+      </Drawer>
     </Container>
   );
 }
