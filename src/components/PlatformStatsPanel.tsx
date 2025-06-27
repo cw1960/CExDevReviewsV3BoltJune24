@@ -157,7 +157,7 @@ export function PlatformStatsPanel() {
         style={{
           background:
             theme.colorScheme === 'dark'
-              ? theme.fn.rgba(theme.colors.dark[7], 0.7)
+              ? theme.colors.dark[7]
               : 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)',
         }}
       >
@@ -200,14 +200,20 @@ function StatItem({
   color: string;
   theme: any;
 }) {
+  // Fallback color for Mantine v5
+  const bgColor =
+    theme.colorScheme === 'dark'
+      ? theme.colors.dark[5]
+      : (theme.colors[color] && theme.colors[color][0]) || '#f3f4f6';
+
+  const textColor =
+    (theme.colors[color] && theme.colors[color][7]) || theme.colors.dark[0];
+
   return (
     <Box
       p="md"
       style={{
-        background:
-          theme.colorScheme === 'dark'
-            ? theme.fn.rgba(theme.colors.dark[5], 0.7)
-            : theme.fn.rgba(theme.colors[color][0], 0.5),
+        background: bgColor,
         borderRadius: theme.radius.md,
         boxShadow: theme.shadows.xs,
         minHeight: 140,
@@ -219,9 +225,9 @@ function StatItem({
       }}
     >
       <Group mb={8} justify="center">
-        <Icon size={32} color={theme.colors[color][6]} />
+        <Icon size={32} color={textColor} />
       </Group>
-      <Text fw={800} size="2.2rem" c={theme.colors[color][7]} lh={1}>
+      <Text fw={800} size="2.2rem" c={textColor} lh={1}>
         {value}
       </Text>
       <Text c="dimmed" size="sm" ta="center" mt={2}>
