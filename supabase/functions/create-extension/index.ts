@@ -61,7 +61,7 @@ serve(async (req) => {
     let extensionData: CreateExtensionRequest
     try {
       extensionData = await req.json()
-      console.log('📋 Parsed extension data successfully')
+      console.log('📋 Received extension data:', extensionData)
       console.log('📊 Extension data keys:', Object.keys(extensionData))
       console.log('👤 Owner ID:', extensionData.owner_id)
       console.log('📝 Extension name:', extensionData.name)
