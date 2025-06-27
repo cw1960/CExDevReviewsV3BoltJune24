@@ -33,7 +33,6 @@ import { supabase } from "../lib/supabase";
 import { WelcomeModal } from "../components/WelcomeModal";
 import { useSubscription } from "../hooks/useSubscription";
 import type { Database } from "../types/database";
-import { PlatformStatsPanel } from '../components/PlatformStatsPanel';
 import { PersonalStatsPanel } from '../components/PersonalStatsPanel';
 import type { PersonalStats } from '../types/personalStats';
 
@@ -891,7 +890,7 @@ export function DashboardPage() {
         size="lg"
         title="Platform Stats"
       >
-        <PlatformStatsPanel />
+        {/* <PlatformStatsPanel /> */}
       </Drawer>
     </Container>
   );
