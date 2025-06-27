@@ -18,4 +18,5 @@
   status = 200
 
 [functions]
+  directory = "netlify/functions"
   external_node_modules = ["stripe", "@supabase/supabase-js", "jsr:@supabase/functions-js"]
