@@ -200,10 +200,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const delay = baseDelay * attempt; // Progressive delay
           await new Promise((resolve) => setTimeout(resolve, delay));
           return fetchProfileWithRetry(attempt + 1);
-        } else {
-          setIsProfileRefreshing(false);
-          setIsInitialAuthLoading(false);
         }
+      } finally {
+        setIsProfileRefreshing(false);
+        setIsInitialAuthLoading(false);
       }
     };
 
