@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, Title, Grid, Stack, Text, Center, Loader } from '@mantine/core';
 
+// Utility to auto-detect Netlify vs Supabase Edge Functions
+function getStatsFunctionUrl() {
+  // If running on Netlify (production or preview), use Netlify Functions path
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname.includes('netlify.app') ||
+     window.location.hostname.includes('chromeexdev.reviews') ||
+     window.location.hostname.includes('chromexdev.reviews'))
+  ) {
+    return '/.netlify/functions/fetch-platform-stats';
+  }
+  // Default to Supabase Edge Functions path (local dev or Supabase hosting)
+  return '/functions/v1/fetch-platform-stats';
+}
+
 export function PlatformStatsPanel() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -11,7 +26,7 @@ export function PlatformStatsPanel() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch('/functions/v1/fetch-platform-stats');
+        const res = await fetch(getStatsFunctionUrl());
         const json = await res.json();
         if (json.success) {
           setStats(json.stats);
