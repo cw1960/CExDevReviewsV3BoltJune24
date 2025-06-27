@@ -38,6 +38,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { CookieConsentModal } from '../components/CookieConsentModal'
+import { PlatformStatsPanel } from '../components/PlatformStatsPanel'
 
 export function LandingPage() {
   const navigate = useNavigate()
@@ -259,7 +260,7 @@ export function LandingPage() {
       </Box>
 
       {/* Platform Stats Panel */}
-      {/* <PlatformStatsPanel /> */}
+      <PlatformStatsPanel />
 
       {/* Benefits Sections */}
       <Container size="lg" py={80}>
