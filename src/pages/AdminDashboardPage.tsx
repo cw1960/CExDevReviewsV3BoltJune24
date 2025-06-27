@@ -44,7 +44,6 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import type { Database } from "../types/database";
-import { PlatformStatsPanel } from '../components/PlatformStatsPanel';
 
 type Extension = Database["public"]["Tables"]["extensions"]["Row"];
 type User = Database["public"]["Tables"]["users"]["Row"];
@@ -188,7 +187,6 @@ export function AdminDashboardPage() {
     switch (status) {
       case "verified":
         return "green";
-      case "pending_verification":
       case "queued":
         return "blue";
       case "assigned":
@@ -794,7 +792,7 @@ export function AdminDashboardPage() {
         size="lg"
         title="Platform Stats"
       >
-        <PlatformStatsPanel />
+        {/* <PlatformStatsPanel /> */}
       </Drawer>
     </Container>
   );

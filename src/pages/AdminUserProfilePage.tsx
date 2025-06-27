@@ -308,7 +308,6 @@ export function AdminUserProfilePage() {
                   </Badge>
                   <Badge 
                     color={userData.user.subscription_status === 'premium' ? 'green' : 'blue'}
-                    color={userData.user.subscription_status === 'premium' ? 'green' : 'blue'}
                   >
                     {userData.user.subscription_status === 'premium' ? 'Premium' : 'Free'}
                   </Badge>
