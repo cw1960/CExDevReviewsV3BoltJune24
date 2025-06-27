@@ -24,19 +24,19 @@ exports.handler = async function(event, context) {
     // Users
     const { data: users, error: usersError } = await supabase
       .from('users')
-      .select('id, subscription_status, has_completed_qualification, created_at'); // REMOVED last_active_at
+      .select('id, subscription_status, has_completed_qualification, created_at');
     if (usersError) throw usersError;
 
     // Extensions
     const { data: extensions, error: extensionsError } = await supabase
       .from('extensions')
-      .select('id, status, owner_id, created_at, submitted_to_queue_at');
+      .select('id, owner_id, status, submitted_to_queue_at, created_at');
     if (extensionsError) throw extensionsError;
 
     // Review assignments
     const { data: assignments, error: assignmentsError } = await supabase
       .from('review_assignments')
-      .select('id, reviewer_id, extension_id, status, assigned_at, submitted_at, due_at, created_at');
+      .select('id, extension_id, reviewer_id, assigned_at, due_at, status, submitted_at');
     if (assignmentsError) throw assignmentsError;
 
     // Credit transactions
