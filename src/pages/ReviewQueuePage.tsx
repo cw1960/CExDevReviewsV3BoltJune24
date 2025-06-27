@@ -94,7 +94,6 @@ export function ReviewQueuePage() {
       submitted_date: new Date(),
       review_text: "",
       rating: 5,
-      chrome_store_proof: "",
       confirmed_submission: false,
     },
     validate: {
@@ -102,8 +101,6 @@ export function ReviewQueuePage() {
         value.length < 25 ? "Review must be at least 25 characters" : null,
       rating: (value) =>
         value < 1 || value > 5 ? "Rating must be between 1 and 5" : null,
-      chrome_store_proof: (value) =>
-        !value ? "Chrome Store proof URL is required" : null,
       confirmed_submission: (value) =>
         !value
           ? "You must confirm that the review was submitted to the Chrome Web Store"
@@ -307,7 +304,6 @@ export function ReviewQueuePage() {
             submitted_date: values.submitted_date.toISOString(),
             review_text: values.review_text,
             rating: values.rating,
-            chrome_store_proof: values.chrome_store_proof,
             confirmed_submission: values.confirmed_submission,
           },
         },
@@ -918,33 +914,6 @@ export function ReviewQueuePage() {
                 radius="md"
                 {...submissionForm.getInputProps("review_text")}
               />
-
-              {/* Chrome Web Store URL Section (replaces Chrome Store Proof URL input) */}
-              <Card withBorder p="md" radius="md" bg="gray.0">
-                <Stack gap={4}>
-                  <Text fw={600} size="md">
-                    Chrome Web Store URL
-                  </Text>
-                  <Text size="sm" c="dimmed">
-                    Please make sure your review is submitted to:
-                  </Text>
-                  <Text
-                    component="a"
-                    href={selectedAssignment.extension?.chrome_store_url || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    c="blue.6"
-                    fw={500}
-                    style={{
-                      wordBreak: "break-all",
-                      textDecoration: "underline",
-                    }}
-                  >
-                    {selectedAssignment.extension?.chrome_store_url ||
-                      "No URL available"}
-                  </Text>
-                </Stack>
-              </Card>
 
               <Checkbox
                 label="I confirm this review was submitted to the Google Chrome Web Store"
