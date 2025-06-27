@@ -364,6 +364,7 @@ serve(async (req) => {
         reviewer_id: user_id,
         assignment_number: nextAssignmentNumber,
         due_at: dueDate.toISOString(),
+        assigned_at: new Date().toISOString(), // <-- FIXED: add this line
         status: 'assigned'
       })
       .select()
