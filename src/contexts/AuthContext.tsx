@@ -202,6 +202,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return fetchProfileWithRetry(attempt + 1);
         } else {
           setIsProfileRefreshing(false);
+          setIsInitialAuthLoading(false);
         }
       }
     };
