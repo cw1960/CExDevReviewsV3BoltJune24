@@ -24,7 +24,7 @@ exports.handler = async function(event, context) {
     // Users
     const { data: users, error: usersError } = await supabase
       .from('users')
-      .select('id, subscription_status, last_active_at, has_completed_qualification, created_at');
+      .select('id, subscription_status, has_completed_qualification, created_at'); // REMOVED last_active_at
     if (usersError) throw usersError;
 
     // Extensions
