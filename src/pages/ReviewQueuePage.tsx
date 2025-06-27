@@ -877,6 +877,29 @@ export function ReviewQueuePage() {
                 </Group>
               </Card>
 
+              {/* Chrome Web Store URL Section */}
+              <Card withBorder p="md" radius="md" bg="gray.0">
+                <Stack gap={4}>
+                  <Text fw={600} size="md">
+                    Chrome Web Store URL
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    Please make sure your review is submitted to:
+                  </Text>
+                  <Text
+                    component="a"
+                    href={selectedAssignment.extension?.chrome_store_url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    c="blue.6"
+                    style={{ wordBreak: "break-all" }}
+                  >
+                    {selectedAssignment.extension?.chrome_store_url ||
+                      "No URL available"}
+                  </Text>
+                </Stack>
+              </Card>
+
               <DatePickerInput
                 label="Review Submission Date"
                 placeholder="Select the date you submitted the review"
