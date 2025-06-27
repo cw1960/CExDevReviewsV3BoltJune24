@@ -267,6 +267,21 @@ function AppRoutes() {
 }
 
 function App() {
+  return (
+    <MantineProvider theme={theme}>
+      <Notifications />
+      <AuthProvider>
+        <StripeProvider>
+          <Router>
+            <AppWithCookieConsent />
+          </Router>
+        </StripeProvider>
+      </AuthProvider>
+    </MantineProvider>
+  );
+}
+
+function AppWithCookieConsent() {
   const { profile, updateCookiePreferences } = useAuth();
   const [showCookieModal, setShowCookieModal] = React.useState(false);
 
@@ -299,18 +314,7 @@ function App() {
         onAccept={handleCookieAccept}
         onDecline={handleCookieDecline}
       />
-      {!showCookieModal && (
-        <MantineProvider theme={theme}>
-          <Notifications />
-          <AuthProvider>
-            <StripeProvider>
-              <Router>
-                <AppRoutes />
-              </Router>
-            </StripeProvider>
-          </AuthProvider>
-        </MantineProvider>
-      )}
+      {!showCookieModal && <AppRoutes />}
     </>
   );
 }
