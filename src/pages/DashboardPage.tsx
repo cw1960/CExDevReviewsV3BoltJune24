@@ -34,6 +34,8 @@ import { WelcomeModal } from "../components/WelcomeModal";
 import { useSubscription } from "../hooks/useSubscription";
 import type { Database } from "../types/database";
 import { PlatformStatsPanel } from '../components/PlatformStatsPanel';
+import { PersonalStatsPanel } from '../components/PersonalStatsPanel';
+import type { PersonalStats } from '../types/personalStats';
 
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
@@ -73,6 +75,9 @@ export function DashboardPage() {
   const [requestingAssignment, setRequestingAssignment] = useState(false);
   const [welcomeModalOpened, setWelcomeModalOpened] = useState(false);
   const [statsDrawerOpened, setStatsDrawerOpened] = useState(false);
+  const [personalStats, setPersonalStats] = useState<PersonalStats | undefined>(undefined);
+  const [personalStatsLoading, setPersonalStatsLoading] = useState(true);
+  const [personalStatsError, setPersonalStatsError] = useState<string | undefined>(undefined);
 
   // Helper function to check if user needs monthly reset
   const checkAndResetMonthlyLimit = async () => {
@@ -134,6 +139,7 @@ export function DashboardPage() {
       if (!profile?.id) {
         console.log("❌ No profile ID available for dashboard data fetch");
         setLoading(false);
+        setPersonalStatsLoading(false);
         return;
       }
 
@@ -207,6 +213,29 @@ export function DashboardPage() {
         assignmentsData.length,
         "assignments",
       );
+
+      // Fetch personal stats
+      setPersonalStatsLoading(true);
+      setPersonalStatsError(undefined);
+      try {
+        const { data: statsResponse, error: statsError } = await withTimeout(
+          supabase.functions.invoke('fetch-personal-stats', {
+            body: { userId: profile.id },
+          }),
+          10000,
+        );
+        if (statsError) {
+          setPersonalStatsError('Failed to fetch personal stats.');
+        } else if (statsResponse?.success) {
+          setPersonalStats(statsResponse.data);
+        } else {
+          setPersonalStatsError(statsResponse?.error || 'Failed to fetch personal stats.');
+        }
+      } catch (err: any) {
+        setPersonalStatsError(err.message || 'Failed to fetch personal stats.');
+      } finally {
+        setPersonalStatsLoading(false);
+      }
 
       setExtensions(extensionsData);
       setAssignments(assignmentsData);
@@ -452,6 +481,10 @@ export function DashboardPage() {
     }
   };
 
+  const handleUpgradeClick = () => {
+    navigate('/upgrade');
+  };
+
   // Show loading if initial auth is loading, profile is refreshing, or dashboard data is loading
   if (isInitialAuthLoading || isProfileRefreshing || loading) {
     return (
@@ -523,7 +556,7 @@ export function DashboardPage() {
               variant="gradient"
               gradient={{ from: "yellow", to: "orange" }}
               leftSection={<Crown size={16} />}
-              onClick={() => navigate("/upgrade")}
+              onClick={handleUpgradeClick}
             >
               Join Review Fast Track
             </Button>
@@ -569,6 +602,13 @@ export function DashboardPage() {
           requesting another.
         </Alert>
       )}
+
+      <PersonalStatsPanel
+        stats={personalStats}
+        loading={personalStatsLoading}
+        error={personalStatsError}
+        onUpgradeClick={handleUpgradeClick}
+      />
 
       <Grid>
         <Grid.Col span={{ base: 12, md: 4 }}>
