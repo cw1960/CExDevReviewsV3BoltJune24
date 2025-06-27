@@ -185,45 +185,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Update profile state with fetched data
         setProfile(profileData);
-      } catch (error) {
+      } catch (error: any) {
         console.error(`💥 Profile fetch threw error (attempt ${attempt}):`, {
-          name: error?.name,
-          message: error?.message,
+          name: (error as any)?.name,
+          message: (error as any)?.message,
         });
 
         // Check if it's a timeout error
-        if (error?.message?.includes("timed out")) {
+        if ((error as any)?.message?.includes("timed out")) {
           console.error("⏰ Profile fetch timeout detected");
         }
 
         if (attempt < maxAttempts) {
           const delay = baseDelay * attempt; // Progressive delay
-          console.log(
-            `⏳ Retrying profile fetch in ${delay}ms... (attempt ${attempt + 1}/${maxAttempts})`,
-          );
           await new Promise((resolve) => setTimeout(resolve, delay));
           return fetchProfileWithRetry(attempt + 1);
         } else {
-          // Only set profile to null after all retries are exhausted for certain errors
-          const isNewUserScenario =
-            error?.message?.includes("not found") ||
-            error?.message?.includes("PGRST116");
-          if (isNewUserScenario) {
-            console.log(
-              "ℹ️ Max retries reached for new user profile fetch - setting profile to null",
-            );
-            setProfile(null);
-          } else {
-            console.error(
-              "💥 Max retries reached - keeping existing profile state",
-            );
-          }
-          return;
+          setIsProfileRefreshing(false);
         }
-      } finally {
-        setIsProfileRefreshing(false);
-        // Always ensure initial loading is set to false when profile fetch completes
-        setIsInitialAuthLoading(false);
       }
     };
 
@@ -350,6 +329,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
   }, [fetchProfile]);
+
+  useEffect(() => {
+    // After authentication, sync localStorage cookie preference to DB if needed
+    if (user && profile && profile.cookie_preferences === "not_set") {
+      const localPref = localStorage.getItem("cookie_preference");
+      if (localPref === "accepted" || localPref === "declined") {
+        // Update DB with the stored preference
+        updateCookiePreferences(localPref as "accepted" | "declined").then(
+          () => {
+            // Clear the localStorage value after syncing
+            localStorage.removeItem("cookie_preference");
+            localStorage.setItem("cookie_consent_shown", "true");
+          },
+        );
+      }
+    }
+  }, [user, profile]);
 
   const refreshProfile = useCallback(async () => {
     if (user) {
