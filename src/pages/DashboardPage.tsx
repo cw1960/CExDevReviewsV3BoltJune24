@@ -116,16 +116,15 @@ export function DashboardPage() {
   }, [profile?.id, isInitialAuthLoading, isProfileRefreshing]);
 
   useEffect(() => {
-    // Check if we should show the welcome modal after data is loaded
-    if (
-      !loading &&
-      profile &&
-      localStorage.getItem("showWelcomeModal") === "true"
-    ) {
-      setWelcomeModalOpened(true);
-      localStorage.removeItem("showWelcomeModal");
+    // Show the welcome modal quickly after profile is available (max 2s delay)
+    if (profile && localStorage.getItem("showWelcomeModal") === "true") {
+      const timer = setTimeout(() => {
+        setWelcomeModalOpened(true);
+        localStorage.removeItem("showWelcomeModal");
+      }, 1000); // 1 second delay for fast UX
+      return () => clearTimeout(timer);
     }
-  }, [loading, profile]);
+  }, [profile]);
 
   const fetchDashboardData = async () => {
     try {
