@@ -504,7 +504,7 @@ export function DashboardPage() {
               }
               onClick={handleRequestAssignment}
               loading={requestingAssignment}
-              disabled={assignments.length >= (isPremium ? 2 : 1)}
+              disabled={assignments.length >= 1}
             >
               Request Review Assignment
             </Button>
@@ -549,15 +549,15 @@ export function DashboardPage() {
         </Alert>
       )}
 
-      {assignments.length >= (isPremium ? 2 : 1) && (
+      {assignments.length >= 1 && (
         <Alert
           icon={<AlertCircle size={16} />}
           title="Active Assignment Limit"
           color="orange"
           mb="xl"
         >
-          You have reached your active assignment limit. Complete your current
-          review(s) before requesting another.
+          You have an active assignment. Complete your current review before
+          requesting another.
         </Alert>
       )}
 
@@ -775,7 +775,7 @@ export function DashboardPage() {
                       }
                       onClick={handleRequestAssignment}
                       loading={requestingAssignment}
-                      disabled={assignments.length >= (isPremium ? 2 : 1)}
+                      disabled={assignments.length >= 1}
                       variant="light"
                     >
                       Request Assignment

@@ -462,7 +462,7 @@ export function ReviewQueuePage() {
         </div>
         <Group>
           {profile?.has_completed_qualification &&
-            activeAssignments.length < (isPremium ? 2 : 1) && (
+            activeAssignments.length < 1 && (
               <Button
                 leftSection={
                   requestingAssignment ? (
@@ -473,7 +473,7 @@ export function ReviewQueuePage() {
                 }
                 onClick={handleRequestAssignment}
                 loading={requestingAssignment}
-                disabled={activeAssignments.length >= (isPremium ? 2 : 1)}
+                disabled={activeAssignments.length >= 1}
               >
                 Request Assignment
               </Button>
@@ -527,7 +527,7 @@ export function ReviewQueuePage() {
                 loading={requestingAssignment}
                 size="lg"
                 radius="md"
-                disabled={activeAssignments.length >= (isPremium ? 2 : 1)}
+                disabled={activeAssignments.length >= 1}
               >
                 Request Assignment
               </Button>
