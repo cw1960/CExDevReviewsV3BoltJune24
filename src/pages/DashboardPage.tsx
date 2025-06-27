@@ -788,9 +788,9 @@ export function DashboardPage() {
                   <Card key={assignment.id} withBorder p="md" radius="md">
                     <Stack gap="xs">
                       <Text size="sm" fw={500}>
-                        {assignment.extension_name
-                          ? truncate(assignment.extension_name, 20)
-                          : `Review Assignment #${assignment.assignment_number}`}
+                        {assignment.extension?.name
+                          ? truncate(assignment.extension.name, 20)
+                          : "Unknown Extension"}
                       </Text>
                       <Text size="xs" c="dimmed">
                         Due: {new Date(assignment.due_at).toLocaleDateString()}

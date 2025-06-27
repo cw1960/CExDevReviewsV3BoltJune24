@@ -563,9 +563,6 @@ export function ReviewQueuePage() {
                                 {assignment.extension?.name ||
                                   "Unknown Extension"}
                               </Text>
-                              <Text size="sm" c="dimmed">
-                                Assignment #{assignment.assignment_number}
-                              </Text>
                             </div>
                           </Group>
                           <Badge color={getStatusColor(assignment)} size="sm">
@@ -880,9 +877,6 @@ export function ReviewQueuePage() {
                       {selectedAssignment.extension?.name ||
                         "Unknown Extension"}
                     </Text>
-                    <Text size="sm" c="dimmed">
-                      Assignment #{selectedAssignment.assignment_number}
-                    </Text>
                   </div>
                 </Group>
               </Card>
@@ -990,9 +984,6 @@ export function ReviewQueuePage() {
                   <Text fw={600}>
                     {selectedReviewAssignment.extension?.name ||
                       "Unknown Extension"}
-                  </Text>
-                  <Text size="sm" c="dimmed">
-                    Assignment #{selectedReviewAssignment.assignment_number}
                   </Text>
                 </div>
               </Group>
