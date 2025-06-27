@@ -236,9 +236,12 @@ export function LandingPage() {
                       w={80} 
                       h={80} 
                       bg="rgba(255,255,255,0.2)" 
-                      style={{ borderRadius: '50%' }}
-                      display="flex"
-                      style={{ alignItems: 'center', justifyContent: 'center' }}
+                      style={{ 
+                        borderRadius: '50%', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center' 
+                      }}
                     >
                       <Play size={32} color="white" />
                     </Box>
