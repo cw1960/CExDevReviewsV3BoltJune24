@@ -919,14 +919,32 @@ export function ReviewQueuePage() {
                 {...submissionForm.getInputProps("review_text")}
               />
 
-              <TextInput
-                label="Chrome Store Proof URL"
-                placeholder="https://chromewebstore.google.com/detail/..."
-                description="Link to your review on the Chrome Web Store"
-                required
-                radius="md"
-                {...submissionForm.getInputProps("chrome_store_proof")}
-              />
+              {/* Chrome Web Store URL Section (replaces Chrome Store Proof URL input) */}
+              <Card withBorder p="md" radius="md" bg="gray.0">
+                <Stack gap={4}>
+                  <Text fw={600} size="md">
+                    Chrome Web Store URL
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    Please make sure your review is submitted to:
+                  </Text>
+                  <Text
+                    component="a"
+                    href={selectedAssignment.extension?.chrome_store_url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    c="blue.6"
+                    fw={500}
+                    style={{
+                      wordBreak: "break-all",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {selectedAssignment.extension?.chrome_store_url ||
+                      "No URL available"}
+                  </Text>
+                </Stack>
+              </Card>
 
               <Checkbox
                 label="I confirm this review was submitted to the Google Chrome Web Store"
@@ -1012,26 +1030,6 @@ export function ReviewQueuePage() {
               readOnly
               minRows={4}
               radius="md"
-            />
-            <TextInput
-              label="Chrome Store Proof URL"
-              value={selectedReviewAssignment.chrome_store_proof || ""}
-              readOnly
-              radius="md"
-              rightSection={
-                selectedReviewAssignment.chrome_store_proof ? (
-                  <Button
-                    component="a"
-                    href={selectedReviewAssignment.chrome_store_proof}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    size="xs"
-                    variant="light"
-                  >
-                    View
-                  </Button>
-                ) : null
-              }
             />
           </Stack>
         )}
