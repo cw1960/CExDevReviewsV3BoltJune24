@@ -40,16 +40,6 @@ interface PremiumPersonalStats {
 
 const CYCLE_LENGTH_DAYS = 28;
 
-// Simplified timeout helper with better error handling
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operation: string): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`${operation} timeout after ${timeoutMs}ms`)), timeoutMs)
-    )
-  ])
-}
-
 Deno.serve(async (req) => {
   console.log("🚀 fetch-premium-personal-stats function started");
   console.log("📝 Request method:", req.method);
@@ -173,12 +163,12 @@ Deno.serve(async (req) => {
         },
       );
     }
-    const totalReviewsSubmitted = submittedAssignments.length;
-    const reviewsSubmittedThisCycle = submittedAssignments.filter((a) => {
+    const totalReviewsSubmitted = submittedAssignments?.length || 0;
+    const reviewsSubmittedThisCycle = submittedAssignments?.filter((a) => {
       if (!a.submitted_at) return false;
       const submitted = new Date(a.submitted_at);
       return submitted >= cycleStart && submitted < cycleEnd;
-    }).length;
+    }).length || 0;
 
     // Reviews received as extension owner (lifetime and this cycle)
     const { data: extensions, error: extError } = await supabase
@@ -198,10 +188,10 @@ Deno.serve(async (req) => {
         },
       );
     }
-    const extensionIds = extensions.map((e) => e.id);
+    const extensionIds = extensions?.map((e) => e.id) || [];
     let totalReviewsReceived = 0;
     let reviewsReceivedThisCycle = 0;
-    let receivedAssignments = [];
+    let receivedAssignments: any[] = [];
     if (extensionIds.length > 0) {
       const { data: receivedData, error: receivedError } = await supabase
         .from("review_assignments")
@@ -231,10 +221,10 @@ Deno.serve(async (req) => {
     }
 
     // Calculate average review turnaround time
-    const completedReviews = submittedAssignments.filter(
+    const completedReviews = submittedAssignments?.filter(
       (a) => a.assigned_at && a.submitted_at,
-    );
-    let avgReviewTurnaroundTime = undefined;
+    ) || [];
+    let avgReviewTurnaroundTime: string | undefined = undefined;
     if (completedReviews.length > 0) {
       const totalTurnaroundMs = completedReviews.reduce((sum, review) => {
         const assignedTime = new Date(review.assigned_at!).getTime();
@@ -259,11 +249,11 @@ Deno.serve(async (req) => {
         year: "2-digit",
       });
 
-      const submittedInMonth = submittedAssignments.filter((a) => {
+      const submittedInMonth = submittedAssignments?.filter((a) => {
         if (!a.submitted_at) return false;
         const submitted = new Date(a.submitted_at);
         return submitted >= monthStart && submitted <= monthEnd;
-      }).length;
+      }).length || 0;
 
       const receivedInMonth = receivedAssignments.filter((a) => {
         if (!a.submitted_at) return false;
@@ -310,16 +300,15 @@ Deno.serve(async (req) => {
     }
 
     // Extension performance (basic stats)
-    const extensionPerformance = extensions
-      .map((ext) => ({
-        extensionId: ext.id,
-        name: ext.name,
-        downloads: 0, // Would need Chrome Web Store API integration
-        rating: receivedAssignments
-          .filter((a) => a.extension_id === ext.id && a.rating)
-          .reduce((sum, a, _, arr) => sum + (a.rating || 0) / arr.length, 0),
-      }))
-      .filter((ext) => ext.rating > 0);
+    const extensionPerformance = extensions?.map((ext) => ({
+      extensionId: ext.id,
+      name: ext.name,
+      downloads: 0, // Would need Chrome Web Store API integration
+      rating: receivedAssignments
+        .filter((a) => a.extension_id === ext.id && a.rating)
+        .reduce((sum, a, _, arr) => sum + (a.rating || 0) / arr.length, 0),
+    }))
+    .filter((ext) => ext.rating > 0) || [];
 
     // Platform averages (fetch from all users for comparison)
     const { data: allAssignments, error: allAssignmentsError } = await supabase
