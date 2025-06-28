@@ -54,8 +54,9 @@ Deno.serve(async (req) => {
     console.log("🔍 Checking environment variables...");
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
       console.error("❌ Missing environment variables");
       return new Response(
         JSON.stringify({
@@ -70,9 +71,50 @@ Deno.serve(async (req) => {
     }
 
     console.log("✅ Environment variables check passed");
-    // Use service role key to bypass RLS
     const { createClient } = await import("npm:@supabase/supabase-js@2");
+
+    // Extract and validate JWT
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.log("❌ Missing or invalid Authorization header");
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Missing or invalid Authorization header",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        },
+      );
+    }
+
+    const jwt = authHeader.replace("Bearer ", "");
+    console.log("🔐 JWT token extracted, length:", jwt.length);
+
+    // Create clients
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey);
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Verify JWT
+    console.log("🔐 Verifying JWT token...");
+    const { data: { user: verifiedUser }, error: authError } = await supabaseAuth.auth.getUser(jwt);
+    
+    if (authError || !verifiedUser) {
+      console.log("❌ JWT verification failed:", authError);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Invalid or expired JWT token",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        },
+      );
+    }
+
+    console.log("✅ JWT verified successfully for user:", verifiedUser.id);
 
     console.log("📦 Parsing request body...");
     let requestBody;
