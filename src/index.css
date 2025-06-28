@@ -1,3 +1,312 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom CSS Variables for Enhanced Theming */
+:root {
+  --gradient-primary: linear-gradient(135deg, #3292ee 0%, #1a7bd0 100%);
+  --gradient-secondary: linear-gradient(135deg, #26b09d 0%, #0f9481 100%);
+  --gradient-success: linear-gradient(135deg, #40c057 0%, #2f9e44 100%);
+  --gradient-warning: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);
+  --gradient-danger: linear-gradient(135deg, #fa5252 0%, #e03131 100%);
+  --gradient-page: linear-gradient(
+    135deg,
+    #f8f9fc 0%,
+    #e9ecef 25%,
+    #f1f5f9 50%,
+    #e2e8f0 75%,
+    #f8fafc 100%
+  );
+  --gradient-page-dark: linear-gradient(
+    135deg,
+    #0f172a 0%,
+    #1e293b 25%,
+    #334155 50%,
+    #1e293b 75%,
+    #0f172a 100%
+  );
+  --glassmorphism: rgba(255, 255, 255, 0.1);
+  --glassmorphism-dark: rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(50, 146, 238, 0.3);
+  --shadow-glow-secondary: 0 0 20px rgba(38, 176, 157, 0.3);
+}
+
+/* Enhanced Global Styles */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Beautiful Page Backgrounds */
+body {
+  background: var(--gradient-page);
+  min-height: 100vh;
+}
+
+/* Dark mode support via CSS */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--gradient-page-dark);
+  }
+}
+
+/* Enhanced Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(50, 146, 238, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(50, 146, 238, 0.4);
+  }
+}
+
+/* Utility Classes for Enhanced Components */
+.gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.gradient-secondary {
+  background: var(--gradient-secondary);
+}
+
+.gradient-success {
+  background: var(--gradient-success);
+}
+
+.gradient-page {
+  background: var(--gradient-page);
+}
+
+.glassmorphism {
+  backdrop-filter: blur(10px);
+  background: var(--glassmorphism);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glassmorphism-dark {
+  backdrop-filter: blur(10px);
+  background: var(--glassmorphism-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+.hover-glow-secondary:hover {
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Enhanced Button Styles */
+.btn-gradient {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(50, 146, 238, 0.3);
+}
+
+.btn-gradient:active {
+  transform: translateY(0);
+}
+
+.btn-gradient::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-gradient:hover::before {
+  left: 100%;
+}
+
+/* Enhanced Card Styles */
+.card-enhanced {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card-enhanced:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Input Styles */
+.input-enhanced {
+  transition: all 0.3s ease;
+}
+
+.input-enhanced:focus {
+  transform: scale(1.01);
+  box-shadow: 0 0 0 3px rgba(50, 146, 238, 0.1);
+}
+
+/* Loading Shimmer Effect */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Text Gradients */
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-secondary {
+  background: var(--gradient-secondary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Scroll Enhancement */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-secondary);
+}
+
+/* Enhanced Focus States */
+.focus-visible {
+  outline: 2px solid #3292ee;
+  outline-offset: 2px;
+}
+
+/* Modern Selection Styles */
+::selection {
+  background: rgba(50, 146, 238, 0.3);
+  color: inherit;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .hover-lift:hover {
+    transform: none;
+  }
+
+  .hover-scale:hover {
+    transform: none;
+  }
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .card-enhanced {
+    background: rgba(37, 38, 43, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+    background-size: 200px 100%;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
