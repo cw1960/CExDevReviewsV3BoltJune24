@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
     }
 
     console.log("✅ Environment variables check passed");
-    // Use service role key to bypass RLS
+    // Use service role key to bypass RLS and prevent infinite recursion
     const { createClient } = await import("npm:@supabase/supabase-js@2");
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 

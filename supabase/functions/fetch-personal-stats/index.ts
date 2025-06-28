@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
     }
 
     console.log("✅ Environment variables check passed");
-    // Use service role key to bypass RLS
+    // Use service role key to bypass RLS and prevent infinite recursion
     const { createClient } = await import("npm:@supabase/supabase-js@2");
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -160,12 +160,12 @@ Deno.serve(async (req) => {
         },
       );
     }
-    const totalReviewsSubmitted = submittedAssignments.length;
-    const reviewsSubmittedThisCycle = submittedAssignments.filter((a) => {
+    const totalReviewsSubmitted = submittedAssignments?.length || 0;
+    const reviewsSubmittedThisCycle = submittedAssignments?.filter((a) => {
       if (!a.submitted_at) return false;
       const submitted = new Date(a.submitted_at);
       return submitted >= cycleStart && submitted < cycleEnd;
-    }).length;
+    }).length || 0;
     const reviewsLeftToSubmit = Math.max(
       0,
       CYCLE_REVIEW_LIMIT - reviewsSubmittedThisCycle,
@@ -190,7 +190,7 @@ Deno.serve(async (req) => {
         },
       );
     }
-    const extensionIds = extensions.map((e) => e.id);
+    const extensionIds = extensions?.map((e) => e.id) || [];
     let totalReviewsReceived = 0;
     let reviewsReceivedThisCycle = 0;
     if (extensionIds.length > 0) {
@@ -212,12 +212,12 @@ Deno.serve(async (req) => {
           },
         );
       }
-      totalReviewsReceived = receivedAssignments.length;
-      reviewsReceivedThisCycle = receivedAssignments.filter((a) => {
+      totalReviewsReceived = receivedAssignments?.length || 0;
+      reviewsReceivedThisCycle = receivedAssignments?.filter((a) => {
         if (!a.submitted_at) return false;
         const submitted = new Date(a.submitted_at);
         return submitted >= cycleStart && submitted < cycleEnd;
-      }).length;
+      }).length || 0;
     }
     const reviewsLeftToReceive = Math.max(
       0,
