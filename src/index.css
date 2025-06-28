@@ -29,6 +29,13 @@
   --glassmorphism-dark: rgba(0, 0, 0, 0.1);
   --shadow-glow: 0 0 20px rgba(50, 146, 238, 0.3);
   --shadow-glow-secondary: 0 0 20px rgba(38, 176, 157, 0.3);
+
+  /* Enhanced panel colors */
+  --panel-bg-light: rgba(255, 255, 255, 0.95);
+  --panel-bg-subtle: rgba(248, 250, 252, 0.8);
+  --panel-bg-accent: rgba(239, 246, 255, 0.6);
+  --sidebar-bg: rgba(248, 250, 252, 0.95);
+  --sidebar-bg-dark: rgba(30, 41, 59, 0.95);
 }
 
 /* Enhanced Global Styles */
@@ -47,6 +54,155 @@ body {
   body {
     background: var(--gradient-page-dark);
   }
+
+  :root {
+    --panel-bg-light: rgba(37, 38, 43, 0.95);
+    --panel-bg-subtle: rgba(30, 41, 59, 0.8);
+    --panel-bg-accent: rgba(30, 58, 138, 0.2);
+    --sidebar-bg: var(--sidebar-bg-dark);
+  }
+}
+
+/* Enhanced Headings - Better contrast on gradient backgrounds */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+}
+
+/* Override for headings on light backgrounds */
+.mantine-Card-root h1,
+.mantine-Card-root h2,
+.mantine-Card-root h3,
+.mantine-Card-root h4,
+.mantine-Card-root h5,
+.mantine-Card-root h6 {
+  color: var(--mantine-color-dark-7) !important;
+  text-shadow: none;
+}
+
+/* Enhanced Alert Styling for Better Contrast */
+.mantine-Alert-root {
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+}
+
+/* Specific styling for warning/error alerts */
+.mantine-Alert-root[data-variant="light"][data-color="orange"],
+.mantine-Alert-root[data-variant="light"][data-color="red"],
+.mantine-Alert-root[data-variant="light"][data-color="yellow"] {
+  background: rgba(253, 126, 20, 0.15) !important;
+  color: white !important;
+  border: 1px solid rgba(253, 126, 20, 0.3);
+}
+
+.mantine-Alert-root[data-variant="light"][data-color="orange"]
+  .mantine-Alert-title,
+.mantine-Alert-root[data-variant="light"][data-color="red"]
+  .mantine-Alert-title,
+.mantine-Alert-root[data-variant="light"][data-color="yellow"]
+  .mantine-Alert-title {
+  color: white !important;
+  font-weight: 600;
+}
+
+.mantine-Alert-root[data-variant="light"][data-color="orange"]
+  .mantine-Alert-body,
+.mantine-Alert-root[data-variant="light"][data-color="red"] .mantine-Alert-body,
+.mantine-Alert-root[data-variant="light"][data-color="yellow"]
+  .mantine-Alert-body {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Enhanced Sidebar Styling */
+.mantine-AppShell-navbar {
+  background: var(--sidebar-bg) !important;
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .mantine-AppShell-navbar {
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Enhanced Navigation Links */
+.mantine-NavLink-root {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin-bottom: 2px;
+}
+
+.mantine-NavLink-root:hover {
+  background: rgba(50, 146, 238, 0.1) !important;
+  transform: translateX(2px);
+}
+
+.mantine-NavLink-root[data-active="true"] {
+  background: linear-gradient(
+    135deg,
+    rgba(50, 146, 238, 0.15),
+    rgba(26, 123, 208, 0.15)
+  ) !important;
+  border: 1px solid rgba(50, 146, 238, 0.2);
+  font-weight: 600;
+  color: var(--mantine-color-blue-7) !important;
+}
+
+/* Enhanced Card Styling with Subtle Colors */
+.mantine-Card-root {
+  background: var(--panel-bg-light) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.mantine-Card-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Subtle Card Variations */
+.card-subtle {
+  background: var(--panel-bg-subtle) !important;
+}
+
+.card-accent {
+  background: var(--panel-bg-accent) !important;
+  border: 1px solid rgba(50, 146, 238, 0.1);
+}
+
+/* Enhanced Stats Cards */
+.stats-card {
+  background: linear-gradient(
+    135deg,
+    var(--panel-bg-light) 0%,
+    var(--panel-bg-subtle) 100%
+  ) !important;
+  border: 1px solid rgba(50, 146, 238, 0.08);
+}
+
+/* Enhanced Dashboard Container */
+.dashboard-container {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(248, 250, 252, 0.05) 100%
+  );
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1rem 0;
 }
 
 /* Enhanced Animations */
@@ -252,6 +408,24 @@ body {
   background-clip: text;
 }
 
+/* Enhanced Badge Styling */
+.mantine-Badge-root {
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+/* Enhanced Progress Bar */
+.mantine-Progress-root {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mantine-Progress-bar {
+  background: var(--gradient-primary) !important;
+}
+
 /* Scroll Enhancement */
 ::-webkit-scrollbar {
   width: 8px;
@@ -292,6 +466,12 @@ body {
   .hover-scale:hover {
     transform: none;
   }
+
+  h1,
+  h2,
+  h3 {
+    font-size: 1.5rem !important;
+  }
 }
 
 /* Dark Mode Overrides */
@@ -308,5 +488,14 @@ body {
 
   ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: white !important;
   }
 }
