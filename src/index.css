@@ -580,6 +580,46 @@ h6 {
   color: rgba(255, 255, 255, 0.85) !important;
 }
 
+/* Mantine Dark Theme Color Fixes */
+/* Target cards with Mantine's default dark theme colors */
+.mantine-Card-root[style*="#25262b"],
+.mantine-Card-root[style*="#2c2e33"],
+.mantine-Card-root[style*="#373a40"],
+.mantine-Card-root[style*="#424549"],
+.mantine-Card-root[style*="rgb(37, 38, 43)"],
+.mantine-Card-root[style*="rgb(44, 46, 51)"],
+.mantine-Card-root[style*="rgb(55, 58, 64)"],
+.mantine-Card-root[style*="rgb(66, 69, 73)"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root[style*="#25262b"] *,
+.mantine-Card-root[style*="#2c2e33"] *,
+.mantine-Card-root[style*="#373a40"] *,
+.mantine-Card-root[style*="#424549"] *,
+.mantine-Card-root[style*="rgb(37, 38, 43)"] *,
+.mantine-Card-root[style*="rgb(44, 46, 51)"] *,
+.mantine-Card-root[style*="rgb(55, 58, 64)"] *,
+.mantine-Card-root[style*="rgb(66, 69, 73)"] * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Text elements inside Mantine cards with proper hierarchy */
+.mantine-Card-root .mantine-Text-root[data-c="dimmed"] {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.mantine-Card-root .mantine-Text-root:not([data-c]):not([data-size]) {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Large stat numbers and titles */
+.mantine-Card-root .mantine-Text-root[data-size="xl"],
+.mantine-Card-root .mantine-Text-root[data-size="2xl"] {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 700;
+}
+
 /* Enhanced Animations */
 @keyframes fadeInUp {
   from {
