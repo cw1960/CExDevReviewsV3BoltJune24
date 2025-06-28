@@ -6,6 +6,7 @@ const corsHeaders = {
 
 interface RequestAssignmentRequest {
   user_id: string
+  silent?: boolean // For background checks - don't trigger notifications
 }
 
 Deno.serve(async (req) => {
@@ -65,7 +66,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    const { user_id }: RequestAssignmentRequest = requestBody
+    const { user_id, silent = false }: RequestAssignmentRequest = requestBody
 
     if (!user_id) {
       console.error('❌ Missing user_id in request')
@@ -218,7 +219,8 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'No extensions are currently available for review. Please check back later.' 
+          error: 'No extensions are currently available for review. Please check back later.',
+          silent: silent // Include silent flag in response so UI knows not to show modal
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -267,7 +269,8 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'No new extensions available for review. You have already reviewed extensions from all available developers.' 
+          error: 'No new extensions available for review. You have already reviewed extensions from all available developers.',
+          silent: silent // Include silent flag in response so UI knows not to show modal
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -43,6 +43,8 @@ import {
   Plus,
   Loader,
   Crown,
+  Bell,
+  Info,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -89,6 +91,7 @@ export function ReviewQueuePage() {
   const [selectedReviewAssignment, setSelectedReviewAssignment] =
     useState<AssignmentWithExtension | null>(null);
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [noExtensionsModalOpen, setNoExtensionsModalOpen] = useState(false);
 
   const submissionForm = useForm({
     initialValues: {
@@ -112,6 +115,45 @@ export function ReviewQueuePage() {
   useEffect(() => {
     fetchAssignments();
   }, []);
+
+  // Periodic check for new extensions (every 5 minutes)
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const checkForNewExtensions = async () => {
+      try {
+        // Only check if user has no pending assignments
+        if (assignments.length === 0) {
+          const { data, error } = await supabase.functions.invoke("request-review-assignment", {
+            body: { user_id: profile.id, silent: true }, // Silent mode - don't show error modals
+          });
+
+          if (data?.success && data?.assignment) {
+            // New assignment available! Show notification
+            notifications.show({
+              title: "🎉 New Review Available!",
+              message: "A new extension is ready for review. Check your review queue!",
+              color: "green",
+              icon: <Star size={16} />,
+              autoClose: 10000, // Show for 10 seconds
+            });
+            
+            // Refresh assignments to show the new one
+            fetchAssignments();
+          }
+        }
+      } catch (error) {
+        // Silently handle errors in background checks
+        console.log("Background check for new extensions failed:", error);
+      }
+    };
+
+    // Check immediately on mount, then every 5 minutes
+    checkForNewExtensions();
+    const interval = setInterval(checkForNewExtensions, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [profile?.id, assignments.length]);
 
   // Countdown timer effect
   useEffect(() => {
@@ -199,12 +241,11 @@ export function ReviewQueuePage() {
       }
 
       setAssignments(data.data || []);
-      console.log("Assignments fetch completed");
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
+    } catch (error: any) {
+      console.error("Failed to fetch assignments:", error);
       notifications.show({
         title: "Error",
-        message: "Failed to load review assignments",
+        message: "Failed to load assignments",
         color: "red",
       });
     } finally {
@@ -214,29 +255,33 @@ export function ReviewQueuePage() {
 
   const handleMarkInstalled = async (assignment: AssignmentWithExtension) => {
     try {
+      const currentTime = new Date().toISOString();
+      const earliestReviewTime = new Date(
+        Date.now() + 60 * 60 * 1000,
+      ).toISOString(); // 1 hour from now
+
       const { error } = await supabase
         .from("review_assignments")
         .update({
-          installed_at: new Date().toISOString(),
-          earliest_review_time: new Date(
-            Date.now() + 60 * 60 * 1000,
-          ).toISOString(), // 60 minutes from now
+          installed_at: currentTime,
+          earliest_review_time: earliestReviewTime,
         })
         .eq("id", assignment.id);
 
       if (error) throw error;
 
       notifications.show({
-        title: "Success",
-        message:
-          "Extension marked as installed. You can submit your review in 60 minutes.",
+        title: "Extension Marked as Installed",
+        message: "You can submit your review in 1 hour",
         color: "green",
       });
+
       fetchAssignments();
     } catch (error: any) {
+      console.error("Failed to mark as installed:", error);
       notifications.show({
         title: "Error",
-        message: error.message || "Failed to mark extension as installed",
+        message: "Failed to mark extension as installed",
         color: "red",
       });
     }
@@ -259,24 +304,35 @@ export function ReviewQueuePage() {
         throw error;
       }
 
-      // Check if the function returned a success message without an actual assignment
-      if (data?.success && !data?.assignment) {
-        notifications.show({
-          title: "No Assignments Available",
-          message: data.message,
-          color: "blue", // Changed color to blue for informational message
-          icon: <AlertTriangle size={16} />, // Changed icon to AlertTriangle
-        });
-      } else if (!data?.success) {
-        throw new Error(data?.error || "Failed to request assignment");
-      } else {
-        notifications.show({
-          title: "Assignment Received!",
-          message: data.message,
-          color: "green",
-          icon: <Star size={16} />,
-        });
+      // Check for specific error messages that indicate no extensions available
+      if (!data?.success) {
+        const errorMessage = data?.error || "Failed to request assignment";
+        
+        // Check if this is a "no extensions available" error and not in silent mode
+        if ((errorMessage.includes("No new extensions available") || 
+            errorMessage.includes("already reviewed extensions from all available developers") ||
+            errorMessage.includes("No extensions are currently available")) && 
+            !data?.silent) {
+          setNoExtensionsModalOpen(true);
+          return;
+        }
+        
+        // For silent mode or other errors, don't show modal
+        if (data?.silent) {
+          return; // Silent background check - don't show any errors
+        }
+        
+        // For other errors, show regular error notification
+        throw new Error(errorMessage);
       }
+
+      // Success case
+      notifications.show({
+        title: "Assignment Received!",
+        message: data.message,
+        color: "green",
+        icon: <Star size={16} />,
+      });
 
       // Refresh assignments to show the new one
       fetchAssignments();
@@ -686,7 +742,6 @@ export function ReviewQueuePage() {
                           <Alert
                             icon={<AlertTriangle size={16} />}
                             color="orange"
-                            size="sm"
                             radius="md"
                           >
                             Due within 24 hours! Complete this review to avoid
@@ -1053,6 +1108,53 @@ export function ReviewQueuePage() {
             />
           </Stack>
         )}
+      </Modal>
+
+      {/* No Extensions Available Modal */}
+      <Modal
+        opened={noExtensionsModalOpen}
+        onClose={() => setNoExtensionsModalOpen(false)}
+        title="No Extensions Available"
+        size="md"
+        radius="lg"
+        shadow="xl"
+        centered
+      >
+        <Stack gap="lg">
+          <div style={{ textAlign: 'center' }}>
+            <ThemeIcon size={60} radius="xl" color="blue" variant="light" mb="md">
+              <Bell size={30} />
+            </ThemeIcon>
+            <Title order={3} mb="sm">
+              All caught up!
+            </Title>
+            <Text c="dimmed" size="sm">
+              No new extensions are available for review at this time. You have already 
+              reviewed extensions from all available developers.
+            </Text>
+          </div>
+
+          <Alert icon={<Info size={16} />} color="blue" radius="md">
+            <Text fw={500} mb="xs">
+              You're first in line!
+            </Text>
+            <Text size="sm">
+              You will be automatically assigned the next available extension when a new one 
+              is submitted. We'll notify you as soon as a new review opportunity becomes available.
+            </Text>
+          </Alert>
+
+          <Group justify="center" pt="md">
+            <Button
+              onClick={() => setNoExtensionsModalOpen(false)}
+              radius="md"
+              size="md"
+              variant="filled"
+            >
+              Ok, I got it!
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
     </Container>
   );

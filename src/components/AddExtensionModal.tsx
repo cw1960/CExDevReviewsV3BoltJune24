@@ -88,9 +88,9 @@ export function AddExtensionModal({
       chrome_store_url: (value) => {
         // Normalize input
         const url = value.trim();
-        // Improved regex: allows optional trailing slash, query params, and fragments
+        // Improved regex: allows URL-encoded characters, optional trailing slash, query params, and fragments
         const urlRegex =
-          /^https?:\/\/(www\.)?chromewebstore\.google\.com\/detail\/[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)?(\/)?(\?.*)?(#.*)?$/i;
+          /^https?:\/\/(www\.)?chromewebstore\.google\.com\/detail\/[a-zA-Z0-9_%-]+(\/[a-zA-Z0-9_%-]+)?(\/)?(\?.*)?(#.*)?$/i;
         if (!urlRegex.test(url)) {
           return "Please provide a valid Chrome Web Store URL";
         }
