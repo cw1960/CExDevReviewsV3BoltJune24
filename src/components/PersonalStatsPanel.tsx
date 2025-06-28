@@ -207,7 +207,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           </Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
-              <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              <Text size="sm" c="dimmed">
                 Cycle: {new Date(premiumStats.cycleStart).toLocaleDateString()} –{" "}
                 {new Date(premiumStats.cycleEnd).toLocaleDateString()}
                 <br />
@@ -218,65 +218,65 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
+                    <Text size="sm" fw={500}>
                       Reviews This Cycle
                     </Text>
-                    <IconTrendingUp size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                    <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700} style={{ color: '#3b82f6 !important' }}>
+                    <Text size="xl" fw={700} style={{ color: '#3b82f6' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
                     </Text>
-                    <Text size="sm" style={{ color: '#10b981 !important' }}>
+                    <Text size="sm" style={{ color: '#10b981' }}>
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
+                  <Text size="xs" c="dimmed">
                     Submitted
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
+                    <Text size="sm" fw={500}>
                       Reviews Received
                     </Text>
-                    <IconStar size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                    <IconStar size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#8b5cf6 !important' }}>
+                  <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
                     {premiumStats.reviewsReceivedThisCycle}
                   </Text>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
+                  <Text size="xs" c="dimmed">
                     This cycle
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="queue-position-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
+                    <Text size="sm" fw={500}>
                       Queue Position
                     </Text>
-                    <IconTarget size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                    <IconTarget size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#f59e0b !important' }}>
+                  <Text size="xl" fw={700} style={{ color: '#f59e0b' }}>
                     #{premiumStats.queuePosition}
                   </Text>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
+                  <Text size="xs" c="dimmed">
                     Priority queue
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="avg-turnaround-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
+                    <Text size="sm" fw={500}>
                       Avg. Turnaround
                     </Text>
-                    <IconClock size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                    <IconClock size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#06b6d4 !important' }}>
+                  <Text size="xl" fw={700} style={{ color: '#06b6d4' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
+                  <Text size="xs" c="dimmed">
                     Your reviews
                   </Text>
                 </Card>
@@ -295,7 +295,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                 <Text size="2xl" fw={700} style={{ color: '#3b82f6' }}>
                   {premiumStats.totalReviewsSubmitted}
                 </Text>
-                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <Text size="sm" c="dimmed">
                   Total Submitted
                 </Text>
               </Stack>
@@ -303,7 +303,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                 <Text size="2xl" fw={700} style={{ color: '#10b981' }}>
                   {premiumStats.totalReviewsReceived}
                 </Text>
-                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <Text size="sm" c="dimmed">
                   Total Received
                 </Text>
               </Stack>
@@ -311,7 +311,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                 <Text size="2xl" fw={700} style={{ color: '#f59e0b' }}>
                   {premiumStats.nextReviewETA}
                 </Text>
-                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <Text size="sm" c="dimmed">
                   Next Review ETA
                 </Text>
               </Stack>

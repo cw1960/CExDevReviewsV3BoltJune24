@@ -49,19 +49,7 @@ body {
   min-height: 100vh;
 }
 
-/* Dark mode support via CSS */
-@media (prefers-color-scheme: dark) {
-  body {
-    background: var(--gradient-page-dark);
-  }
-
-  :root {
-    --panel-bg-light: rgba(37, 38, 43, 0.95);
-    --panel-bg-subtle: rgba(30, 41, 59, 0.8);
-    --panel-bg-accent: rgba(30, 58, 138, 0.2);
-    --sidebar-bg: var(--sidebar-bg-dark);
-  }
-}
+/* Dark mode CSS support removed - using forced light mode theme */
 
 /* Enhanced Headings - Better contrast on gradient backgrounds */
 h1,
@@ -178,12 +166,7 @@ h6 {
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  .mantine-AppShell-navbar {
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-  }
-}
+/* Removed dark mode navbar styling */
 
 /* Enhanced Navigation Links */
 .mantine-NavLink-root {
@@ -826,28 +809,4 @@ h6 {
   }
 }
 
-/* Dark Mode Overrides */
-@media (prefers-color-scheme: dark) {
-  .card-enhanced {
-    background: rgba(37, 38, 43, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .shimmer {
-    background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
-    background-size: 200px 100%;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: white !important;
-  }
-}
+/* All dark mode overrides removed - using forced light mode theme */
