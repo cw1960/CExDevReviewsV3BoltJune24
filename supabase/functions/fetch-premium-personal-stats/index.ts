@@ -64,9 +64,8 @@ Deno.serve(async (req) => {
     console.log("🔍 Checking environment variables...");
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
-    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
+    if (!supabaseUrl || !supabaseServiceKey) {
       console.error("❌ Missing environment variables");
       return new Response(
         JSON.stringify({
@@ -81,84 +80,9 @@ Deno.serve(async (req) => {
     }
 
     console.log("✅ Environment variables check passed");
+    // Use service role key to bypass RLS
     const { createClient } = await import("npm:@supabase/supabase-js@2");
-
-    // Extract and validate JWT
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      console.log("❌ Missing or invalid Authorization header");
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "Missing or invalid Authorization header",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 401,
-        },
-      );
-    }
-
-    const jwt = authHeader.replace("Bearer ", "");
-    console.log("🔐 JWT token extracted, length:", jwt.length);
-
-    // Create clients
-    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey);
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Verify JWT with timeout
-    console.log("🔐 Verifying JWT token...");
-    let authUser;
-    try {
-      const { data: { user: verifiedUser }, error: authError } = await withTimeout(
-        supabaseAuth.auth.getUser(jwt),
-        3000,
-        "JWT verification"
-      );
-      
-      if (authError) {
-        console.log("❌ JWT verification failed:", authError);
-        return new Response(
-          JSON.stringify({
-            success: false,
-            error: "Invalid or expired JWT token",
-          }),
-          {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-            status: 401,
-          },
-        );
-      }
-
-      if (!verifiedUser) {
-        console.log("❌ No user returned from JWT verification");
-        return new Response(
-          JSON.stringify({
-            success: false,
-            error: "Invalid or expired JWT token",
-          }),
-          {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-            status: 401,
-          },
-        );
-      }
-
-      authUser = verifiedUser;
-      console.log("✅ JWT verified successfully for user:", authUser.id);
-    } catch (jwtError) {
-      console.error("❌ JWT verification threw error:", jwtError);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "JWT verification failed",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 401,
-        },
-      );
-    }
 
     console.log("📦 Parsing request body...");
     let requestBody;
