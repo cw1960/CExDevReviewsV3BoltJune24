@@ -222,12 +222,21 @@ export function DashboardPage() {
       setPersonalStatsLoading(true);
       setPersonalStatsError(undefined);
       try {
+        // Add detailed debugging for premium detection
+        console.log('🔍 DEBUG: Premium detection details:', {
+          isPremium,
+          profileSubscriptionStatus: profile?.subscription_status,
+          subscriptionData: subscription,
+          planName
+        });
+        
         const functionName = isPremium
           ? "fetch-premium-personal-stats"
           : "fetch-personal-stats";
         
         console.log(`📊 Calling ${functionName} for user:`, profile.id);
         console.log('🔑 isPremium:', isPremium);
+        console.log('📋 Function body:', { userId: profile.id });
         
         const { data: statsResponse, error: statsError } = await withTimeout(
           supabase.functions.invoke(functionName, {
@@ -237,6 +246,12 @@ export function DashboardPage() {
         );
         
         console.log('📊 Personal stats response:', { statsResponse, statsError });
+        console.log('📊 Stats response details:', {
+          success: statsResponse?.success,
+          hasData: !!statsResponse?.data,
+          errorMessage: statsResponse?.error,
+          functionError: statsError
+        });
         
         if (statsError) {
           console.error('❌ Personal stats error:', statsError);

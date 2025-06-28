@@ -195,7 +195,7 @@ Deno.serve(async (req) => {
     if (extensionIds.length > 0) {
       const { data: receivedData, error: receivedError } = await supabase
         .from("review_assignments")
-        .select("id, submitted_at, extension_id, rating, review_content")
+        .select("id, submitted_at, extension_id, rating")
         .in("extension_id", extensionIds)
         .in("status", ["submitted", "approved"]);
       if (receivedError) {
@@ -271,31 +271,14 @@ Deno.serve(async (req) => {
     // Extract reviewer feedback highlights (positive keywords from recent reviews)
     const reviewerFeedbackHighlights = [];
     const recentReviews = receivedAssignments
-      .filter((a) => a.review_content && a.rating && a.rating >= 4)
+      .filter((a) => a.rating && a.rating >= 4)
       .slice(0, 5);
 
     for (const review of recentReviews) {
-      if (review.review_content) {
-        const content = review.review_content.toLowerCase();
-        const positiveKeywords = [
-          "excellent",
-          "great",
-          "amazing",
-          "fantastic",
-          "well-designed",
-          "useful",
-          "innovative",
-          "intuitive",
-          "professional",
-        ];
-        const foundKeywords = positiveKeywords.filter((keyword) =>
-          content.includes(keyword),
+      if (review.rating) {
+        reviewerFeedbackHighlights.push(
+          `"${review.rating}⭐" - Recent review`,
         );
-        if (foundKeywords.length > 0) {
-          reviewerFeedbackHighlights.push(
-            `"${foundKeywords[0]}" - Recent ${review.rating}⭐ review`,
-          );
-        }
       }
     }
 
