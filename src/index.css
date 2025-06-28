@@ -620,6 +620,58 @@ h6 {
   font-weight: 700;
 }
 
+/* NUCLEAR OPTION - FORCE ALL TEXT TO BE READABLE EVERYWHERE */
+* {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Override ALL Mantine text components globally */
+.mantine-Text-root,
+[class*="mantine-Text"],
+.mantine-Title-root,
+[class*="mantine-Title"],
+.mantine-Button-label,
+[class*="mantine-Button"],
+.mantine-Badge-root,
+[class*="mantine-Badge"],
+span,
+div,
+p,
+h1, h2, h3, h4, h5, h6 {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Force readable text in ALL contexts */
+[data-c="dimmed"],
+[class*="dimmed"],
+.dimmed {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Override ANY inline styles */
+[style*="color"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Preserve colorful elements that should stay colorful */
+.mantine-Button-root,
+.mantine-Badge-root,
+.stats-number,
+[class*="gradient"] {
+  /* Let these keep their intended colors */
+}
+
+/* Force specific stat numbers to be colorful */
+[style*="#3b82f6"],
+[style*="#8b5cf6"],
+[style*="#f59e0b"],
+[style*="#06b6d4"],
+[style*="#10b981"],
+[style*="#ef4444"],
+[style*="#059669"] {
+  /* Preserve these specific colors */
+}
+
 /* EMERGENCY FIX - FORCE ALL CARD TEXT TO BE READABLE */
 .mantine-Card-root * {
   color: rgba(255, 255, 255, 0.9) !important;
