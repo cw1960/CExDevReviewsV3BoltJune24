@@ -218,12 +218,15 @@ export function DashboardPage() {
         "assignments",
       );
 
-      // Fetch personal stats
+      // Fetch personal stats (premium or free based on subscription)
       setPersonalStatsLoading(true);
       setPersonalStatsError(undefined);
       try {
+        const functionName = isPremium
+          ? "fetch-premium-personal-stats"
+          : "fetch-personal-stats";
         const { data: statsResponse, error: statsError } = await withTimeout(
-          supabase.functions.invoke("fetch-personal-stats", {
+          supabase.functions.invoke(functionName, {
             body: { userId: profile.id },
           }),
           10000,
@@ -613,6 +616,7 @@ export function DashboardPage() {
         stats={personalStats}
         loading={personalStatsLoading}
         error={personalStatsError}
+        isPremium={isPremium}
         onUpgradeClick={handleUpgradeClick}
       />
 
