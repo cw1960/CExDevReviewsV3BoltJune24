@@ -641,6 +641,44 @@ h6 {
   color: rgba(255, 255, 255, 0.9) !important;
 }
 
+/* SPECIFIC FIX FOR DASHBOARD STAT CARDS */
+.mantine-Card-root .mantine-Text-root[data-c="dimmed"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.mantine-Card-root .mantine-Text-root[data-fw="600"] {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.mantine-Card-root .mantine-Text-root[data-fw="800"] {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Override Mantine's built-in dimmed color */
+.mantine-Card-root [class*="mantine-Text-root"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Override all Mantine color variants in cards */
+.mantine-Card-root [class*="mantine-Text-root"][class*="dimmed"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.mantine-Card-root [class*="mantine-Text-root"][class*="dark"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Target the specific CSS variables Mantine uses */
+.mantine-Card-root .mantine-Text-root {
+  --mantine-color-dimmed: rgba(255, 255, 255, 0.7) !important;
+  --mantine-color-text: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Direct override of computed styles */
+.mantine-Card-root .mantine-Text-root[style*="color"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
 /* Override ANY dark text color with !important */
 .mantine-Card-root [style*="color: rgb(55"],
 .mantine-Card-root [style*="color: rgb(33"],
