@@ -468,9 +468,116 @@ h6 {
   color: inherit;
 }
 
-/* Only apply light text to very specific dark background elements */
+/* Fix text readability in dark panels */
 .dashboard-stats-card .stats-label {
   color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Make ALL text in dark panels readable */
+.mantine-Card-root[style*="background: var(--panel-bg-light)"],
+.mantine-Card-root[style*="rgba(37, 38, 43"],
+.mantine-Card-root[data-with-bg="true"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root[style*="background: var(--panel-bg-light)"] *,
+.mantine-Card-root[style*="rgba(37, 38, 43"] *,
+.mantine-Card-root[data-with-bg="true"] * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Dark panels with stats numbers */
+.mantine-Card-root[data-with-bg="true"] .mantine-Text-root[data-size="xl"],
+.mantine-Card-root[data-with-bg="true"] .mantine-Title-root {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 700;
+}
+
+/* Dark panel descriptions and labels */
+.mantine-Card-root[data-with-bg="true"] .mantine-Text-root[data-size="sm"],
+.mantine-Card-root[data-with-bg="true"] .mantine-Text-root[data-c="dimmed"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Extension items in dark panels */
+.mantine-Card-root[data-with-bg="true"] .mantine-Text-root:not([data-size]),
+.mantine-Card-root[data-with-bg="true"] p,
+.mantine-Card-root[data-with-bg="true"] span {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Ensure buttons and badges remain visible */
+.mantine-Card-root[data-with-bg="true"] .mantine-Button-root {
+  color: inherit !important;
+}
+
+.mantine-Card-root[data-with-bg="true"] .mantine-Badge-root {
+  color: white !important;
+}
+
+/* Universal dark panel text fix - catch all dark cards */
+.mantine-Card-root[style*="rgb(37, 38, 43)"],
+.mantine-Card-root[style*="rgba(37, 38, 43)"],
+.mantine-Card-root[style*="rgb(30, 41, 59)"],
+.mantine-Card-root[style*="rgba(30, 41, 59)"],
+.mantine-Card-root[style*="rgb(51, 65, 85)"],
+.mantine-Card-root[style*="rgba(51, 65, 85)"],
+.mantine-Card-root[style*="rgb(55, 65, 81)"],
+.mantine-Card-root[style*="rgba(55, 65, 81)"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root[style*="rgb(37, 38, 43)"] *,
+.mantine-Card-root[style*="rgba(37, 38, 43)"] *,
+.mantine-Card-root[style*="rgb(30, 41, 59)"] *,
+.mantine-Card-root[style*="rgba(30, 41, 59)"] *,
+.mantine-Card-root[style*="rgb(51, 65, 85)"] *,
+.mantine-Card-root[style*="rgba(51, 65, 85)"] *,
+.mantine-Card-root[style*="rgb(55, 65, 81)"] *,
+.mantine-Card-root[style*="rgba(55, 65, 81)"] * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Generic dark background card selector */
+.mantine-Card-root[style*="background-color: rgb(37, 38, 43)"],
+.mantine-Card-root[style*="background-color: rgba(37, 38, 43)"],
+.mantine-Card-root[style*="background: rgb(37, 38, 43)"],
+.mantine-Card-root[style*="background: rgba(37, 38, 43)"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root[style*="background-color: rgb(37, 38, 43)"] *,
+.mantine-Card-root[style*="background-color: rgba(37, 38, 43)"] *,
+.mantine-Card-root[style*="background: rgb(37, 38, 43)"] *,
+.mantine-Card-root[style*="background: rgba(37, 38, 43)"] * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Comprehensive dark panel class selectors */
+.dark-panel,
+.dark-panel *,
+.stats-card.dark,
+.stats-card.dark *,
+.dashboard-card.dark,
+.dashboard-card.dark * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Force light text on any card with dark class or dark in the class name */
+[class*="dark"] .mantine-Card-root,
+[class*="dark"] .mantine-Card-root *,
+.mantine-Card-root[class*="dark"],
+.mantine-Card-root[class*="dark"] * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Preserve colorful stat numbers while making other text readable */
+.mantine-Card-root .stats-number {
+  /* Keep colorful numbers - don't override */
+}
+
+.mantine-Card-root:not(.stats-number):not(.stats-icon) {
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 /* Enhanced Animations */
