@@ -27,11 +27,11 @@ import {
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { 
-  Clock, 
-  Star, 
-  CheckCircle, 
-  AlertTriangle, 
+import {
+  Clock,
+  Star,
+  CheckCircle,
+  AlertTriangle,
   ExternalLink,
   Calendar,
   Timer,
@@ -116,28 +116,39 @@ export function ReviewQueuePage() {
     fetchAssignments();
   }, []);
 
-  // Periodic check for new extensions (every 5 minutes)
+  // State to track if user is waiting for auto-assignment after no extensions were available
+  const [waitingForAutoAssignment, setWaitingForAutoAssignment] =
+    useState(false);
+
+  // Periodic check for new extensions (only when user is waiting for auto-assignment)
   useEffect(() => {
-    if (!profile?.id) return;
+    if (!profile?.id || !waitingForAutoAssignment) return;
 
     const checkForNewExtensions = async () => {
       try {
-        // Only check if user has no pending assignments
-        if (assignments.length === 0) {
-          const { data, error } = await supabase.functions.invoke("request-review-assignment", {
-            body: { user_id: profile.id, silent: true }, // Silent mode - don't show error modals
-          });
+        // Only check if user has no pending assignments and is waiting for auto-assignment
+        if (assignments.length === 0 && waitingForAutoAssignment) {
+          const { data, error } = await supabase.functions.invoke(
+            "request-review-assignment",
+            {
+              body: { user_id: profile.id, silent: true }, // Silent mode - don't show error modals
+            },
+          );
 
           if (data?.success && data?.assignment) {
             // New assignment available! Show notification
             notifications.show({
               title: "🎉 New Review Available!",
-              message: "A new extension is ready for review. Check your review queue!",
+              message:
+                "A new extension is ready for review. Check your review queue!",
               color: "green",
               icon: <Star size={16} />,
               autoClose: 10000, // Show for 10 seconds
             });
-            
+
+            // Clear waiting state since user now has an assignment
+            setWaitingForAutoAssignment(false);
+
             // Refresh assignments to show the new one
             fetchAssignments();
           }
@@ -148,20 +159,27 @@ export function ReviewQueuePage() {
       }
     };
 
-    // Check immediately on mount, then every 5 minutes
-    checkForNewExtensions();
+    // Only start checking after user has explicitly requested an assignment but got none
+    // Check every 5 minutes while waiting
     const interval = setInterval(checkForNewExtensions, 5 * 60 * 1000); // 5 minutes
 
     return () => clearInterval(interval);
-  }, [profile?.id, assignments.length]);
+  }, [profile?.id, assignments.length, waitingForAutoAssignment]);
+
+  // Clear waiting state if user has assignments
+  useEffect(() => {
+    if (assignments.length > 0 && waitingForAutoAssignment) {
+      setWaitingForAutoAssignment(false);
+    }
+  }, [assignments.length, waitingForAutoAssignment]);
 
   // Countdown timer effect
   useEffect(() => {
     const activeAssignments = assignments.filter(
       (a) =>
         a.status === "assigned" &&
-      a.installed_at && 
-      a.earliest_review_time &&
+        a.installed_at &&
+        a.earliest_review_time &&
         new Date(a.earliest_review_time) > new Date(),
     );
 
@@ -307,21 +325,27 @@ export function ReviewQueuePage() {
       // Check for specific error messages that indicate no extensions available
       if (!data?.success) {
         const errorMessage = data?.error || "Failed to request assignment";
-        
+
         // Check if this is a "no extensions available" error and not in silent mode
-        if ((errorMessage.includes("No new extensions available") || 
-            errorMessage.includes("already reviewed extensions from all available developers") ||
-            errorMessage.includes("No extensions are currently available")) && 
-            !data?.silent) {
+        if (
+          (errorMessage.includes("No new extensions available") ||
+            errorMessage.includes(
+              "already reviewed extensions from all available developers",
+            ) ||
+            errorMessage.includes("No extensions are currently available")) &&
+          !data?.silent
+        ) {
           setNoExtensionsModalOpen(true);
+          // Set waiting state so user will be auto-assigned when new extensions become available
+          setWaitingForAutoAssignment(true);
           return;
         }
-        
+
         // For silent mode or other errors, don't show modal
         if (data?.silent) {
           return; // Silent background check - don't show any errors
         }
-        
+
         // For other errors, show regular error notification
         throw new Error(errorMessage);
       }
@@ -333,6 +357,9 @@ export function ReviewQueuePage() {
         color: "green",
         icon: <Star size={16} />,
       });
+
+      // Clear waiting state since user now has an assignment
+      setWaitingForAutoAssignment(false);
 
       // Refresh assignments to show the new one
       fetchAssignments();
@@ -355,7 +382,7 @@ export function ReviewQueuePage() {
     try {
       // Show immediate feedback that submission is starting
       notifications.show({
-        id: 'review-submitting',
+        id: "review-submitting",
         title: "Submitting Review...",
         message: "Please wait while we process your review submission.",
         color: "blue",
@@ -367,11 +394,11 @@ export function ReviewQueuePage() {
       const { data, error } = await supabase.functions.invoke(
         "process-submitted-review",
         {
-        body: {
-          assignment_id: selectedAssignment.id,
-          submitted_date: values.submitted_date.toISOString(),
-          review_text: values.review_text,
-          rating: values.rating,
+          body: {
+            assignment_id: selectedAssignment.id,
+            submitted_date: values.submitted_date.toISOString(),
+            review_text: values.review_text,
+            rating: values.rating,
             confirmed_submission: values.confirmed_submission,
           },
         },
@@ -387,7 +414,7 @@ export function ReviewQueuePage() {
       }
 
       // Hide the loading notification
-      notifications.hide('review-submitting');
+      notifications.hide("review-submitting");
 
       // Show success notification
       notifications.show({
@@ -400,15 +427,15 @@ export function ReviewQueuePage() {
       setSelectedAssignment(null);
       submissionForm.reset();
       fetchAssignments();
-      
+
       // Refresh profile to update credit balance display
       await refreshProfile();
     } catch (error: any) {
       console.error("Review submission error:", error);
-      
+
       // Hide the loading notification
-      notifications.hide('review-submitting');
-      
+      notifications.hide("review-submitting");
+
       // Show error notification
       notifications.show({
         title: "Error",
@@ -455,11 +482,11 @@ export function ReviewQueuePage() {
     if (countdownTimers[assignment.id] && countdownTimers[assignment.id] > 0) {
       return false;
     }
-    
+
     return (
       assignment.installed_at &&
-           assignment.earliest_review_time && 
-           new Date(assignment.earliest_review_time) <= new Date() &&
+      assignment.earliest_review_time &&
+      new Date(assignment.earliest_review_time) <= new Date() &&
       assignment.status === "assigned"
     );
   };
@@ -467,22 +494,22 @@ export function ReviewQueuePage() {
   const getDaysUntilDue = (dueDate: string) => {
     const timeUntilDue = new Date(dueDate).getTime() - Date.now();
     const hours = Math.ceil(timeUntilDue / (1000 * 60 * 60));
-    
+
     if (hours <= 0) return "Overdue";
     if (hours < 24) return `${hours}h`;
-    
+
     const days = Math.ceil(hours / 24);
     return `${days}d`;
   };
 
   const formatCountdownTime = (milliseconds: number): string => {
     if (milliseconds <= 0) return "Ready now";
-    
+
     const totalSeconds = Math.ceil(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m ${seconds}s`;
     } else if (minutes > 0) {
@@ -497,14 +524,14 @@ export function ReviewQueuePage() {
     if (countdownTimers[assignment.id]) {
       return formatCountdownTime(countdownTimers[assignment.id]);
     }
-    
+
     // Fallback to static calculation
     if (!assignment.earliest_review_time) return "Now";
-    
+
     const timeUntilReview =
       new Date(assignment.earliest_review_time).getTime() - Date.now();
     if (timeUntilReview <= 0) return "Now";
-    
+
     return formatCountdownTime(timeUntilReview);
   };
 
@@ -542,7 +569,7 @@ export function ReviewQueuePage() {
         <Group>
           {profile?.has_completed_qualification &&
             activeAssignments.length < 1 && (
-            <Button
+              <Button
                 leftSection={
                   requestingAssignment ? (
                     <Loader size={16} />
@@ -550,13 +577,13 @@ export function ReviewQueuePage() {
                     <Plus size={16} />
                   )
                 }
-              onClick={handleRequestAssignment}
-              loading={requestingAssignment}
-              disabled={activeAssignments.length >= 1}
-            >
-              Request Assignment
-            </Button>
-          )}
+                onClick={handleRequestAssignment}
+                loading={requestingAssignment}
+                disabled={activeAssignments.length >= 1}
+              >
+                Request Assignment
+              </Button>
+            )}
           <Badge size="lg" variant="light" color="blue">
             {activeAssignments.length} Active
           </Badge>
@@ -583,10 +610,10 @@ export function ReviewQueuePage() {
               </Text>
             </Stack>
             {!profile?.has_completed_qualification ? (
-              <Button 
-                component="a" 
-                href="/qualification" 
-                variant="filled" 
+              <Button
+                component="a"
+                href="/qualification"
+                variant="filled"
                 size="lg"
                 radius="md"
                 leftSection={<CheckCircle size={20} />}
@@ -628,8 +655,8 @@ export function ReviewQueuePage() {
                       <Stack gap="lg">
                         <Group justify="space-between" align="flex-start">
                           <Group>
-                            <Avatar 
-                              src={assignment.extension?.logo_url} 
+                            <Avatar
+                              src={assignment.extension?.logo_url}
                               size="md"
                               radius="md"
                             />
@@ -675,13 +702,13 @@ export function ReviewQueuePage() {
                           {assignment.earliest_review_time &&
                             new Date(assignment.earliest_review_time) >
                               new Date() && (
-                            <Group gap="xs">
-                              <Timer size={14} />
-                              <Text size="xs" c="dimmed" fw={600}>
-                                Review in {getTimeUntilReviewable(assignment)}
-                              </Text>
-                            </Group>
-                          )}
+                              <Group gap="xs">
+                                <Timer size={14} />
+                                <Text size="xs" c="dimmed" fw={600}>
+                                  Review in {getTimeUntilReviewable(assignment)}
+                                </Text>
+                              </Group>
+                            )}
                         </Group>
 
                         <Group justify="space-between">
@@ -701,7 +728,7 @@ export function ReviewQueuePage() {
                           >
                             View Extension
                           </Button>
-                          
+
                           {!assignment.installed_at ? (
                             <Button
                               size="md"
@@ -718,13 +745,13 @@ export function ReviewQueuePage() {
                                   : ""
                               }
                             >
-                              <Button 
-                                size="md" 
+                              <Button
+                                size="md"
                                 radius="md"
                                 color={
                                   canSubmitReview(assignment) ? "green" : ""
                                 }
-                                leftSection={<MessageSquare size={16} />} 
+                                leftSection={<MessageSquare size={16} />}
                                 onClick={() =>
                                   canSubmitReview(assignment) &&
                                   openSubmissionModal(assignment)
@@ -773,8 +800,8 @@ export function ReviewQueuePage() {
                   >
                     <Group justify="space-between">
                       <Group>
-                        <Avatar 
-                          src={assignment.extension?.logo_url} 
+                        <Avatar
+                          src={assignment.extension?.logo_url}
                           size="sm"
                           radius="md"
                         />
@@ -840,20 +867,20 @@ export function ReviewQueuePage() {
                       radius="lg"
                       shadow="sm"
                     >
-                    <Group justify="space-between">
-                      <Group>
-                        <Avatar 
-                          src={assignment.extension?.logo_url} 
-                          size="sm"
-                          radius="md"
-                        />
-                        <div>
-                          <Text 
-                            fw={500}
+                      <Group justify="space-between">
+                        <Group>
+                          <Avatar
+                            src={assignment.extension?.logo_url}
+                            size="sm"
+                            radius="md"
+                          />
+                          <div>
+                            <Text
+                              fw={500}
                               component="button"
                               type="button"
                               onClick={() => openReviewDetailsModal(assignment)}
-                            style={{ 
+                              style={{
                                 background: "none",
                                 border: "none",
                                 padding: 0,
@@ -864,42 +891,42 @@ export function ReviewQueuePage() {
                                 cursor: "pointer",
                                 font: "inherit",
                               }}
-                          >
+                            >
                               {assignment.extension?.name ||
                                 "Unknown Extension"}
-                          </Text>
-                          <Text size="sm" c="dimmed">
+                            </Text>
+                            <Text size="sm" c="dimmed">
                               Completed{" "}
                               {assignment.submitted_at
                                 ? new Date(
                                     assignment.submitted_at,
                                   ).toLocaleDateString()
                                 : "Recently"}
-                          </Text>
-                        </div>
-                      </Group>
-                      <Group>
-                        <Group gap="xs">
-                          {[...Array(assignment.rating || 0)].map((_, i) => (
+                            </Text>
+                          </div>
+                        </Group>
+                        <Group>
+                          <Group gap="xs">
+                            {[...Array(assignment.rating || 0)].map((_, i) => (
                               <Star
                                 key={i}
                                 size={14}
                                 fill="#ffd43b"
                                 color="#ffd43b"
                               />
-                          ))}
-                        </Group>
+                            ))}
+                          </Group>
                           <Badge
                             color="green"
                             size="sm"
                             leftSection={<Award size={12} />}
                           >
-                          Credits Earned
-                        </Badge>
+                            Credits Earned
+                          </Badge>
+                        </Group>
                       </Group>
-                    </Group>
-                  </Card>
-                ))}
+                    </Card>
+                  ))}
               </Stack>
             </div>
           )}
@@ -915,9 +942,9 @@ export function ReviewQueuePage() {
         >
           Review Fast Track members get 3x faster reviews and priority access to
           review assignments. Join now to unlock unlimited review opportunities!
-          <Button 
-            variant="light" 
-            size="sm" 
+          <Button
+            variant="light"
+            size="sm"
             mt="sm"
             leftSection={<Crown size={14} />}
             onClick={() => navigate("/upgrade")}
@@ -943,8 +970,8 @@ export function ReviewQueuePage() {
             <Stack gap="lg">
               <Card withBorder p="lg" radius="md">
                 <Group>
-                  <Avatar 
-                    src={selectedAssignment.extension?.logo_url} 
+                  <Avatar
+                    src={selectedAssignment.extension?.logo_url}
                     size="md"
                     radius="md"
                   />
@@ -1042,7 +1069,13 @@ export function ReviewQueuePage() {
                 </Button>
                 <Button
                   type="submit"
-                  leftSection={submittingReview ? <Loader size={16} /> : <Upload size={16} />}
+                  leftSection={
+                    submittingReview ? (
+                      <Loader size={16} />
+                    ) : (
+                      <Upload size={16} />
+                    )
+                  }
                   radius="md"
                   loading={submittingReview}
                   disabled={submittingReview}
@@ -1121,16 +1154,22 @@ export function ReviewQueuePage() {
         centered
       >
         <Stack gap="lg">
-          <div style={{ textAlign: 'center' }}>
-            <ThemeIcon size={60} radius="xl" color="blue" variant="light" mb="md">
+          <div style={{ textAlign: "center" }}>
+            <ThemeIcon
+              size={60}
+              radius="xl"
+              color="blue"
+              variant="light"
+              mb="md"
+            >
               <Bell size={30} />
             </ThemeIcon>
             <Title order={3} mb="sm">
               All caught up!
             </Title>
             <Text c="dimmed" size="sm">
-              No new extensions are available for review at this time. You have already 
-              reviewed extensions from all available developers.
+              No new extensions are available for review at this time. You have
+              already reviewed extensions from all available developers.
             </Text>
           </div>
 
@@ -1139,8 +1178,9 @@ export function ReviewQueuePage() {
               You're first in line!
             </Text>
             <Text size="sm">
-              You will be automatically assigned the next available extension when a new one 
-              is submitted. We'll notify you as soon as a new review opportunity becomes available.
+              You will be automatically assigned the next available extension
+              when a new one is submitted. We'll notify you as soon as a new
+              review opportunity becomes available.
             </Text>
           </Alert>
 
