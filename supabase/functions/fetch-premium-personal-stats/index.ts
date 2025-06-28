@@ -1,6 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -22,7 +19,7 @@ interface PremiumPersonalStats {
   totalReviewsReceived: number;
   queuePosition?: number;
   avgWaitTimeDays?: number;
-  avgReviewTurnaroundTime?: number;
+  avgReviewTurnaroundTime?: string;
   reviewTrends?: Array<{ month: string; submitted: number; received: number }>;
   reviewerFeedbackHighlights?: string[];
   extensionPerformance?: Array<{
@@ -43,18 +40,63 @@ interface PremiumPersonalStats {
 
 const CYCLE_LENGTH_DAYS = 28;
 
-serve(async (req) => {
+Deno.serve(async (req) => {
+  console.log("🚀 fetch-premium-personal-stats function started");
+  console.log("📝 Request method:", req.method);
+
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
+    console.log("✅ Handling CORS preflight request");
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    console.log("🔍 Checking environment variables...");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error("❌ Missing environment variables");
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Server configuration error: Missing environment variables",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        },
+      );
+    }
+
+    console.log("✅ Environment variables check passed");
+    // Use service role key to bypass RLS
+    const { createClient } = await import("npm:@supabase/supabase-js@2");
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { userId }: FetchPremiumPersonalStatsRequest = await req.json();
+    console.log("📦 Parsing request body...");
+    let requestBody;
+    try {
+      requestBody = await req.json();
+      console.log("📋 Request body parsed successfully");
+    } catch (parseError) {
+      console.error("❌ Failed to parse request body:", parseError);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Invalid JSON in request body",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        },
+      );
+    }
+
+    const { userId }: FetchPremiumPersonalStatsRequest = requestBody;
+
     if (!userId) {
+      console.error("❌ Missing userId in request");
       return new Response(
         JSON.stringify({ success: false, error: "User ID is required" }),
         {
@@ -64,6 +106,8 @@ serve(async (req) => {
       );
     }
 
+    console.log("🔍 Fetching premium personal stats for user:", userId);
+
     // Fetch user profile (to get created_at for cycle anchor)
     const { data: user, error: userError } = await supabase
       .from("users")
@@ -71,6 +115,7 @@ serve(async (req) => {
       .eq("id", userId)
       .single();
     if (userError || !user) {
+      console.error("❌ User not found:", userError);
       return new Response(
         JSON.stringify({ success: false, error: "User not found" }),
         {
@@ -106,6 +151,7 @@ serve(async (req) => {
       .eq("reviewer_id", userId)
       .in("status", ["submitted", "approved"]);
     if (submittedError) {
+      console.error("❌ Failed to fetch submitted reviews:", submittedError);
       return new Response(
         JSON.stringify({
           success: false,
@@ -130,6 +176,7 @@ serve(async (req) => {
       .select("id, name, chrome_store_url")
       .eq("owner_id", userId);
     if (extError) {
+      console.error("❌ Failed to fetch user extensions:", extError);
       return new Response(
         JSON.stringify({
           success: false,
@@ -152,6 +199,7 @@ serve(async (req) => {
         .in("extension_id", extensionIds)
         .in("status", ["submitted", "approved"]);
       if (receivedError) {
+        console.error("❌ Failed to fetch received reviews:", receivedError);
         return new Response(
           JSON.stringify({
             success: false,
@@ -334,7 +382,7 @@ serve(async (req) => {
       totalReviewsSubmitted,
       totalReviewsReceived,
       queuePosition: 1, // Premium users get priority
-      avgWaitTimeDays: 0.5, // Premium users get fast reviews
+      avgWaitTimeDays: 0.5, // Premium users get faster service
       avgReviewTurnaroundTime,
       reviewTrends,
       reviewerFeedbackHighlights: reviewerFeedbackHighlights.slice(0, 3),
@@ -346,15 +394,24 @@ serve(async (req) => {
       badgeIcon,
     };
 
+    console.log("✅ Premium personal stats calculated successfully");
     return new Response(JSON.stringify({ success: true, data: stats }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
+    console.error("💥 Error in fetch-premium-personal-stats function:", {
+      message: error?.message || "Unknown error",
+      name: error?.name || "Unknown",
+      stack: error?.stack || "No stack trace available",
+    });
+
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || "Internal server error",
+        error:
+          "Internal server error occurred while fetching premium personal stats",
+        details: error?.message || "Unknown error",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
