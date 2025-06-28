@@ -92,6 +92,17 @@ h6 {
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   font-weight: 500;
+  color: rgba(
+    255,
+    255,
+    255,
+    0.95
+  ) !important; /* Default light text for all alerts */
+}
+
+/* All alert text should be light colored */
+.mantine-Alert-root * {
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 /* Specific styling for warning/error alerts */
@@ -121,6 +132,11 @@ h6 {
   color: rgba(255, 255, 255, 0.95) !important;
 }
 
+/* Ensure alert message text is always readable */
+.mantine-Alert-root .mantine-Alert-message {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
 /* Enhanced Sidebar Styling */
 .mantine-AppShell-navbar {
   background: var(--sidebar-bg) !important;
@@ -141,11 +157,18 @@ h6 {
   transition: all 0.2s ease;
   border-radius: 8px;
   margin-bottom: 2px;
+  color: rgba(
+    255,
+    255,
+    255,
+    0.85
+  ) !important; /* Much lighter for readability */
 }
 
 .mantine-NavLink-root:hover {
   background: rgba(50, 146, 238, 0.1) !important;
   transform: translateX(2px);
+  color: rgba(255, 255, 255, 0.95) !important; /* Even lighter on hover */
 }
 
 .mantine-NavLink-root[data-active="true"] {
@@ -159,6 +182,15 @@ h6 {
   color: var(--mantine-color-blue-7) !important;
 }
 
+/* Navigation Link Text and Icons */
+.mantine-NavLink-root .mantine-NavLink-label {
+  color: inherit !important;
+}
+
+.mantine-NavLink-root .mantine-NavLink-leftSection {
+  color: inherit !important;
+}
+
 /* Enhanced Card Styling with Subtle Colors */
 .mantine-Card-root {
   background: var(--panel-bg-light) !important;
@@ -166,11 +198,26 @@ h6 {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.9) !important; /* Light text for all cards */
 }
 
 .mantine-Card-root:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure all text inside cards is light colored */
+.mantine-Card-root,
+.mantine-Card-root * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Ensure specific text elements in cards are readable */
+.mantine-Card-root .mantine-Text-root,
+.mantine-Card-root p,
+.mantine-Card-root span,
+.mantine-Card-root div {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Subtle Card Variations */
@@ -191,6 +238,13 @@ h6 {
     var(--panel-bg-subtle) 100%
   ) !important;
   border: 1px solid rgba(50, 146, 238, 0.08);
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Ensure all stats card text is readable */
+.stats-card,
+.stats-card * {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Enhanced Dashboard Container */
@@ -203,6 +257,52 @@ h6 {
   border-radius: 16px;
   padding: 1.5rem;
   margin: 1rem 0;
+}
+
+/* Global Text Readability Improvements */
+/* Ensure all Mantine components have readable text */
+.mantine-Text-root,
+.mantine-Title-root,
+.mantine-Group-root,
+.mantine-Stack-root,
+.mantine-SimpleGrid-root {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Specific text elements that need light coloring */
+.mantine-Text-root[data-size="sm"],
+.mantine-Text-root[data-size="xs"],
+p:not(.mantine-Card-root h1):not(.mantine-Card-root h2):not(
+    .mantine-Card-root h3
+  ):not(.mantine-Card-root h4):not(.mantine-Card-root h5):not(
+    .mantine-Card-root h6
+  ),
+span:not(.mantine-Card-root h1):not(.mantine-Card-root h2):not(
+    .mantine-Card-root h3
+  ):not(.mantine-Card-root h4):not(.mantine-Card-root h5):not(
+    .mantine-Card-root h6
+  ) {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Panel and container text */
+.mantine-Paper-root,
+.mantine-Paper-root * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Sidebar section headers and other elements */
+.mantine-AppShell-navbar .mantine-Text-root,
+.mantine-AppShell-navbar p,
+.mantine-AppShell-navbar span,
+.mantine-AppShell-navbar div {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Additional text element coverage */
+.mantine-Accordion-root,
+.mantine-Accordion-root * {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Enhanced Animations */
