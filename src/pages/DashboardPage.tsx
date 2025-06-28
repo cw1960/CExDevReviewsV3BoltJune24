@@ -608,7 +608,7 @@ export function DashboardPage() {
       <Group justify="space-between" mb="xl">
         <Stack gap="xs">
           <Title order={1}>Welcome back, {profile?.name}!</Title>
-          <Text c="dimmed" size="lg">
+          <Text size="lg" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
             Here's what's happening with your extensions and reviews
           </Text>
         </Stack>
@@ -687,45 +687,45 @@ export function DashboardPage() {
 
       <Grid>
         <Grid.Col span={{ base: 12, md: 4 }}>
-          <Card withBorder p="xl" h="100%">
+          <Card withBorder p="xl" h="100%" className="extensions-card">
             <Group justify="space-between" mb="md">
               <Text fw={600}>Extensions</Text>
               <Package size={20} />
             </Group>
-            <Text size="2.5rem" fw={800} mb="xs" c="blue.6">
+            <Text size="2.5rem" fw={800} mb="xs" className="stats-number" style={{ color: '#06b6d4' }}>
               {extensions.length}
             </Text>
-            <Text size="sm" c="dimmed">
+            <Text size="sm">
               Total extensions in your library
             </Text>
           </Card>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 4 }}>
-          <Card withBorder p="xl" h="100%">
+          <Card withBorder p="xl" h="100%" className="pending-reviews-card">
             <Group justify="space-between" mb="md">
               <Text fw={600}>Pending Reviews</Text>
               <Star size={20} />
             </Group>
-            <Text size="2.5rem" fw={800} mb="xs" c="purple.6">
+            <Text size="2.5rem" fw={800} mb="xs" className="stats-number" style={{ color: '#ef4444' }}>
               {assignments.length}
             </Text>
-            <Text size="sm" c="dimmed">
+            <Text size="sm">
               Reviews assigned to you
             </Text>
           </Card>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 4 }}>
-          <Card withBorder p="xl" h="100%">
+          <Card withBorder p="xl" h="100%" className="credits-balance-card">
             <Group justify="space-between" mb="md">
               <Text fw={600}>Credits Balance</Text>
               <TrendingUp size={20} />
             </Group>
-            <Text size="2.5rem" fw={800} mb="xs" c="green.6">
+            <Text size="2.5rem" fw={800} mb="xs" className="stats-number" style={{ color: '#059669' }}>
               {profile?.credit_balance || 0}
             </Text>
-            <Text size="sm" c="dimmed">
+            <Text size="sm">
               Available for queue submissions
             </Text>
           </Card>
@@ -774,12 +774,12 @@ export function DashboardPage() {
                       <Avatar size="sm" src={extension.logo_url} />
                       <Stack gap="xs">
                         <Text fw={500}>{extension.name}</Text>
-                        <Text size="sm" c="dimmed" maw={300} truncate>
+                        <Text size="sm" maw={300} truncate style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                           {extension.description || "No description"}
                         </Text>
                         {extension.status === "pending_verification" &&
                           extension.submitted_to_queue_at && (
-                            <Text size="xs" c="blue">
+                            <Text size="xs" style={{ color: '#3b82f6' }}>
                               In queue since{" "}
                               {new Date(
                                 extension.submitted_to_queue_at,
@@ -787,7 +787,7 @@ export function DashboardPage() {
                             </Text>
                           )}
                         {extension.status === "assigned" && (
-                          <Text size="xs" c="purple">
+                          <Text size="xs" style={{ color: '#8b5cf6' }}>
                             Currently being reviewed
                           </Text>
                         )}
