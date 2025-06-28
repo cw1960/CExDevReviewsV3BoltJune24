@@ -207,7 +207,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           </Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
-              <Text size="sm" c="dimmed">
+              <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                 Cycle: {new Date(premiumStats.cycleStart).toLocaleDateString()} –{" "}
                 {new Date(premiumStats.cycleEnd).toLocaleDateString()}
                 <br />
@@ -216,67 +216,67 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
               {/* Main Stats Grid */}
               <SimpleGrid cols={2} spacing="md">
-                <Card shadow="sm" p="md" radius="md" withBorder>
+                <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                       Reviews This Cycle
                     </Text>
                     <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700}>
+                    <Text size="xl" fw={700} style={{ color: '#3b82f6' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
                     </Text>
-                    <Text size="sm" c="green">
+                    <Text size="sm" style={{ color: '#10b981' }}>
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     Submitted
                   </Text>
                 </Card>
 
-                <Card shadow="sm" p="md" radius="md" withBorder>
+                <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                       Reviews Received
                     </Text>
                     <IconStar size={16} />
                   </Group>
-                  <Text size="xl" fw={700}>
+                  <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
                     {premiumStats.reviewsReceivedThisCycle}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     This cycle
                   </Text>
                 </Card>
 
-                <Card shadow="sm" p="md" radius="md" withBorder>
+                <Card shadow="sm" p="md" radius="md" withBorder className="queue-position-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                       Queue Position
                     </Text>
                     <IconTarget size={16} />
                   </Group>
-                  <Text size="xl" fw={700} c="yellow">
+                  <Text size="xl" fw={700} style={{ color: '#f59e0b' }}>
                     #{premiumStats.queuePosition}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     Priority queue
                   </Text>
                 </Card>
 
-                <Card shadow="sm" p="md" radius="md" withBorder>
+                <Card shadow="sm" p="md" radius="md" withBorder className="avg-turnaround-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                       Avg. Turnaround
                     </Text>
                     <IconClock size={16} />
                   </Group>
-                  <Text size="xl" fw={700}>
+                  <Text size="xl" fw={700} style={{ color: '#06b6d4' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     Your reviews
                   </Text>
                 </Card>
@@ -292,26 +292,26 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           <Accordion.Panel>
             <Group justify="space-around">
               <Stack align="center" gap={4}>
-                <Text size="2xl" fw={700} c="blue">
+                <Text size="2xl" fw={700} style={{ color: '#3b82f6' }}>
                   {premiumStats.totalReviewsSubmitted}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Total Submitted
                 </Text>
               </Stack>
               <Stack align="center" gap={4}>
-                <Text size="2xl" fw={700} c="teal">
+                <Text size="2xl" fw={700} style={{ color: '#10b981' }}>
                   {premiumStats.totalReviewsReceived}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Total Received
                 </Text>
               </Stack>
               <Stack align="center" gap={4}>
-                <Text size="2xl" fw={700} c="yellow">
+                <Text size="2xl" fw={700} style={{ color: '#f59e0b' }}>
                   {premiumStats.nextReviewETA}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Next Review ETA
                 </Text>
               </Stack>
