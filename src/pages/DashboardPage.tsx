@@ -240,19 +240,59 @@ export function DashboardPage() {
         
         if (statsError) {
           console.error('❌ Personal stats error:', statsError);
-          setPersonalStatsError(`Failed to fetch personal stats: ${statsError.message}`);
+          // FALLBACK: Provide placeholder data instead of failing
+          console.log('🔄 Using fallback placeholder data for personal stats');
+          const fallbackStats = {
+            cycleStart: new Date().toISOString(),
+            cycleEnd: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+            daysLeftInCycle: 28,
+            reviewsSubmittedThisCycle: 0,
+            reviewsReceivedThisCycle: 0,
+            reviewsLeftToSubmit: 4,
+            reviewsLeftToReceive: 4,
+            totalReviewsSubmitted: 0,
+            totalReviewsReceived: 0,
+          };
+          setPersonalStats(fallbackStats);
+          setPersonalStatsError("Personal stats temporarily unavailable - showing placeholder data");
         } else if (statsResponse?.success) {
           console.log('✅ Personal stats loaded successfully');
           setPersonalStats(statsResponse.data);
         } else {
           console.error('❌ Personal stats function returned error:', statsResponse);
-          setPersonalStatsError(
-            statsResponse?.error || "Failed to fetch personal stats.",
-          );
+          // FALLBACK: Provide placeholder data instead of failing
+          console.log('🔄 Using fallback placeholder data for personal stats');
+          const fallbackStats = {
+            cycleStart: new Date().toISOString(),
+            cycleEnd: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+            daysLeftInCycle: 28,
+            reviewsSubmittedThisCycle: 0,
+            reviewsReceivedThisCycle: 0,
+            reviewsLeftToSubmit: 4,
+            reviewsLeftToReceive: 4,
+            totalReviewsSubmitted: 0,
+            totalReviewsReceived: 0,
+          };
+          setPersonalStats(fallbackStats);
+          setPersonalStatsError("Personal stats temporarily unavailable - showing placeholder data");
         }
       } catch (err: any) {
         console.error('💥 Personal stats catch error:', err);
-        setPersonalStatsError(err.message || "Failed to fetch personal stats.");
+        // FALLBACK: Provide placeholder data instead of failing
+        console.log('🔄 Using fallback placeholder data for personal stats');
+        const fallbackStats = {
+          cycleStart: new Date().toISOString(),
+          cycleEnd: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+          daysLeftInCycle: 28,
+          reviewsSubmittedThisCycle: 0,
+          reviewsReceivedThisCycle: 0,
+          reviewsLeftToSubmit: 4,
+          reviewsLeftToReceive: 4,
+          totalReviewsSubmitted: 0,
+          totalReviewsReceived: 0,
+        };
+        setPersonalStats(fallbackStats);
+        setPersonalStatsError("Personal stats temporarily unavailable - showing placeholder data");
       } finally {
         setPersonalStatsLoading(false);
       }
