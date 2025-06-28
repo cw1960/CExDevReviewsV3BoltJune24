@@ -1,60 +1,60 @@
-import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { 
-  AppShell, 
-  NavLink as MantineNavLink, 
-  Group, 
-  Text, 
+import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  AppShell,
+  NavLink as MantineNavLink,
+  Group,
+  Text,
   Button,
   Stack,
-  Alert
-} from '@mantine/core'
-import { 
-  Home, 
-  Package, 
-  Star, 
-  User, 
-  Settings, 
+  Alert,
+} from "@mantine/core";
+import {
+  Home,
+  Package,
+  Star,
+  User,
+  Settings,
   LogOut,
   Shield,
-  AlertCircle
-} from 'lucide-react'
-import { useAuth } from '../../contexts/AuthContext'
-import { useSubscription } from '../../hooks/useSubscription'
+  AlertCircle,
+} from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useSubscription } from "../../hooks/useSubscription";
 
 export function SideNav() {
-  const { profile, signOut } = useAuth()
-  const { isPremium } = useSubscription()
-  const navigate = useNavigate()
+  const { profile, signOut } = useAuth();
+  const { isPremium } = useSubscription();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     try {
-      await signOut()
-      navigate('/auth')
+      await signOut();
+      navigate("/auth");
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error("Error signing out:", error);
     }
-  }
+  };
 
   const navItems = [
-    { icon: Home, label: 'Dashboard', to: '/dashboard' },
-    { icon: Package, label: 'Extension Library', to: '/extensions' },
-    { icon: Star, label: 'Review Queue', to: '/reviews' },
-    { icon: User, label: 'Profile', to: '/profile' }
-  ]
+    { icon: Home, label: "Dashboard", to: "/dashboard" },
+    { icon: Package, label: "Extension Library", to: "/extensions" },
+    { icon: Star, label: "Review Queue", to: "/reviews" },
+    { icon: User, label: "Profile", to: "/profile" },
+  ];
 
   const adminNavItems = [
-    { icon: Shield, label: 'Admin Dashboard', to: '/admin' }
-  ]
+    { icon: Shield, label: "Admin Dashboard", to: "/admin" },
+  ];
 
   return (
     <AppShell.Navbar p="md">
       <AppShell.Section>
         <Group mb="md">
-          <img 
-            src="https://i.imgur.com/PL0Syo1.png" 
-            alt="ChromeExDev Logo" 
-            style={{ width: 120, height: 'auto' }}
+          <img
+            src="https://i.imgur.com/PL0Syo1.png"
+            alt="ChromeExDev Logo"
+            style={{ width: 144, height: "auto" }}
           />
         </Group>
       </AppShell.Section>
@@ -69,13 +69,15 @@ export function SideNav() {
               label={item.label}
               leftSection={<item.icon size={16} />}
               style={({ isActive }) => ({
-                backgroundColor: isActive ? 'var(--mantine-color-blue-light)' : undefined,
-                borderRadius: 'var(--mantine-radius-sm)'
+                backgroundColor: isActive
+                  ? "var(--mantine-color-blue-light)"
+                  : undefined,
+                borderRadius: "var(--mantine-radius-sm)",
               })}
             />
           ))}
 
-          {profile?.role === 'admin' && (
+          {profile?.role === "admin" && (
             <>
               <Text size="sm" c="dimmed" mt="md" mb="xs">
                 Administration
@@ -88,8 +90,10 @@ export function SideNav() {
                   label={item.label}
                   leftSection={<item.icon size={16} />}
                   style={({ isActive }) => ({
-                    backgroundColor: isActive ? 'var(--mantine-color-blue-light)' : undefined,
-                    borderRadius: 'var(--mantine-radius-sm)'
+                    backgroundColor: isActive
+                      ? "var(--mantine-color-blue-light)"
+                      : undefined,
+                    borderRadius: "var(--mantine-radius-sm)",
                   })}
                 />
               ))}
@@ -100,13 +104,19 @@ export function SideNav() {
 
       <AppShell.Section>
         <Group justify="space-between" mb="xs">
-          <Text size="sm" c="dimmed">Credits</Text>
-          <Text size="sm" fw={600}>{profile?.credit_balance || 0}</Text>
+          <Text size="sm" c="dimmed">
+            Credits
+          </Text>
+          <Text size="sm" fw={600}>
+            {profile?.credit_balance || 0}
+          </Text>
         </Group>
         <Group justify="space-between" mb="xs">
-          <Text size="sm" c="dimmed">Plan</Text>
+          <Text size="sm" c="dimmed">
+            Plan
+          </Text>
           <Text size="sm" fw={600}>
-            {isPremium ? 'Review Fast Track' : 'Free'}
+            {isPremium ? "Review Fast Track" : "Free"}
           </Text>
         </Group>
         <Button
@@ -119,5 +129,5 @@ export function SideNav() {
         </Button>
       </AppShell.Section>
     </AppShell.Navbar>
-  )
+  );
 }

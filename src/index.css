@@ -86,55 +86,82 @@ h6 {
   text-shadow: none;
 }
 
-/* Enhanced Alert Styling for Better Contrast */
+/* Enhanced Alert Styling - Restore Beautiful Colors */
 .mantine-Alert-root {
   border-radius: 12px !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   font-weight: 500;
-  color: rgba(
-    255,
-    255,
-    255,
-    0.95
-  ) !important; /* Default light text for all alerts */
 }
 
-/* All alert text should be light colored */
-.mantine-Alert-root * {
-  color: rgba(255, 255, 255, 0.95) !important;
-}
-
-/* Specific styling for warning/error alerts */
-.mantine-Alert-root[data-variant="light"][data-color="orange"],
-.mantine-Alert-root[data-variant="light"][data-color="red"],
-.mantine-Alert-root[data-variant="light"][data-color="yellow"] {
-  background: rgba(253, 126, 20, 0.15) !important;
-  color: white !important;
-  border: 1px solid rgba(253, 126, 20, 0.3);
+/* Orange alerts (Active Assignment Limit) - Restore vibrant orange */
+.mantine-Alert-root[data-variant="light"][data-color="orange"] {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 146, 43, 0.1),
+    rgba(255, 146, 43, 0.05)
+  ) !important;
+  border: 1px solid rgba(255, 146, 43, 0.3) !important;
+  color: #e8590c !important; /* Vibrant orange text */
 }
 
 .mantine-Alert-root[data-variant="light"][data-color="orange"]
-  .mantine-Alert-title,
-.mantine-Alert-root[data-variant="light"][data-color="red"]
-  .mantine-Alert-title,
-.mantine-Alert-root[data-variant="light"][data-color="yellow"]
   .mantine-Alert-title {
-  color: white !important;
-  font-weight: 600;
+  color: #e8590c !important; /* Vibrant orange title */
+  font-weight: 700;
 }
 
 .mantine-Alert-root[data-variant="light"][data-color="orange"]
   .mantine-Alert-body,
-.mantine-Alert-root[data-variant="light"][data-color="red"] .mantine-Alert-body,
-.mantine-Alert-root[data-variant="light"][data-color="yellow"]
-  .mantine-Alert-body {
-  color: rgba(255, 255, 255, 0.95) !important;
+.mantine-Alert-root[data-variant="light"][data-color="orange"]
+  .mantine-Alert-message {
+  color: #fd7e14 !important; /* Bright orange for message text */
 }
 
-/* Ensure alert message text is always readable */
-.mantine-Alert-root .mantine-Alert-message {
-  color: rgba(255, 255, 255, 0.95) !important;
+/* Red alerts */
+.mantine-Alert-root[data-variant="light"][data-color="red"] {
+  background: linear-gradient(
+    135deg,
+    rgba(250, 82, 82, 0.1),
+    rgba(250, 82, 82, 0.05)
+  ) !important;
+  border: 1px solid rgba(250, 82, 82, 0.3) !important;
+  color: #e03131 !important;
+}
+
+.mantine-Alert-root[data-variant="light"][data-color="red"]
+  .mantine-Alert-title {
+  color: #e03131 !important;
+  font-weight: 700;
+}
+
+.mantine-Alert-root[data-variant="light"][data-color="red"] .mantine-Alert-body,
+.mantine-Alert-root[data-variant="light"][data-color="red"]
+  .mantine-Alert-message {
+  color: #fa5252 !important;
+}
+
+/* Yellow alerts */
+.mantine-Alert-root[data-variant="light"][data-color="yellow"] {
+  background: linear-gradient(
+    135deg,
+    rgba(252, 196, 25, 0.1),
+    rgba(252, 196, 25, 0.05)
+  ) !important;
+  border: 1px solid rgba(252, 196, 25, 0.3) !important;
+  color: #fab005 !important;
+}
+
+.mantine-Alert-root[data-variant="light"][data-color="yellow"]
+  .mantine-Alert-title {
+  color: #fab005 !important;
+  font-weight: 700;
+}
+
+.mantine-Alert-root[data-variant="light"][data-color="yellow"]
+  .mantine-Alert-body,
+.mantine-Alert-root[data-variant="light"][data-color="yellow"]
+  .mantine-Alert-message {
+  color: #fcc419 !important;
 }
 
 /* Enhanced Sidebar Styling */
@@ -157,18 +184,13 @@ h6 {
   transition: all 0.2s ease;
   border-radius: 8px;
   margin-bottom: 2px;
-  color: rgba(
-    255,
-    255,
-    255,
-    0.85
-  ) !important; /* Much lighter for readability */
+  color: rgba(255, 255, 255, 0.85) !important; /* Light for unselected */
 }
 
 .mantine-NavLink-root:hover {
   background: rgba(50, 146, 238, 0.1) !important;
   transform: translateX(2px);
-  color: rgba(255, 255, 255, 0.95) !important; /* Even lighter on hover */
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .mantine-NavLink-root[data-active="true"] {
@@ -179,16 +201,21 @@ h6 {
   ) !important;
   border: 1px solid rgba(50, 146, 238, 0.2);
   font-weight: 600;
-  color: var(--mantine-color-blue-7) !important;
+  color: #1971c2 !important; /* Dark blue hyperlink color for selected */
 }
 
-/* Navigation Link Text and Icons */
+/* Navigation Link Text and Icons - Selected items get dark blue */
 .mantine-NavLink-root .mantine-NavLink-label {
   color: inherit !important;
 }
 
 .mantine-NavLink-root .mantine-NavLink-leftSection {
   color: inherit !important;
+}
+
+.mantine-NavLink-root[data-active="true"] .mantine-NavLink-label,
+.mantine-NavLink-root[data-active="true"] .mantine-NavLink-leftSection {
+  color: #1971c2 !important; /* Dark blue for selected items */
 }
 
 /* Enhanced Card Styling with Subtle Colors */
@@ -198,7 +225,6 @@ h6 {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-  color: rgba(255, 255, 255, 0.9) !important; /* Light text for all cards */
 }
 
 .mantine-Card-root:hover {
@@ -206,18 +232,85 @@ h6 {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Ensure all text inside cards is light colored */
-.mantine-Card-root,
-.mantine-Card-root * {
-  color: rgba(255, 255, 255, 0.9) !important;
+/* Specific styling for dashboard stats cards with colorful elements */
+.dashboard-stats-card {
+  position: relative;
+  overflow: hidden;
 }
 
-/* Ensure specific text elements in cards are readable */
-.mantine-Card-root .mantine-Text-root,
-.mantine-Card-root p,
-.mantine-Card-root span,
-.mantine-Card-root div {
-  color: rgba(255, 255, 255, 0.9) !important;
+.dashboard-stats-card .stats-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dashboard-stats-card .stats-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Reviews This Cycle - Blue theme */
+.reviews-cycle-card .stats-number {
+  color: #3b82f6 !important;
+}
+
+.reviews-cycle-card .stats-icon {
+  color: #3b82f6 !important;
+}
+
+/* Reviews Received - Purple theme */
+.reviews-received-card .stats-number {
+  color: #8b5cf6 !important;
+}
+
+.reviews-received-card .stats-icon {
+  color: #8b5cf6 !important;
+}
+
+/* Queue Position - Green theme */
+.queue-position-card .stats-number {
+  color: #10b981 !important;
+}
+
+.queue-position-card .stats-icon {
+  color: #10b981 !important;
+}
+
+/* Average Turnaround - Orange theme */
+.avg-turnaround-card .stats-number {
+  color: #f59e0b !important;
+}
+
+.avg-turnaround-card .stats-icon {
+  color: #f59e0b !important;
+}
+
+/* Extensions - Cyan theme */
+.extensions-card .stats-number {
+  color: #06b6d4 !important;
+}
+
+.extensions-card .stats-icon {
+  color: #06b6d4 !important;
+}
+
+/* Pending Reviews - Red theme */
+.pending-reviews-card .stats-number {
+  color: #ef4444 !important;
+}
+
+.pending-reviews-card .stats-icon {
+  color: #ef4444 !important;
+}
+
+/* Credits Balance - Emerald theme */
+.credits-balance-card .stats-number {
+  color: #059669 !important;
+}
+
+.credits-balance-card .stats-icon {
+  color: #059669 !important;
 }
 
 /* Subtle Card Variations */
@@ -238,13 +331,6 @@ h6 {
     var(--panel-bg-subtle) 100%
   ) !important;
   border: 1px solid rgba(50, 146, 238, 0.08);
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-/* Ensure all stats card text is readable */
-.stats-card,
-.stats-card * {
-  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Enhanced Dashboard Container */
@@ -259,50 +345,126 @@ h6 {
   margin: 1rem 0;
 }
 
-/* Global Text Readability Improvements */
-/* Ensure all Mantine components have readable text */
-.mantine-Text-root,
-.mantine-Title-root,
-.mantine-Group-root,
-.mantine-Stack-root,
-.mantine-SimpleGrid-root {
-  color: rgba(255, 255, 255, 0.9) !important;
+/* Strategic Text Readability - Only Where Needed */
+/* Sidebar section headers and navigation elements */
+.mantine-AppShell-navbar .mantine-Text-root[data-c="dimmed"],
+.mantine-AppShell-navbar .mantine-Text-root[data-size="sm"] {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Specific text elements that need light coloring */
-.mantine-Text-root[data-size="sm"],
-.mantine-Text-root[data-size="xs"],
-p:not(.mantine-Card-root h1):not(.mantine-Card-root h2):not(
-    .mantine-Card-root h3
-  ):not(.mantine-Card-root h4):not(.mantine-Card-root h5):not(
-    .mantine-Card-root h6
-  ),
-span:not(.mantine-Card-root h1):not(.mantine-Card-root h2):not(
-    .mantine-Card-root h3
-  ):not(.mantine-Card-root h4):not(.mantine-Card-root h5):not(
-    .mantine-Card-root h6
-  ) {
-  color: rgba(255, 255, 255, 0.85) !important;
+/* Platform Stats Panel - Restore Original Design */
+.platform-stats-panel {
+  background: white !important;
+  color: inherit !important;
 }
 
-/* Panel and container text */
-.mantine-Paper-root,
-.mantine-Paper-root * {
-  color: rgba(255, 255, 255, 0.9) !important;
+.platform-stats-panel * {
+  color: inherit !important;
 }
 
-/* Sidebar section headers and other elements */
-.mantine-AppShell-navbar .mantine-Text-root,
-.mantine-AppShell-navbar p,
-.mantine-AppShell-navbar span,
-.mantine-AppShell-navbar div {
+/* Button Styling Improvements */
+.mantine-Button-root[data-variant="default"] {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #495057 !important;
+  font-weight: 600;
+}
+
+.mantine-Button-root[data-variant="default"]:hover {
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled button styling (for Submit Review when waiting) */
+.mantine-Button-root[data-variant="default"]:disabled {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+  border: 1px solid rgba(34, 197, 94, 0.2) !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
+
+/* Extension Library Action Buttons */
+.extension-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+}
+
+.edit-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: scale(1.05);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.delete-btn:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: scale(1.05);
+}
+
+/* Form Styling Improvements */
+.profile-form-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 250, 252, 0.9) 100%
+  ) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form-card .mantine-TextInput-label,
+.profile-form-card .mantine-Text-root {
+  color: #374151 !important;
+  font-weight: 600;
+}
+
+.profile-form-card .mantine-TextInput-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #111827;
+}
+
+.profile-form-card .mantine-TextInput-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.profile-form-card .mantine-TextInput-input:disabled {
+  background: rgba(156, 163, 175, 0.3);
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Better text contrast for all form elements */
+.mantine-Card-root .mantine-TextInput-label,
+.mantine-Card-root .mantine-Text-root:not(.stats-number):not(.stats-label) {
+  color: rgba(55, 65, 81, 0.9) !important;
+}
+
+/* Ensure readability in dark panels while preserving colorful elements */
+.mantine-Card-root[style*="background: var(--panel-bg-light)"] * {
+  color: inherit;
+}
+
+/* Only apply light text to very specific dark background elements */
+.dashboard-stats-card .stats-label {
   color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/* Additional text element coverage */
-.mantine-Accordion-root,
-.mantine-Accordion-root * {
-  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Enhanced Animations */
