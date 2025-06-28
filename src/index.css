@@ -113,7 +113,8 @@ h6 {
 .mantine-Alert-root[data-variant="light"][data-color="orange"]
   .mantine-Alert-body,
 .mantine-Alert-root[data-variant="light"][data-color="orange"]
-  .mantine-Alert-message {
+  .mantine-Alert-message,
+.mantine-Alert-root[data-variant="light"][data-color="orange"] * {
   color: rgba(
     255,
     255,
