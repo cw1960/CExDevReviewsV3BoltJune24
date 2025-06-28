@@ -157,10 +157,7 @@ export function PlatformStatsPanel() {
         p="xl"
         shadow="lg"
         style={{
-          background:
-            theme.colorScheme === 'dark'
-              ? theme.colors.dark[7]
-              : 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)',
         }}
       >
         <Stack align="center" mb="xl" gap={0}>
@@ -202,11 +199,8 @@ function StatItem({
   color: string;
   theme: any;
 }) {
-  // Fallback color for Mantine v5
-  const bgColor =
-    theme.colorScheme === 'dark'
-      ? theme.colors.dark[5]
-      : (theme.colors[color] && theme.colors[color][0]) || '#f3f4f6';
+  // Use light theme colors
+  const bgColor = (theme.colors[color] && theme.colors[color][0]) || '#f3f4f6';
 
   const textColor =
     (theme.colors[color] && theme.colors[color][7]) || theme.colors.dark[0];
