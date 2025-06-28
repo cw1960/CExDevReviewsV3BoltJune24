@@ -114,7 +114,12 @@ h6 {
   .mantine-Alert-body,
 .mantine-Alert-root[data-variant="light"][data-color="orange"]
   .mantine-Alert-message {
-  color: #fd7e14 !important; /* Bright orange for message text */
+  color: rgba(
+    255,
+    255,
+    255,
+    0.85
+  ) !important; /* Light gray for better readability */
 }
 
 /* Red alerts */
