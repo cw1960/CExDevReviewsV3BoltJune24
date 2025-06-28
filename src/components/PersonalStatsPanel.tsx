@@ -218,65 +218,65 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
                       Reviews This Cycle
                     </Text>
-                    <IconTrendingUp size={16} />
+                    <IconTrendingUp size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700} style={{ color: '#3b82f6' }}>
+                    <Text size="xl" fw={700} style={{ color: '#3b82f6 !important' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
                     </Text>
-                    <Text size="sm" style={{ color: '#10b981' }}>
+                    <Text size="sm" style={{ color: '#10b981 !important' }}>
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
                     Submitted
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
                       Reviews Received
                     </Text>
-                    <IconStar size={16} />
+                    <IconStar size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
+                  <Text size="xl" fw={700} style={{ color: '#8b5cf6 !important' }}>
                     {premiumStats.reviewsReceivedThisCycle}
                   </Text>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
                     This cycle
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="queue-position-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
                       Queue Position
                     </Text>
-                    <IconTarget size={16} />
+                    <IconTarget size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#f59e0b' }}>
+                  <Text size="xl" fw={700} style={{ color: '#f59e0b !important' }}>
                     #{premiumStats.queuePosition}
                   </Text>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
                     Priority queue
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="avg-turnaround-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8) !important' }}>
                       Avg. Turnaround
                     </Text>
-                    <IconClock size={16} />
+                    <IconClock size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#06b6d4' }}>
+                  <Text size="xl" fw={700} style={{ color: '#06b6d4 !important' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
-                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6) !important' }}>
                     Your reviews
                   </Text>
                 </Card>
