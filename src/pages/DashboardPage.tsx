@@ -226,7 +226,6 @@ export function DashboardPage() {
         console.log('🔍 DEBUG: Premium detection details:', {
           isPremium,
           profileSubscriptionStatus: profile?.subscription_status,
-          subscriptionData: subscription,
           planName
         });
         
