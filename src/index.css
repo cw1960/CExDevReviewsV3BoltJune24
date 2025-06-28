@@ -620,6 +620,77 @@ h6 {
   font-weight: 700;
 }
 
+/* EMERGENCY FIX - FORCE ALL CARD TEXT TO BE READABLE */
+.mantine-Card-root * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root .mantine-Text-root {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root span {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root div {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Card-root p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Override ANY dark text color with !important */
+.mantine-Card-root [style*="color: rgb(55"],
+.mantine-Card-root [style*="color: rgb(33"],
+.mantine-Card-root [style*="color: rgb(17"],
+.mantine-Card-root [style*="color: rgba(55"],
+.mantine-Card-root [style*="color: rgba(33"],
+.mantine-Card-root [style*="color: rgba(17"],
+.mantine-Card-root [style*="color: #333"],
+.mantine-Card-root [style*="color: #111"],
+.mantine-Card-root [style*="color: #000"],
+.mantine-Card-root [style*="color: black"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Preserve colorful stat numbers */
+.reviews-cycle-card .stats-number,
+.reviews-cycle-card [data-size="2xl"] {
+  color: #3b82f6 !important; /* Blue */
+}
+
+.reviews-received-card .stats-number,
+.reviews-received-card [data-size="2xl"] {
+  color: #8b5cf6 !important; /* Purple */
+}
+
+.queue-position-card .stats-number,
+.queue-position-card [data-size="2xl"] {
+  color: #10b981 !important; /* Green */
+}
+
+.avg-turnaround-card .stats-number,
+.avg-turnaround-card [data-size="2xl"] {
+  color: #f59e0b !important; /* Orange */
+}
+
+.extensions-card .stats-number,
+.extensions-card [data-size="2xl"] {
+  color: #06b6d4 !important; /* Cyan */
+}
+
+.pending-reviews-card .stats-number,
+.pending-reviews-card [data-size="2xl"] {
+  color: #ef4444 !important; /* Red */
+}
+
+.credits-balance-card .stats-number,
+.credits-balance-card [data-size="2xl"] {
+  color: #059669 !important; /* Emerald */
+}
+
 /* Enhanced Animations */
 @keyframes fadeInUp {
   from {
