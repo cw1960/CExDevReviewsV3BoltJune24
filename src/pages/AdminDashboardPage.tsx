@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
+import { PlatformStatsPanel } from "../components/PlatformStatsPanel";
 import type { Database } from "../types/database";
 
 type Extension = Database["public"]["Tables"]["extensions"]["Row"];
@@ -792,7 +793,7 @@ export function AdminDashboardPage() {
         size="lg"
         title="Platform Stats"
       >
-        {/* <PlatformStatsPanel /> */}
+        <PlatformStatsPanel />
       </Drawer>
     </Container>
   );

@@ -33,8 +33,9 @@ import { supabase } from "../lib/supabase";
 import { WelcomeModal } from "../components/WelcomeModal";
 import { useSubscription } from "../hooks/useSubscription";
 import type { Database } from "../types/database";
-import { PersonalStatsPanel } from '../components/PersonalStatsPanel';
-import type { PersonalStats } from '../types/personalStats';
+import { PersonalStatsPanel } from "../components/PersonalStatsPanel";
+import { PlatformStatsPanel } from "../components/PlatformStatsPanel";
+import type { PersonalStats } from "../types/personalStats";
 
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
@@ -74,9 +75,13 @@ export function DashboardPage() {
   const [requestingAssignment, setRequestingAssignment] = useState(false);
   const [welcomeModalOpened, setWelcomeModalOpened] = useState(false);
   const [statsDrawerOpened, setStatsDrawerOpened] = useState(false);
-  const [personalStats, setPersonalStats] = useState<PersonalStats | undefined>(undefined);
+  const [personalStats, setPersonalStats] = useState<PersonalStats | undefined>(
+    undefined,
+  );
   const [personalStatsLoading, setPersonalStatsLoading] = useState(true);
-  const [personalStatsError, setPersonalStatsError] = useState<string | undefined>(undefined);
+  const [personalStatsError, setPersonalStatsError] = useState<
+    string | undefined
+  >(undefined);
 
   // Helper function to check if user needs monthly reset
   const checkAndResetMonthlyLimit = async () => {
@@ -218,20 +223,22 @@ export function DashboardPage() {
       setPersonalStatsError(undefined);
       try {
         const { data: statsResponse, error: statsError } = await withTimeout(
-          supabase.functions.invoke('fetch-personal-stats', {
+          supabase.functions.invoke("fetch-personal-stats", {
             body: { userId: profile.id },
           }),
           10000,
         );
         if (statsError) {
-          setPersonalStatsError('Failed to fetch personal stats.');
+          setPersonalStatsError("Failed to fetch personal stats.");
         } else if (statsResponse?.success) {
           setPersonalStats(statsResponse.data);
         } else {
-          setPersonalStatsError(statsResponse?.error || 'Failed to fetch personal stats.');
+          setPersonalStatsError(
+            statsResponse?.error || "Failed to fetch personal stats.",
+          );
         }
       } catch (err: any) {
-        setPersonalStatsError(err.message || 'Failed to fetch personal stats.');
+        setPersonalStatsError(err.message || "Failed to fetch personal stats.");
       } finally {
         setPersonalStatsLoading(false);
       }
@@ -481,7 +488,7 @@ export function DashboardPage() {
   };
 
   const handleUpgradeClick = () => {
-    navigate('/upgrade');
+    navigate("/upgrade");
   };
 
   // Show loading if initial auth is loading, profile is refreshing, or dashboard data is loading
@@ -890,7 +897,7 @@ export function DashboardPage() {
         size="lg"
         title="Platform Stats"
       >
-        {/* <PlatformStatsPanel /> */}
+        <PlatformStatsPanel />
       </Drawer>
     </Container>
   );
