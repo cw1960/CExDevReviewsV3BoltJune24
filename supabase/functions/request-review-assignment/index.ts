@@ -1,6 +1,3 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -11,7 +8,7 @@ interface RequestAssignmentRequest {
   user_id: string
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   console.log('🚀 request-review-assignment function started')
   console.log('📝 Request method:', req.method)
   console.log('🌐 Request URL:', req.url)
@@ -45,6 +42,8 @@ serve(async (req) => {
     }
 
     console.log('✅ Environment variables check passed')
+    // Use service role key to bypass RLS and prevent infinite recursion
+    const { createClient } = await import('npm:@supabase/supabase-js@2')
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     console.log('📦 Parsing request body...')

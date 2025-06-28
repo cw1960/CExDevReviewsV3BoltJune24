@@ -88,6 +88,7 @@ export function ReviewQueuePage() {
   const [reviewDetailsModalOpen, setReviewDetailsModalOpen] = useState(false);
   const [selectedReviewAssignment, setSelectedReviewAssignment] =
     useState<AssignmentWithExtension | null>(null);
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   const submissionForm = useForm({
     initialValues: {
@@ -294,7 +295,18 @@ export function ReviewQueuePage() {
   const handleSubmitReview = async (values: typeof submissionForm.values) => {
     if (!selectedAssignment) return;
 
+    setSubmittingReview(true);
     try {
+      // Show immediate feedback that submission is starting
+      notifications.show({
+        id: 'review-submitting',
+        title: "Submitting Review...",
+        message: "Please wait while we process your review submission.",
+        color: "blue",
+        loading: true,
+        autoClose: false,
+      });
+
       // Call the process-submitted-review Edge Function
       const { data, error } = await supabase.functions.invoke(
         "process-submitted-review",
@@ -318,6 +330,10 @@ export function ReviewQueuePage() {
         throw new Error(data?.error || "Failed to process review submission");
       }
 
+      // Hide the loading notification
+      notifications.hide('review-submitting');
+
+      // Show success notification
       notifications.show({
         title: "Review Submitted and Approved!",
         message: `Your review has been approved and you've earned ${data.credits_earned || 1} credit!`,
@@ -333,11 +349,18 @@ export function ReviewQueuePage() {
       await refreshProfile();
     } catch (error: any) {
       console.error("Review submission error:", error);
+      
+      // Hide the loading notification
+      notifications.hide('review-submitting');
+      
+      // Show error notification
       notifications.show({
         title: "Error",
         message: error.message || "Failed to process review submission",
         color: "red",
       });
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -852,11 +875,13 @@ export function ReviewQueuePage() {
       {/* Review Submission Modal */}
       <Modal
         opened={submissionModalOpen}
-        onClose={() => setSubmissionModalOpen(false)}
+        onClose={() => !submittingReview && setSubmissionModalOpen(false)}
         title="Submit Review"
         size="lg"
         radius="lg"
         shadow="xl"
+        closeOnClickOutside={!submittingReview}
+        closeOnEscape={!submittingReview}
       >
         {selectedAssignment && (
           <form onSubmit={submissionForm.onSubmit(handleSubmitReview)}>
@@ -956,15 +981,18 @@ export function ReviewQueuePage() {
                   variant="light"
                   onClick={() => setSubmissionModalOpen(false)}
                   radius="md"
+                  disabled={submittingReview}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  leftSection={<Upload size={16} />}
+                  leftSection={submittingReview ? <Loader size={16} /> : <Upload size={16} />}
                   radius="md"
+                  loading={submittingReview}
+                  disabled={submittingReview}
                 >
-                  Submit Review
+                  {submittingReview ? "Submitting..." : "Submit Review"}
                 </Button>
               </Group>
             </Stack>
