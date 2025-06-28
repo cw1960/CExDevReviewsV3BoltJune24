@@ -225,22 +225,33 @@ export function DashboardPage() {
         const functionName = isPremium
           ? "fetch-premium-personal-stats"
           : "fetch-personal-stats";
+        
+        console.log(`📊 Calling ${functionName} for user:`, profile.id);
+        console.log('🔑 isPremium:', isPremium);
+        
         const { data: statsResponse, error: statsError } = await withTimeout(
           supabase.functions.invoke(functionName, {
             body: { userId: profile.id },
           }),
           10000,
         );
+        
+        console.log('📊 Personal stats response:', { statsResponse, statsError });
+        
         if (statsError) {
-          setPersonalStatsError("Failed to fetch personal stats.");
+          console.error('❌ Personal stats error:', statsError);
+          setPersonalStatsError(`Failed to fetch personal stats: ${statsError.message}`);
         } else if (statsResponse?.success) {
+          console.log('✅ Personal stats loaded successfully');
           setPersonalStats(statsResponse.data);
         } else {
+          console.error('❌ Personal stats function returned error:', statsResponse);
           setPersonalStatsError(
             statsResponse?.error || "Failed to fetch personal stats.",
           );
         }
       } catch (err: any) {
+        console.error('💥 Personal stats catch error:', err);
         setPersonalStatsError(err.message || "Failed to fetch personal stats.");
       } finally {
         setPersonalStatsLoading(false);
