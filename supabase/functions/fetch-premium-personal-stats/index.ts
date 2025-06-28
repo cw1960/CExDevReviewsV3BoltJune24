@@ -40,6 +40,16 @@ interface PremiumPersonalStats {
 
 const CYCLE_LENGTH_DAYS = 28;
 
+// Simplified timeout helper with better error handling
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operation: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`${operation} timeout after ${timeoutMs}ms`)), timeoutMs)
+    )
+  ])
+}
+
 Deno.serve(async (req) => {
   console.log("🚀 fetch-premium-personal-stats function started");
   console.log("📝 Request method:", req.method);
@@ -96,16 +106,52 @@ Deno.serve(async (req) => {
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey);
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify JWT
+    // Verify JWT with timeout
     console.log("🔐 Verifying JWT token...");
-    const { data: { user: verifiedUser }, error: authError } = await supabaseAuth.auth.getUser(jwt);
-    
-    if (authError || !verifiedUser) {
-      console.log("❌ JWT verification failed:", authError);
+    let authUser;
+    try {
+      const { data: { user: verifiedUser }, error: authError } = await withTimeout(
+        supabaseAuth.auth.getUser(jwt),
+        3000,
+        "JWT verification"
+      );
+      
+      if (authError) {
+        console.log("❌ JWT verification failed:", authError);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Invalid or expired JWT token",
+          }),
+          {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 401,
+          },
+        );
+      }
+
+      if (!verifiedUser) {
+        console.log("❌ No user returned from JWT verification");
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Invalid or expired JWT token",
+          }),
+          {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 401,
+          },
+        );
+      }
+
+      authUser = verifiedUser;
+      console.log("✅ JWT verified successfully for user:", authUser.id);
+    } catch (jwtError) {
+      console.error("❌ JWT verification threw error:", jwtError);
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Invalid or expired JWT token",
+          error: "JWT verification failed",
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -113,8 +159,6 @@ Deno.serve(async (req) => {
         },
       );
     }
-
-    console.log("✅ JWT verified successfully for user:", verifiedUser.id);
 
     console.log("📦 Parsing request body...");
     let requestBody;
