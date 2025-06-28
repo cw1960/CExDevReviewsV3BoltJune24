@@ -27,11 +27,11 @@ import {
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import {
-  Clock,
-  Star,
-  CheckCircle,
-  AlertTriangle,
+import { 
+  Clock, 
+  Star, 
+  CheckCircle, 
+  AlertTriangle, 
   ExternalLink,
   Calendar,
   Timer,
@@ -117,8 +117,8 @@ export function ReviewQueuePage() {
     const activeAssignments = assignments.filter(
       (a) =>
         a.status === "assigned" &&
-        a.installed_at &&
-        a.earliest_review_time &&
+      a.installed_at && 
+      a.earliest_review_time &&
         new Date(a.earliest_review_time) > new Date(),
     );
 
@@ -299,11 +299,11 @@ export function ReviewQueuePage() {
       const { data, error } = await supabase.functions.invoke(
         "process-submitted-review",
         {
-          body: {
-            assignment_id: selectedAssignment.id,
-            submitted_date: values.submitted_date.toISOString(),
-            review_text: values.review_text,
-            rating: values.rating,
+        body: {
+          assignment_id: selectedAssignment.id,
+          submitted_date: values.submitted_date.toISOString(),
+          review_text: values.review_text,
+          rating: values.rating,
             confirmed_submission: values.confirmed_submission,
           },
         },
@@ -328,7 +328,7 @@ export function ReviewQueuePage() {
       setSelectedAssignment(null);
       submissionForm.reset();
       fetchAssignments();
-
+      
       // Refresh profile to update credit balance display
       await refreshProfile();
     } catch (error: any) {
@@ -376,11 +376,11 @@ export function ReviewQueuePage() {
     if (countdownTimers[assignment.id] && countdownTimers[assignment.id] > 0) {
       return false;
     }
-
+    
     return (
       assignment.installed_at &&
-      assignment.earliest_review_time &&
-      new Date(assignment.earliest_review_time) <= new Date() &&
+           assignment.earliest_review_time && 
+           new Date(assignment.earliest_review_time) <= new Date() &&
       assignment.status === "assigned"
     );
   };
@@ -388,22 +388,22 @@ export function ReviewQueuePage() {
   const getDaysUntilDue = (dueDate: string) => {
     const timeUntilDue = new Date(dueDate).getTime() - Date.now();
     const hours = Math.ceil(timeUntilDue / (1000 * 60 * 60));
-
+    
     if (hours <= 0) return "Overdue";
     if (hours < 24) return `${hours}h`;
-
+    
     const days = Math.ceil(hours / 24);
     return `${days}d`;
   };
 
   const formatCountdownTime = (milliseconds: number): string => {
     if (milliseconds <= 0) return "Ready now";
-
+    
     const totalSeconds = Math.ceil(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-
+    
     if (hours > 0) {
       return `${hours}h ${minutes}m ${seconds}s`;
     } else if (minutes > 0) {
@@ -418,14 +418,14 @@ export function ReviewQueuePage() {
     if (countdownTimers[assignment.id]) {
       return formatCountdownTime(countdownTimers[assignment.id]);
     }
-
+    
     // Fallback to static calculation
     if (!assignment.earliest_review_time) return "Now";
-
+    
     const timeUntilReview =
       new Date(assignment.earliest_review_time).getTime() - Date.now();
     if (timeUntilReview <= 0) return "Now";
-
+    
     return formatCountdownTime(timeUntilReview);
   };
 
@@ -463,7 +463,7 @@ export function ReviewQueuePage() {
         <Group>
           {profile?.has_completed_qualification &&
             activeAssignments.length < 1 && (
-              <Button
+            <Button
                 leftSection={
                   requestingAssignment ? (
                     <Loader size={16} />
@@ -471,13 +471,13 @@ export function ReviewQueuePage() {
                     <Plus size={16} />
                   )
                 }
-                onClick={handleRequestAssignment}
-                loading={requestingAssignment}
-                disabled={activeAssignments.length >= 1}
-              >
-                Request Assignment
-              </Button>
-            )}
+              onClick={handleRequestAssignment}
+              loading={requestingAssignment}
+              disabled={activeAssignments.length >= 1}
+            >
+              Request Assignment
+            </Button>
+          )}
           <Badge size="lg" variant="light" color="blue">
             {activeAssignments.length} Active
           </Badge>
@@ -504,10 +504,10 @@ export function ReviewQueuePage() {
               </Text>
             </Stack>
             {!profile?.has_completed_qualification ? (
-              <Button
-                component="a"
-                href="/qualification"
-                variant="filled"
+              <Button 
+                component="a" 
+                href="/qualification" 
+                variant="filled" 
                 size="lg"
                 radius="md"
                 leftSection={<CheckCircle size={20} />}
@@ -549,8 +549,8 @@ export function ReviewQueuePage() {
                       <Stack gap="lg">
                         <Group justify="space-between" align="flex-start">
                           <Group>
-                            <Avatar
-                              src={assignment.extension?.logo_url}
+                            <Avatar 
+                              src={assignment.extension?.logo_url} 
                               size="md"
                               radius="md"
                             />
@@ -596,13 +596,13 @@ export function ReviewQueuePage() {
                           {assignment.earliest_review_time &&
                             new Date(assignment.earliest_review_time) >
                               new Date() && (
-                              <Group gap="xs">
-                                <Timer size={14} />
-                                <Text size="xs" c="dimmed" fw={600}>
-                                  Review in {getTimeUntilReviewable(assignment)}
-                                </Text>
-                              </Group>
-                            )}
+                            <Group gap="xs">
+                              <Timer size={14} />
+                              <Text size="xs" c="dimmed" fw={600}>
+                                Review in {getTimeUntilReviewable(assignment)}
+                              </Text>
+                            </Group>
+                          )}
                         </Group>
 
                         <Group justify="space-between">
@@ -622,7 +622,7 @@ export function ReviewQueuePage() {
                           >
                             View Extension
                           </Button>
-
+                          
                           {!assignment.installed_at ? (
                             <Button
                               size="md"
@@ -639,13 +639,13 @@ export function ReviewQueuePage() {
                                   : ""
                               }
                             >
-                              <Button
-                                size="md"
+                              <Button 
+                                size="md" 
                                 radius="md"
                                 color={
                                   canSubmitReview(assignment) ? "green" : ""
                                 }
-                                leftSection={<MessageSquare size={16} />}
+                                leftSection={<MessageSquare size={16} />} 
                                 onClick={() =>
                                   canSubmitReview(assignment) &&
                                   openSubmissionModal(assignment)
@@ -695,8 +695,8 @@ export function ReviewQueuePage() {
                   >
                     <Group justify="space-between">
                       <Group>
-                        <Avatar
-                          src={assignment.extension?.logo_url}
+                        <Avatar 
+                          src={assignment.extension?.logo_url} 
                           size="sm"
                           radius="md"
                         />
@@ -762,20 +762,20 @@ export function ReviewQueuePage() {
                       radius="lg"
                       shadow="sm"
                     >
-                      <Group justify="space-between">
-                        <Group>
-                          <Avatar
-                            src={assignment.extension?.logo_url}
-                            size="sm"
-                            radius="md"
-                          />
-                          <div>
-                            <Text
-                              fw={500}
+                    <Group justify="space-between">
+                      <Group>
+                        <Avatar 
+                          src={assignment.extension?.logo_url} 
+                          size="sm"
+                          radius="md"
+                        />
+                        <div>
+                          <Text 
+                            fw={500}
                               component="button"
                               type="button"
                               onClick={() => openReviewDetailsModal(assignment)}
-                              style={{
+                            style={{ 
                                 background: "none",
                                 border: "none",
                                 padding: 0,
@@ -786,42 +786,42 @@ export function ReviewQueuePage() {
                                 cursor: "pointer",
                                 font: "inherit",
                               }}
-                            >
+                          >
                               {assignment.extension?.name ||
                                 "Unknown Extension"}
-                            </Text>
-                            <Text size="sm" c="dimmed">
+                          </Text>
+                          <Text size="sm" c="dimmed">
                               Completed{" "}
                               {assignment.submitted_at
                                 ? new Date(
                                     assignment.submitted_at,
                                   ).toLocaleDateString()
                                 : "Recently"}
-                            </Text>
-                          </div>
-                        </Group>
-                        <Group>
-                          <Group gap="xs">
-                            {[...Array(assignment.rating || 0)].map((_, i) => (
+                          </Text>
+                        </div>
+                      </Group>
+                      <Group>
+                        <Group gap="xs">
+                          {[...Array(assignment.rating || 0)].map((_, i) => (
                               <Star
                                 key={i}
                                 size={14}
                                 fill="#ffd43b"
                                 color="#ffd43b"
                               />
-                            ))}
-                          </Group>
+                          ))}
+                        </Group>
                           <Badge
                             color="green"
                             size="sm"
                             leftSection={<Award size={12} />}
                           >
-                            Credits Earned
-                          </Badge>
-                        </Group>
+                          Credits Earned
+                        </Badge>
                       </Group>
-                    </Card>
-                  ))}
+                    </Group>
+                  </Card>
+                ))}
               </Stack>
             </div>
           )}
@@ -837,9 +837,9 @@ export function ReviewQueuePage() {
         >
           Review Fast Track members get 3x faster reviews and priority access to
           review assignments. Join now to unlock unlimited review opportunities!
-          <Button
-            variant="light"
-            size="sm"
+          <Button 
+            variant="light" 
+            size="sm" 
             mt="sm"
             leftSection={<Crown size={14} />}
             onClick={() => navigate("/upgrade")}
@@ -863,8 +863,8 @@ export function ReviewQueuePage() {
             <Stack gap="lg">
               <Card withBorder p="lg" radius="md">
                 <Group>
-                  <Avatar
-                    src={selectedAssignment.extension?.logo_url}
+                  <Avatar 
+                    src={selectedAssignment.extension?.logo_url} 
                     size="md"
                     radius="md"
                   />
