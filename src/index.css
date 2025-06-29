@@ -30,11 +30,11 @@
   --shadow-glow: 0 0 20px rgba(50, 146, 238, 0.3);
   --shadow-glow-secondary: 0 0 20px rgba(38, 176, 157, 0.3);
 
-  /* Enhanced panel colors */
-  --panel-bg-light: rgba(255, 255, 255, 0.95);
-  --panel-bg-subtle: rgba(248, 250, 252, 0.8);
-  --panel-bg-accent: rgba(239, 246, 255, 0.6);
-  --sidebar-bg: rgba(248, 250, 252, 0.95);
+  /* Enhanced panel colors - Dark Theme */
+  --panel-bg-light: rgba(37, 38, 43, 0.95);
+  --panel-bg-subtle: rgba(30, 41, 59, 0.8);
+  --panel-bg-accent: rgba(30, 58, 138, 0.2);
+  --sidebar-bg: rgba(30, 41, 59, 0.95);
   --sidebar-bg-dark: rgba(30, 41, 59, 0.95);
 }
 
@@ -43,15 +43,10 @@
   transition: all 0.2s ease-in-out;
 }
 
-/* Beautiful Page Backgrounds */
+/* Dark Theme Page Background */
 body {
-  background: var(--gradient-page);
+  background: var(--gradient-page-dark);
   min-height: 100vh;
-}
-
-/* Proper global styles for Mantine dark theme */
-body {
-  background-color: var(--mantine-color-dark-7);
   color: var(--mantine-color-dark-0);
 }
 
@@ -80,15 +75,15 @@ h6 {
   font-weight: 700;
 }
 
-/* Override for headings on light backgrounds */
+/* Override for headings in dark cards */
 .mantine-Card-root h1,
 .mantine-Card-root h2,
 .mantine-Card-root h3,
 .mantine-Card-root h4,
 .mantine-Card-root h5,
 .mantine-Card-root h6 {
-  color: var(--mantine-color-dark-7) !important;
-  text-shadow: none;
+  color: var(--mantine-color-dark-0) !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Enhanced Alert Styling - Restore Beautiful Colors */
@@ -212,10 +207,10 @@ h6 {
   ) !important;
   border: 1px solid rgba(50, 146, 238, 0.2);
   font-weight: 600;
-  color: #1971c2 !important; /* Dark blue hyperlink color for selected */
+  color: rgba(255, 255, 255, 0.95) !important; /* White for selected items */
 }
 
-/* Navigation Link Text and Icons - Selected items get dark blue */
+/* Navigation Link Text and Icons - All items get light colors */
 .mantine-NavLink-root .mantine-NavLink-label {
   color: inherit !important;
 }
@@ -226,7 +221,7 @@ h6 {
 
 .mantine-NavLink-root[data-active="true"] .mantine-NavLink-label,
 .mantine-NavLink-root[data-active="true"] .mantine-NavLink-leftSection {
-  color: #1971c2 !important; /* Dark blue for selected items */
+  color: rgba(255, 255, 255, 0.95) !important; /* White for selected items */
 }
 
 /* Enhanced Card Styling with Subtle Colors */
@@ -363,14 +358,14 @@ h6 {
   color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Platform Stats Panel - Restore Original Design */
+/* Platform Stats Panel - Dark Theme */
 .platform-stats-panel {
-  background: white !important;
-  color: inherit !important;
+  background: var(--panel-bg-light) !important;
+  color: var(--mantine-color-dark-0) !important;
 }
 
 .platform-stats-panel * {
-  color: inherit !important;
+  color: var(--mantine-color-dark-0) !important;
 }
 
 /* Button Styling Improvements */
