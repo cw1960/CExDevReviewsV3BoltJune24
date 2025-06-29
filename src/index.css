@@ -1337,3 +1337,9 @@ h6 {
   color: #ef4444 !important;
   -webkit-text-fill-color: #ef4444 !important;
 }
+
+/* UPGRADE PAGE PRICING COLORS */
+.yearly-plan-price-purple {
+  color: #8b5cf6 !important;
+  -webkit-text-fill-color: #8b5cf6 !important;
+}

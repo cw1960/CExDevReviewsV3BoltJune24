@@ -329,10 +329,10 @@ export function UpgradePage() {
                       Yearly Plan
                     </Title>
                                          <Group align="baseline" gap="xs">
-                       <Text size="3rem" fw={800} style={{ color: '#8b5cf6' }}>
+                       <Text size="3rem" fw={800} className="yearly-plan-price-purple">
                          ${yearlyProduct.price}
                        </Text>
-                       <Text size="lg" style={{ color: '#8b5cf6' }}>
+                       <Text size="lg" className="yearly-plan-price-purple">
                          /year
                        </Text>
                      </Group>
