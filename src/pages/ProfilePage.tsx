@@ -11,7 +11,7 @@ import {
   Text,
   Badge,
   Grid,
-  Textarea
+  Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -36,6 +36,11 @@ export function ProfilePage() {
   const { profile, updateProfile } = useAuth();
   const { planName, isPremium } = useSubscription();
   const navigate = useNavigate();
+
+  // Contact form state
+  const [contactEmail, setContactEmail] = React.useState("");
+  const [contactMessage, setContactMessage] = React.useState("");
+  const [isSubmittingContact, setIsSubmittingContact] = React.useState(false);
 
   // FORCE PROFILE PAGE COLORS ONLY
   React.useEffect(() => {
@@ -111,6 +116,59 @@ export function ProfilePage() {
     }
   };
 
+  // Contact form submission handler
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!contactEmail || !contactMessage) {
+      notifications.show({
+        title: "Error",
+        message: "Please fill in both email and message fields",
+        color: "red",
+      });
+      return;
+    }
+
+    setIsSubmittingContact(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("fields[email]", contactEmail);
+      formData.append("fields[name]", contactMessage);
+      formData.append("ml-submit", "1");
+      formData.append("anticsrf", "true");
+
+      const response = await fetch(
+        "https://assets.mailerlite.com/jsonp/1613019/forms/158568564338460556/subscribe",
+        {
+          method: "POST",
+          body: formData,
+          mode: "no-cors", // Required for cross-origin requests
+        },
+      );
+
+      // Since we're using no-cors mode, we can't read the response
+      // but if no error is thrown, we assume success
+      notifications.show({
+        title: "Message Sent!",
+        message: "Thank you for contacting us! We'll respond within 24 hours.",
+        color: "green",
+      });
+
+      // Clear the form
+      setContactEmail("");
+      setContactMessage("");
+    } catch (error) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to send message. Please try again later.",
+        color: "red",
+      });
+    } finally {
+      setIsSubmittingContact(false);
+    }
+  };
+
   return (
     <Container size="md">
       <Title order={1} mb="xl">
@@ -153,19 +211,15 @@ export function ProfilePage() {
 
             {/* Simple Contact Form */}
             <Card withBorder p="xl" radius="lg" shadow="sm">
-              <Title order={3} mb="lg" style={{ color: '#FFFFFF' }}>
+              <Title order={3} mb="lg" style={{ color: "#FFFFFF" }}>
                 Contact Us!
               </Title>
-              <Text mb="lg" style={{ color: '#FFFFFF' }}>
-                Let us know how we can help with something. Please provide your 
+              <Text mb="lg" style={{ color: "#FFFFFF" }}>
+                Let us know how we can help with something. Please provide your
                 email address and describe your question or issue below.
               </Text>
-              
-              <form 
-                action="https://assets.mailerlite.com/jsonp/1613019/forms/158568564338460556/subscribe" 
-                method="post" 
-                target="_blank"
-              >
+
+              <form onSubmit={handleContactSubmit}>
                 <Stack gap="lg">
                   <TextInput
                     label="Email Address"
@@ -173,64 +227,69 @@ export function ProfilePage() {
                     leftSection={<Mail size={16} />}
                     required
                     type="email"
-                    name="fields[email]"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
                     autoComplete="email"
                     radius="md"
                     styles={{
-                      label: { color: '#FFFFFF', fontWeight: 600 }
+                      label: { color: "#FFFFFF", fontWeight: 600 },
                     }}
                   />
-                  
+
                   <div>
-                    <Text mb="xs" fw={500} style={{ color: '#FFFFFF' }}>
+                    <Text mb="xs" fw={500} style={{ color: "#FFFFFF" }}>
                       Your Message
                     </Text>
-                                         <textarea
-                       name="fields[name]"
-                       placeholder="Please describe your question, issue, or feedback..."
-                       required
-                       rows={5}
-                       className="contact-form-textarea"
-                       style={{
-                         backgroundColor: '#ffffff',
-                         border: '1px solid #cccccc',
-                         borderRadius: '4px',
-                         padding: '10px',
-                         width: '100%',
-                         fontFamily: "'Open Sans', Arial, Helvetica, sans-serif",
-                         fontSize: '14px',
-                         resize: 'vertical',
-                         minHeight: '120px'
-                       }}
-                     />
+                    <textarea
+                      placeholder="Please describe your question, issue, or feedback..."
+                      required
+                      rows={5}
+                      value={contactMessage}
+                      onChange={(e) => setContactMessage(e.target.value)}
+                      className="contact-form-textarea"
+                      style={{
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #cccccc",
+                        borderRadius: "4px",
+                        padding: "10px",
+                        width: "100%",
+                        fontFamily: "'Open Sans', Arial, Helvetica, sans-serif",
+                        fontSize: "14px",
+                        resize: "vertical",
+                        minHeight: "120px",
+                      }}
+                    />
                   </div>
-                  
-                  <input type="hidden" name="ml-submit" value="1" />
-                  <input type="hidden" name="anticsrf" value="true" />
-                  
-                  <Button 
-                    type="submit" 
-                    fullWidth 
+
+                  <Button
+                    type="submit"
+                    fullWidth
                     radius="md"
+                    loading={isSubmittingContact}
                     style={{
-                      backgroundColor: '#2F9E44',
-                      border: 'none'
+                      backgroundColor: "#2F9E44",
+                      border: "none",
                     }}
                     styles={{
                       root: {
-                        '&:hover': {
-                          backgroundColor: '#259440'
-                        }
-                      }
+                        "&:hover": {
+                          backgroundColor: "#259440",
+                        },
+                      },
                     }}
                   >
-                    Send Message
+                    {isSubmittingContact ? "Sending..." : "Send Message"}
                   </Button>
                 </Stack>
               </form>
-              
-              <Text size="sm" mt="md" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                We typically respond within 24 hours. Thank you for using ChromeExDev.Reviews!
+
+              <Text
+                size="sm"
+                mt="md"
+                style={{ color: "rgba(255, 255, 255, 0.7)" }}
+              >
+                We typically respond within 24 hours. Thank you for using
+                ChromeExDev.Reviews!
               </Text>
             </Card>
           </Stack>
