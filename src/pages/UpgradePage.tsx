@@ -18,20 +18,24 @@ import {
   Loader,
   Center,
 } from "@mantine/core";
-import {
-  Crown,
-  CheckCircle,
-  Star,
-  Package,
-  Users,
-  TrendingUp,
-  ArrowLeft,
-  Sparkles,
-  Infinity,
-  Clock,
-  Shield,
-  Zap,
-} from "lucide-react";
+  import {
+    Crown,
+    CheckCircle,
+    Star,
+    Package,
+    Users,
+    TrendingUp,
+    ArrowLeft,
+    Sparkles,
+    Infinity,
+    Clock,
+    Shield,
+    Zap,
+    X,
+    BarChart3,
+    MessageCircle,
+    Rocket,
+  } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useSubscription } from "../hooks/useSubscription";
 import { useStripe } from "../contexts/StripeContext";
@@ -110,28 +114,38 @@ export function UpgradePage() {
   const freeVsPremium = [
     {
       feature: "Extensions in Library",
+      icon: Package,
       free: "1 Extension",
       premium: "Unlimited",
+      color: "blue",
     },
     {
       feature: "Monthly Submissions",
+      icon: Rocket,
       free: "4 per month",
       premium: "Unlimited",
+      color: "orange",
     },
     {
       feature: "Review Queue Priority",
+      icon: Star,
       free: "Standard",
       premium: "3x Faster",
+      color: "green",
     },
     {
       feature: "Analytics Dashboard",
+      icon: BarChart3,
       free: "Basic",
       premium: "Advanced",
+      color: "purple",
     },
     {
       feature: "Customer Support",
+      icon: MessageCircle,
       free: "Community",
       premium: "Priority Support",
+      color: "cyan",
     },
   ];
 
@@ -336,9 +350,9 @@ export function UpgradePage() {
                       >
                         ${yearlyProduct.price}
                       </Text>
-                                             <Text size="lg" c="rgba(255,255,255,0.8)">
-                         /year
-                       </Text>
+                      <Text size="lg" c="rgba(255,255,255,0.8)">
+                        /year
+                      </Text>
                     </Group>
                     <Text size="sm" c="rgba(255,255,255,0.8)" ta="center">
                       Billed annually • Best value
@@ -423,34 +437,54 @@ export function UpgradePage() {
             Free vs Premium Comparison
           </Title>
 
-          <Stack gap="md">
+          <Stack gap="lg">
             {freeVsPremium.map((item, index) => (
               <div key={index}>
-                <Group justify="space-between" align="center" py="sm">
-                  <Text fw={500} c="white">
-                    {item.feature}
-                  </Text>
+                <Group justify="space-between" align="center" py="md">
+                  <Group gap="md" align="center">
+                    <ThemeIcon
+                      color={item.color}
+                      size={36}
+                      radius="xl"
+                      variant="filled"
+                    >
+                      <item.icon size={18} />
+                    </ThemeIcon>
+                    <Text fw={600} c="white" size="md">
+                      {item.feature}
+                    </Text>
+                  </Group>
                   <Group gap="xl">
-                    <Stack align="center" gap={4}>
-                      <Text size="sm" c="rgba(255, 255, 255, 0.7)" fw={600}>
-                        Free
-                      </Text>
-                      <Text size="sm" c="rgba(255, 255, 255, 0.9)">
+                    <Stack align="center" gap={6}>
+                      <Group gap={6} align="center">
+                        <ThemeIcon color="red" size={20} radius="xl" variant="filled">
+                          <X size={12} />
+                        </ThemeIcon>
+                        <Text size="sm" c="rgba(255, 255, 255, 0.8)" fw={600}>
+                          Free
+                        </Text>
+                      </Group>
+                      <Text size="sm" c="rgba(255, 255, 255, 0.9)" fw={500}>
                         {item.free}
                       </Text>
                     </Stack>
-                    <Stack align="center" gap={4}>
-                      <Text size="sm" c="yellow" fw={700}>
-                        Premium
-                      </Text>
-                      <Text size="sm" fw={700} c="yellow">
+                    <Stack align="center" gap={6}>
+                      <Group gap={6} align="center">
+                        <ThemeIcon color="green" size={20} radius="xl" variant="filled">
+                          <CheckCircle size={12} />
+                        </ThemeIcon>
+                        <Text size="sm" c={item.color} fw={700}>
+                          Premium
+                        </Text>
+                      </Group>
+                      <Text size="md" fw={800} c={item.color} style={{ textShadow: '0 0 8px rgba(255,255,255,0.3)' }}>
                         {item.premium}
                       </Text>
                     </Stack>
                   </Group>
                 </Group>
                 {index < freeVsPremium.length - 1 && (
-                  <Divider color="rgba(255, 255, 255, 0.2)" />
+                  <Divider color="rgba(255, 255, 255, 0.15)" size="sm" />
                 )}
               </div>
             ))}
