@@ -60,7 +60,52 @@ body {
 }
 
 .mantine-Text-root[data-c="dimmed"] {
-  color: var(--mantine-color-dark-2) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Force bright text in accordion panels */
+.mantine-Accordion-panel .mantine-Text-root {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.mantine-Accordion-panel .mantine-Text-root[data-c="dimmed"] {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.mantine-Accordion-panel .mantine-Text-root[data-size="sm"] {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Accordion-panel .mantine-Text-root[data-size="xs"] {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Ensure accordion panel cards have proper text */
+.mantine-Accordion-panel .mantine-Card-root .mantine-Text-root {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.mantine-Accordion-panel .mantine-Card-root .mantine-Text-root[data-c="dimmed"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Ensure ALL accordion content is readable */
+.mantine-Accordion-content * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.mantine-Accordion-content .mantine-Text-root[data-c="dimmed"] {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* Make sure Progress component text is visible */
+.mantine-Accordion-panel .mantine-Progress-root + .mantine-Text-root {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Ensure cycle information text is bright */
+.mantine-Accordion-panel b {
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 /* Enhanced Headings - Better contrast on gradient backgrounds */
