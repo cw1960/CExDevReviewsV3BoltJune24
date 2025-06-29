@@ -145,59 +145,7 @@ export function PlatformStatsPanel() {
     fetchStats();
   }, []);
 
-  // SIMPLE APPROACH: Just force bright orange text on labels
-  useEffect(() => {
-    const forcePlatformStatsColors = () => {
-      console.log('🔥 SIMPLE: Making Platform Stats labels bright orange');
-      
-      // Find all text elements and make labels bright orange
-      const allTextElements = document.querySelectorAll('*');
-      
-      allTextElements.forEach((element, index) => {
-        if (!(element instanceof HTMLElement)) return;
-        
-        const text = element.textContent?.trim() || '';
-        if (!text) return;
-        
-        // Make ALL labels bright orange - high contrast!
-        if (text === 'Total Users' || text === 'Free Tier Users' || text === 'Review Fast Track Users' ||
-            text === 'Extensions in Libraries' || text === 'Extensions in Queue' || text === 'Reviews Assigned' ||
-            text === 'Reviews Completed' || text === 'Reviews In Progress' || text === 'Credits Earned' ||
-            text.includes('Active Reviewers') || text.includes('Avg. Review Completion')) {
-          
-          console.log(`🔥 LABEL: "${text}" -> BRIGHT ORANGE`);
-          
-          // BRIGHT ORANGE - guaranteed visible!
-          element.style.color = '#ff6b35';
-          element.style.setProperty('color', '#ff6b35', 'important');
-          element.style.fontWeight = 'bold';
-          element.style.setProperty('font-weight', 'bold', 'important');
-          element.style.fontSize = '14px';
-          element.style.setProperty('font-size', '14px', 'important');
-        }
-        
-        // Keep colorful numbers
-        if (/^\d+$/.test(text) && text.length >= 1 && parseInt(text) > 0) {
-          const colors = ['#6366f1', '#3b82f6', '#14b8a6', '#8b5cf6', '#06b6d4', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#84cc16', '#9333ea', '#6b7280'];
-          const color = colors[index % colors.length];
-          
-          element.style.color = color;
-          element.style.setProperty('color', color, 'important');
-          element.style.fontWeight = '800';
-          element.style.setProperty('font-weight', '800', 'important');
-          element.style.fontSize = '2.2rem';
-          element.style.setProperty('font-size', '2.2rem', 'important');
-        }
-      });
-    };
-
-    // Simple timing
-    if (stats) {
-      setTimeout(forcePlatformStatsColors, 100);
-      setTimeout(forcePlatformStatsColors, 500);
-      setTimeout(forcePlatformStatsColors, 1000);
-    }
-  }, [stats]);
+  // NO JAVASCRIPT MANIPULATION - pure JSX inline styles only
 
   if (loading) return <Center my="xl"><Loader /></Center>;
   if (error) return <Center my="xl"><Text c="red">{error}</Text></Center>;
@@ -294,29 +242,33 @@ function StatItem({
         fw={800} 
         size="2.2rem" 
         lh={1}
+        className="platform-stats-number"
         style={{ 
           color: vibrantColor,
           fontWeight: '800',
           fontSize: '2.2rem',
-          WebkitTextFillColor: vibrantColor
+          WebkitTextFillColor: vibrantColor,
+          opacity: '1',
+          visibility: 'visible'
         }}
       >
         {value}
       </Text>
       <div
-        className="platform-stats-label-nuclear"
+        className="platform-stats-label-bright-orange"
         data-label={label}
         style={{ 
-          color: '#ffffff',
-          fontWeight: '600',
+          color: '#ff6b35',
+          fontWeight: 'bold',
           fontSize: '14px',
           textAlign: 'center',
           marginTop: '8px',
           opacity: '1',
-          WebkitTextFillColor: '#ffffff',
-          textShadow: '0 0 2px rgba(255,255,255,0.9)',
+          WebkitTextFillColor: '#ff6b35',
+          textShadow: '0 0 2px rgba(255,107,53,0.9)',
           lineHeight: '1.4',
-          fontFamily: 'inherit'
+          fontFamily: 'inherit',
+          visibility: 'visible'
         }}
       >
         {label}
