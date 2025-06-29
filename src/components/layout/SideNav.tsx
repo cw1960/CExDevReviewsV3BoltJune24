@@ -107,7 +107,11 @@ export function SideNav() {
           <Text size="sm" c="dimmed">
             Credits
           </Text>
-          <Text size="sm" fw={600}>
+          <Text
+            size="sm"
+            fw={600}
+            c={(profile?.credit_balance || 0) === 0 ? "red" : "green"}
+          >
             {profile?.credit_balance || 0}
           </Text>
         </Group>
@@ -115,7 +119,7 @@ export function SideNav() {
           <Text size="sm" c="dimmed">
             Plan
           </Text>
-          <Text size="sm" fw={600}>
+          <Text size="sm" fw={600} c={isPremium ? "green" : "red"}>
             {isPremium ? "Review Fast Track" : "Free"}
           </Text>
         </Group>
