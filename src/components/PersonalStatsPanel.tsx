@@ -234,8 +234,8 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
-                      Reviews This Cycle
+                    <div style={{ color: 'red', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold', padding: '10px', border: '3px solid blue' }}>
+                      🔥 TESTING - SHOULD BE VISIBLE 🔥
                     </div>
                     <IconTrendingUp size={16} />
                   </Group>

@@ -38,6 +38,23 @@
   --sidebar-bg-dark: rgba(30, 41, 59, 0.95);
 }
 
+/* FORCE DARK MODE AT HTML LEVEL - OVERRIDE MANTINE DETECTION */
+html {
+  color-scheme: dark !important;
+}
+
+html[data-mantine-color-scheme="light"] {
+  --mantine-color-text: #ffffff !important;
+  --mantine-color-body: #25262b !important;
+  --mantine-color-scheme: dark !important;
+}
+
+/* FORCE DARK MODE MANTINE VARIABLES EVEN IN LIGHT MODE */
+:root[data-mantine-color-scheme="light"] {
+  --mantine-color-text: #ffffff !important;
+  --mantine-color-body: #25262b !important;
+}
+
 /* Enhanced Global Styles */
 * {
   transition: all 0.2s ease-in-out;
