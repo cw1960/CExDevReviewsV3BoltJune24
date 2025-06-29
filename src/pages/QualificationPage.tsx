@@ -18,11 +18,11 @@ import {
   Divider,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import {
-  CheckCircle,
-  Star,
-  Shield,
-  AlertTriangle,
+import { 
+  CheckCircle, 
+  Star, 
+  Shield, 
+  AlertTriangle, 
   BookOpen,
   ArrowRight,
   Award,
@@ -586,7 +586,7 @@ export function QualificationPage() {
     setLoading(true);
     try {
       await updateProfile({ has_completed_qualification: true });
-
+      
       // Trigger MailerLite event for qualification completion
       if (profile?.email) {
         try {
@@ -606,25 +606,26 @@ export function QualificationPage() {
           // Don't fail the qualification process if MailerLite fails
         }
       }
-
-      // Show confetti celebration
+      
+      // 🎉 MASSIVE CONFETTI EXPLOSION CELEBRATION! 🎉
       setShowConfetti(true);
-
+      
       // Set flag for welcome modal on dashboard
       localStorage.setItem("showWelcomeModal", "true");
-
+      
       notifications.show({
-        title: "Qualification Complete!",
-        message: "You can now participate in the review exchange program.",
+        title: "🎉 QUALIFICATION COMPLETE! 🎉",
+        message: "Welcome to the review exchange program! Let's celebrate! 🥳",
         color: "green",
         icon: <Award size={16} />,
+        autoClose: 8000, // Longer notification to match confetti
       });
 
-      // Stop confetti after 5 seconds and navigate
+      // Let the massive confetti celebration run for 8 seconds, then navigate
       setTimeout(() => {
         setShowConfetti(false);
         navigate("/dashboard");
-      }, 5000);
+      }, 8000);
     } catch (error: any) {
       notifications.show({
         title: "Error",
@@ -694,34 +695,62 @@ export function QualificationPage() {
           width={width}
           height={height}
           recycle={false}
-          numberOfPieces={500}
-          gravity={0.3}
+          numberOfPieces={2000} // MASSIVE EXPLOSION! 4x more pieces
+          gravity={0.15} // Slower fall for longer celebration
+          initialVelocityX={15} // More explosive spread
+          initialVelocityY={30} // Higher shooting velocity
+          wind={0.02} // Slight wind effect
+          friction={0.95} // Slower deceleration
+          confettiSource={{
+            x: width / 2, // Center explosion
+            y: height / 2,
+            w: 200, // Wide source area
+            h: 100,
+          }}
           colors={[
-            "#667eea",
-            "#764ba2",
-            "#10b981",
-            "#ffd700",
-            "#ff6b6b",
-            "#4ecdc4",
+            "#10b981", // Emerald green (success)
+            "#3b82f6", // Bright blue
+            "#f59e0b", // Amber orange
+            "#8b5cf6", // Purple
+            "#ef4444", // Red
+            "#06b6d4", // Cyan
+            "#ffd700", // Gold
+            "#ff69b4", // Hot pink
+            "#00ff00", // Lime green
+            "#ff4500", // Orange red
+            "#9370db", // Medium purple
+            "#32cd32", // Lime green
           ]}
+          drawShape={(ctx) => {
+            // Custom confetti shapes for more celebration
+            ctx.beginPath();
+            for (let i = 0; i < 22; i++) {
+              const angle = (0.35 * i * Math.PI) / 180;
+              const x = (0.2 + 1.5 * angle) * Math.cos(angle);
+              const y = (0.2 + 1.5 * angle) * Math.sin(angle);
+              ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.closePath();
+          }}
         />
       )}
       <Container size="md" py={60}>
         <Stack align="center" gap="xl">
           {/* Logo */}
           <Group mb="xl">
-            <img
-              src="https://i.imgur.com/PL0Syo1.png"
-              alt="ChromeExDev Logo"
+            <img 
+              src="https://i.imgur.com/PL0Syo1.png" 
+              alt="ChromeExDev Logo" 
               style={{ width: 200, height: "auto" }}
             />
           </Group>
 
           {/* Header Card */}
-          <Card
-            shadow="xl"
-            radius="lg"
-            p="xl"
+          <Card 
+            shadow="xl" 
+            radius="lg" 
+            p="xl" 
             maw={700}
             className="qualification-header-card"
           >
@@ -729,11 +758,11 @@ export function QualificationPage() {
               <Badge size="lg" variant="light" color="blue">
                 Reviewer Qualification
               </Badge>
-
+              
               <Title order={1} ta="center">
                 Become a Qualified Reviewer
               </Title>
-
+              
               <Text size="lg" ta="center" lh={1.6}>
                 To maintain the quality and integrity of our review exchange
                 program, all reviewers must understand and agree to follow our
@@ -743,10 +772,10 @@ export function QualificationPage() {
           </Card>
 
           {/* Guidelines Card */}
-          <Card
-            shadow="lg"
-            radius="lg"
-            p="xl"
+          <Card 
+            shadow="lg" 
+            radius="lg" 
+            p="xl" 
             maw={700}
             className="qualification-guidelines-card"
           >
@@ -754,7 +783,7 @@ export function QualificationPage() {
               <Title order={2} ta="center">
                 Review Guidelines
               </Title>
-
+              
               <Stack gap="md">
                 {guidelines.map((guideline, index) => (
                   <Group key={index} align="flex-start" gap="md">
@@ -776,10 +805,10 @@ export function QualificationPage() {
           </Card>
 
           {/* Requirements Card */}
-          <Card
-            shadow="lg"
-            radius="lg"
-            p="xl"
+          <Card 
+            shadow="lg" 
+            radius="lg" 
+            p="xl" 
             maw={700}
             className="qualification-requirements-card"
           >
@@ -787,7 +816,7 @@ export function QualificationPage() {
               <Title order={2} ta="center" c="dark.8">
                 Reviewer Requirements
               </Title>
-
+              
               <List
                 spacing="sm"
                 size="sm"
@@ -808,10 +837,10 @@ export function QualificationPage() {
           </Card>
 
           {/* Benefits Card */}
-          <Card
-            shadow="lg"
-            radius="lg"
-            p="xl"
+          <Card 
+            shadow="lg" 
+            radius="lg" 
+            p="xl" 
             maw={700}
             className="qualification-benefits-card"
           >
@@ -819,7 +848,7 @@ export function QualificationPage() {
               <Title order={2} ta="center" c="dark.8">
                 What You Get
               </Title>
-
+              
               <List
                 spacing="sm"
                 size="sm"
@@ -840,10 +869,10 @@ export function QualificationPage() {
           </Card>
 
           {/* Important Notice */}
-          <Card
-            shadow="lg"
-            radius="lg"
-            p="xl"
+          <Card 
+            shadow="lg" 
+            radius="lg" 
+            p="xl" 
             maw={700}
             className="qualification-notice-card"
           >
@@ -876,8 +905,8 @@ export function QualificationPage() {
                 size="md"
               />
 
-              <Button
-                size="xl"
+              <Button 
+                size="xl" 
                 radius="md"
                 rightSection={<ArrowRight size={20} />}
                 onClick={handleCompleteQualification}
@@ -885,13 +914,13 @@ export function QualificationPage() {
                 disabled={!acknowledged}
                 styles={{
                   root: {
-                    background: acknowledged
+                    background: acknowledged 
                       ? "linear-gradient(45deg, #10b981, #059669)"
                       : undefined,
                     fontSize: "1.1rem",
                     fontWeight: 600,
                     padding: "16px 32px",
-                    boxShadow: acknowledged
+                    boxShadow: acknowledged 
                       ? "0 4px 16px rgba(16, 185, 129, 0.3)"
                       : undefined,
                     "&:hover": acknowledged
@@ -905,7 +934,7 @@ export function QualificationPage() {
               >
                 Complete Qualification
               </Button>
-
+              
               <Text size="sm" c="dimmed" ta="center">
                 Once qualified, you'll be eligible to receive review assignments
                 and start earning credits.
