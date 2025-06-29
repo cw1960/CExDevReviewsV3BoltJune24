@@ -89,22 +89,49 @@ body {
   color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Ensure ALL accordion content is readable */
-.mantine-Accordion-content * {
+/* FORCE ALL TEXT TO BE BRIGHT WHITE - MAXIMUM SPECIFICITY */
+.mantine-Accordion-content *,
+.mantine-Accordion-panel *,
+.mantine-Card-root *,
+div[data-accordion-panel="true"] *,
+div[class*="reviews-"] *,
+div[class*="queue-"] *,
+div[class*="avg-"] * {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* OVERRIDE ALL DIMMED TEXT */
+.mantine-Text-root[data-c="dimmed"],
+.mantine-Accordion-content .mantine-Text-root[data-c="dimmed"],
+.mantine-Accordion-panel .mantine-Text-root[data-c="dimmed"],
+.mantine-Card-root .mantine-Text-root[data-c="dimmed"],
+div[data-accordion-panel="true"] .mantine-Text-root[data-c="dimmed"] {
   color: rgba(255, 255, 255, 0.9) !important;
 }
 
-.mantine-Accordion-content .mantine-Text-root[data-c="dimmed"] {
-  color: rgba(255, 255, 255, 0.75) !important;
+/* FORCE BRIGHT TEXT FOR ALL SIZES */
+.mantine-Text-root[data-size="xs"],
+.mantine-Text-root[data-size="sm"],
+.mantine-Text-root[data-size="md"],
+.mantine-Text-root[data-size="lg"],
+.mantine-Text-root[data-size="xl"],
+.mantine-Text-root[data-size="2xl"] {
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
-/* Make sure Progress component text is visible */
-.mantine-Accordion-panel .mantine-Progress-root + .mantine-Text-root {
-  color: rgba(255, 255, 255, 0.9) !important;
+/* FORCE BRIGHT BOLD TEXT */
+.mantine-Accordion-panel b,
+.mantine-Accordion-content b,
+.mantine-Card-root b,
+b {
+  color: rgba(255, 255, 255, 1) !important;
 }
 
-/* Ensure cycle information text is bright */
-.mantine-Accordion-panel b {
+/* NUCLEAR OPTION - FORCE ALL TEXT IN PANELS */
+.reviews-cycle-card *,
+.reviews-received-card *,
+.queue-position-card *,
+.avg-turnaround-card * {
   color: rgba(255, 255, 255, 0.95) !important;
 }
 
