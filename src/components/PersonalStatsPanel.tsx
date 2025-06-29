@@ -186,8 +186,24 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
   const premiumStats = stats as PremiumPersonalStats;
 
   return (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
-      <Accordion defaultValue="overview" variant="separated">
+    <>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .reviews-cycle-card *, .reviews-received-card *, .queue-position-card *, .avg-turnaround-card * {
+            color: #FFFFFF !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+          }
+          .mantine-Text-root {
+            color: #FFFFFF !important;
+          }
+          .mantine-Card-root .mantine-Text-root {
+            color: #FFFFFF !important;
+          }
+        `
+      }} />
+      <Card shadow="sm" p="lg" radius="md" withBorder>
+        <Accordion defaultValue="overview" variant="separated">
         <Accordion.Item value="overview">
           <Accordion.Control icon={<IconTrophy size={20} />}>
             <Group justify="space-between" style={{ width: '100%', marginRight: 20 }}>
@@ -443,6 +459,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
          )}
        </Accordion>
      </Card>
+    </>
   );
 };
 
