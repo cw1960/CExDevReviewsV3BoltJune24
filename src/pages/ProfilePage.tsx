@@ -11,6 +11,7 @@ import {
   Text,
   Badge,
   Grid,
+  Textarea
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -36,72 +37,8 @@ export function ProfilePage() {
   const { planName, isPremium } = useSubscription();
   const navigate = useNavigate();
 
-  // LOAD MAILERLITE SCRIPTS AND FORCE PROFILE PAGE COLORS
+  // FORCE PROFILE PAGE COLORS ONLY
   React.useEffect(() => {
-    // Load MailerLite Universal script
-    const loadMailerLiteScripts = () => {
-      // MailerLite Universal script
-      if (!(window as any).ml) {
-        (function (w: any, d: any, e: any, u: any, f: any, l: any, n: any) {
-          w[f] =
-            w[f] ||
-            function () {
-              (w[f].q = w[f].q || []).push(arguments);
-            };
-          l = d.createElement(e);
-          l.async = 1;
-          l.src = u;
-          n = d.getElementsByTagName(e)[0];
-          n.parentNode.insertBefore(l, n);
-        })(
-          window,
-          document,
-          "script",
-          "https://assets.mailerlite.com/js/universal.js",
-          "ml",
-        );
-        (window as any).ml("account", "1613019");
-      }
-
-      // Load reCAPTCHA script
-      if (
-        !document.querySelector(
-          'script[src="https://www.google.com/recaptcha/api.js"]',
-        )
-      ) {
-        const recaptchaScript = document.createElement("script");
-        recaptchaScript.src = "https://www.google.com/recaptcha/api.js";
-        document.head.appendChild(recaptchaScript);
-      }
-
-      // Load MailerLite webforms script
-      if (!document.querySelector('script[src*="webforms.min.js"]')) {
-        const webformsScript = document.createElement("script");
-        webformsScript.src =
-          "https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024";
-        webformsScript.type = "text/javascript";
-        document.body.appendChild(webformsScript);
-      }
-
-      // Load tracking script
-      if (!document.querySelector('script[src*="takel"]')) {
-        fetch(
-          "https://assets.mailerlite.com/jsonp/1613019/forms/158568564338460556/takel",
-        ).catch(() => {}); // Silent fail if tracking doesn't work
-      }
-
-      // Add success callback function
-      if (!(window as any).ml_webform_success_27795499) {
-        (window as any).ml_webform_success_27795499 = function () {
-          const $ = (window as any).ml_jQuery || (window as any).jQuery;
-          if ($) {
-            $(".ml-subscribe-form-27795499 .row-success").show();
-            $(".ml-subscribe-form-27795499 .row-form").hide();
-          }
-        };
-      }
-    };
-
     const forceProfileColors = () => {
       console.log("🎨 FORCING PROFILE COLORS - JavaScript is running!");
 
@@ -140,8 +77,7 @@ export function ProfilePage() {
       });
     };
 
-    // Load scripts and apply colors
-    loadMailerLiteScripts();
+    // Apply colors
     forceProfileColors();
     const timeout = setTimeout(forceProfileColors, 100);
 
@@ -215,191 +151,87 @@ export function ProfilePage() {
               </form>
             </Card>
 
-            {/* MailerLite Contact Form */}
+            {/* Simple Contact Form */}
             <Card withBorder p="xl" radius="lg" shadow="sm">
-              <div
-                id="mlb2-27795499"
-                className="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-27795499"
+              <Title order={3} mb="lg" style={{ color: '#FFFFFF' }}>
+                Contact Us!
+              </Title>
+              <Text mb="lg" style={{ color: '#FFFFFF' }}>
+                Let us know how we can help with something. Please provide your 
+                email address and describe your question or issue below.
+              </Text>
+              
+              <form 
+                action="https://assets.mailerlite.com/jsonp/1613019/forms/158568564338460556/subscribe" 
+                method="post" 
+                target="_blank"
               >
-                <div className="ml-form-align-center">
-                  <div className="ml-form-embedWrapper embedForm">
-                    <div className="ml-form-embedBody ml-form-embedBodyDefault row-form">
-                      <div className="ml-form-embedContent">
-                        <h4
-                          style={{
-                            color: "#FFFFFF",
-                            fontSize: "30px",
-                            fontWeight: 400,
-                            margin: "0 0 10px 0",
-                          }}
-                        >
-                          Contact Us!
-                        </h4>
-                        <p
-                          style={{
-                            color: "#FFFFFF",
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            lineHeight: "20px",
-                            margin: "0 0 10px 0",
-                          }}
-                        >
-                          Let us know how we can help with something. Please
-                          provide the email address you used to sign up and then
-                          provide your comment below.
-                        </p>
-                      </div>
-
-                      <form
-                        className="ml-block-form"
-                        action="https://assets.mailerlite.com/jsonp/1613019/forms/158568564338460556/subscribe"
-                        data-code=""
-                        method="post"
-                        target="_blank"
-                      >
-                        <div className="ml-form-formContent">
-                          <div className="ml-form-fieldRow">
-                            <div className="ml-field-group ml-field-email ml-validate-email ml-validate-required">
-                              <input
-                                aria-label="email"
-                                aria-required="true"
-                                type="email"
-                                className="form-control"
-                                data-inputmask=""
-                                name="fields[email]"
-                                placeholder="Email"
-                                autoComplete="email"
-                                style={{
-                                  backgroundColor: "#ffffff",
-                                  color: "#333333",
-                                  borderColor: "#cccccc",
-                                  borderRadius: "4px",
-                                  borderStyle: "solid",
-                                  borderWidth: "1px",
-                                  fontFamily:
-                                    "'Open Sans', Arial, Helvetica, sans-serif",
-                                  fontSize: "14px",
-                                  padding: "10px",
-                                  width: "100%",
-                                  boxSizing: "border-box",
-                                  marginBottom: "10px",
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="ml-form-fieldRow ml-last-item">
-                            <div className="ml-field-group ml-field-name">
-                              <textarea
-                                className="form-control"
-                                name="fields[name]"
-                                aria-label="name"
-                                maxLength={255}
-                                placeholder="Your message..."
-                                style={{
-                                  backgroundColor: "#ffffff",
-                                  color: "#333333",
-                                  borderColor: "#cccccc",
-                                  borderRadius: "4px",
-                                  borderStyle: "solid",
-                                  borderWidth: "1px",
-                                  fontFamily:
-                                    "'Open Sans', Arial, Helvetica, sans-serif",
-                                  fontSize: "14px",
-                                  padding: "10px",
-                                  width: "100%",
-                                  boxSizing: "border-box",
-                                  height: "auto",
-                                  minHeight: "100px",
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          className="ml-form-recaptcha ml-validate-required"
-                          style={{ float: "left", marginBottom: "20px" }}
-                        >
-                          <div
-                            className="g-recaptcha"
-                            data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"
-                          ></div>
-                        </div>
-
-                        <input type="hidden" name="ml-submit" value="1" />
-
-                        <div className="ml-form-embedSubmit">
-                          <button
-                            type="submit"
-                            className="primary"
-                            style={{
-                              backgroundColor: "#2F9E44",
-                              border: "none",
-                              borderRadius: "4px",
-                              boxShadow: "none",
-                              color: "#ffffff",
-                              cursor: "pointer",
-                              fontFamily:
-                                "'Open Sans', Arial, Helvetica, sans-serif",
-                              fontSize: "14px",
-                              fontWeight: "700",
-                              lineHeight: "21px",
-                              height: "auto",
-                              padding: "10px",
-                              width: "100%",
-                              boxSizing: "border-box",
-                            }}
-                          >
-                            Submit your message
-                          </button>
-                          <button
-                            disabled
-                            style={{ display: "none" }}
-                            type="button"
-                            className="loading"
-                          >
-                            <div className="ml-form-embedSubmitLoad"></div>
-                            <span className="sr-only">Loading...</span>
-                          </button>
-                        </div>
-
-                        <input type="hidden" name="anticsrf" value="true" />
-                      </form>
-                    </div>
-
-                    <div
-                      className="ml-form-successBody row-success"
-                      style={{ display: "none" }}
-                    >
-                      <div className="ml-form-successContent">
-                        <h4
-                          style={{
-                            color: "#FFFFFF",
-                            fontSize: "30px",
-                            fontWeight: 400,
-                            margin: "0 0 10px 0",
-                          }}
-                        >
-                          Thank you!
-                        </h4>
-                        <p
-                          style={{
-                            color: "#FFFFFF",
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            lineHeight: "20px",
-                            margin: "0 0 10px 0",
-                          }}
-                        >
-                          Your message has been sent to our team. We'll respond
-                          as quickly as we can. Thank you for using
-                          ChromeExDev.Reviews!
-                        </p>
-                      </div>
-                    </div>
+                <Stack gap="lg">
+                  <TextInput
+                    label="Email Address"
+                    placeholder="your.email@example.com"
+                    leftSection={<Mail size={16} />}
+                    required
+                    type="email"
+                    name="fields[email]"
+                    autoComplete="email"
+                    radius="md"
+                    styles={{
+                      label: { color: '#FFFFFF', fontWeight: 600 }
+                    }}
+                  />
+                  
+                  <div>
+                    <Text mb="xs" fw={500} style={{ color: '#FFFFFF' }}>
+                      Your Message
+                    </Text>
+                    <textarea
+                      name="fields[name]"
+                      placeholder="Please describe your question, issue, or feedback..."
+                      required
+                      rows={5}
+                      style={{
+                        backgroundColor: '#ffffff',
+                        color: '#333333',
+                        border: '1px solid #cccccc',
+                        borderRadius: '4px',
+                        padding: '10px',
+                        width: '100%',
+                        fontFamily: "'Open Sans', Arial, Helvetica, sans-serif",
+                        fontSize: '14px',
+                        resize: 'vertical',
+                        minHeight: '120px'
+                      }}
+                    />
                   </div>
-                </div>
-              </div>
+                  
+                  <input type="hidden" name="ml-submit" value="1" />
+                  <input type="hidden" name="anticsrf" value="true" />
+                  
+                  <Button 
+                    type="submit" 
+                    fullWidth 
+                    radius="md"
+                    style={{
+                      backgroundColor: '#2F9E44',
+                      border: 'none'
+                    }}
+                    styles={{
+                      root: {
+                        '&:hover': {
+                          backgroundColor: '#259440'
+                        }
+                      }
+                    }}
+                  >
+                    Send Message
+                  </Button>
+                </Stack>
+              </form>
+              
+              <Text size="sm" mt="md" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                We typically respond within 24 hours. Thank you for using ChromeExDev.Reviews!
+              </Text>
             </Card>
           </Stack>
         </Grid.Col>
