@@ -175,15 +175,138 @@ export function QualificationPage() {
                 );
               }
             } else if (cardText?.includes("Reviewer Requirements")) {
-              console.log(
-                `Setting BRIGHT GREEN for requirements icon ${index}`,
-              );
-              icon.style.backgroundColor = "#059669";
-              icon.style.setProperty(
-                "background-color",
-                "#059669",
-                "important",
-              );
+              // Find which requirement this icon belongs to by looking at surrounding text
+              const parentGroup =
+                icon.closest('[class*="Group"]') || icon.parentElement;
+              const groupText = parentGroup?.textContent || "";
+
+              if (
+                groupText.includes(
+                  "Write reviews in clear, understandable English",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT BLUE for English requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #3b82f6, #1d4ed8)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Provide specific feedback about functionality",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT PINK for Feedback requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #ec4899, #db2777)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #ec4899, #db2777)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Rate extensions fairly based on their actual performance",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT LIME for Rating requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #84cc16, #65a30d)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #84cc16, #65a30d)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Include both positive aspects and areas for improvement",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT VIOLET for Balance requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #a855f7, #9333ea)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #a855f7, #9333ea)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Never write fake, misleading, or spam reviews",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT RED for No-Fake requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #ef4444, #dc2626)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #ef4444, #dc2626)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Complete all assigned reviews within the given timeframe",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT ORANGE for Timeframe requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #f97316, #ea580c)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #f97316, #ea580c)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Provide proof of your Chrome Web Store review submission",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT TEAL for Proof requirement icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #14b8a6, #0f766e)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #14b8a6, #0f766e)",
+                  "important",
+                );
+              } else {
+                // Fallback - use position-based coloring for 7 requirements
+                const requirementIndex = index % 7;
+                const colors = [
+                  "linear-gradient(135deg, #3b82f6, #1d4ed8)", // Blue
+                  "linear-gradient(135deg, #ec4899, #db2777)", // Pink
+                  "linear-gradient(135deg, #84cc16, #65a30d)", // Lime
+                  "linear-gradient(135deg, #a855f7, #9333ea)", // Violet
+                  "linear-gradient(135deg, #ef4444, #dc2626)", // Red
+                  "linear-gradient(135deg, #f97316, #ea580c)", // Orange
+                  "linear-gradient(135deg, #14b8a6, #0f766e)", // Teal
+                ];
+                console.log(
+                  `Setting fallback color for requirement icon ${index}: ${colors[requirementIndex]}`,
+                );
+                icon.style.background = colors[requirementIndex];
+                icon.style.setProperty(
+                  "background",
+                  colors[requirementIndex],
+                  "important",
+                );
+              }
             } else if (cardText?.includes("What You Get")) {
               console.log(`Setting BRIGHT ORANGE for benefits icon ${index}`);
               icon.style.backgroundColor = "#ea580c";
