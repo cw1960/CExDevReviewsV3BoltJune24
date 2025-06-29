@@ -188,16 +188,27 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
   // FORCE COLORS WITH JAVASCRIPT - GUARANTEED TO WORK
   useEffect(() => {
     const forceColors = () => {
+      console.log('🎨 FORCING COLORS - JavaScript is running!');
+      
       // Force Reviews This Cycle to Green
       const reviewsCycleCards = document.querySelectorAll('.reviews-cycle-card');
+      console.log('Found Reviews Cycle cards:', reviewsCycleCards.length);
+      
       reviewsCycleCards.forEach(card => {
         const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
+        console.log('Found numberDiv:', !!numberDiv, 'Found icon:', !!icon);
+        
         if (numberDiv) {
+          console.log('Setting GREEN color for Reviews This Cycle');
           numberDiv.style.color = '#10b981';
           numberDiv.style.setProperty('color', '#10b981', 'important');
+          // NUCLEAR OPTION: Set all possible color properties
+          (numberDiv.style as any).webkitTextFillColor = '#10b981';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#10b981', 'important');
         }
         if (icon) {
+          console.log('Setting GREEN icon color');
           icon.style.color = '#10b981';
           icon.style.setProperty('color', '#10b981', 'important');
         }
