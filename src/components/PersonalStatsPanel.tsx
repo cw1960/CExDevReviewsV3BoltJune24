@@ -92,7 +92,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           <Accordion.Item value="current-cycle">
             <Accordion.Control icon={<IconUser size={20} />}>
               <Group justify="space-between" style={{ width: '100%', marginRight: 20 }}>
-                <Text fw={600} size="lg">
+                <Text fw={600} size="lg" style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                   Your Usage This Cycle
                 </Text>
                 <Badge color="blue" variant="light">
@@ -143,10 +143,10 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             </Accordion.Control>
             <Accordion.Panel>
               <Group justify="space-between" mt="md">
-                <Text>
+                <Text style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                   Total Submitted: <b>{freeStats.totalReviewsSubmitted}</b>
                 </Text>
-                <Text>
+                <Text style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                   Total Received: <b>{freeStats.totalReviewsReceived}</b>
                 </Text>
               </Group>
@@ -160,10 +160,10 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             <Accordion.Panel>
               <Alert color="yellow" radius="md">
                 <Stack gap="sm">
-                  <Text size="sm" fw={500}>
+                  <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                     Unlock Premium Features:
                   </Text>
-                  <Text size="sm">
+                  <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                     • Unlimited reviews per cycle<br/>
                     • Priority queue placement<br/>
                     • Advanced analytics & trends<br/>
@@ -191,15 +191,15 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
         <Accordion.Item value="overview">
           <Accordion.Control icon={<IconTrophy size={20} />}>
             <Group justify="space-between" style={{ width: '100%', marginRight: 20 }}>
-              <Text fw={600} size="lg">
+              <Text fw={600} size="lg" style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                 Review Fast Track Dashboard
               </Text>
               <Group>
                 <Badge color="yellow" variant="filled" leftSection="⚡">
                   PREMIUM
                 </Badge>
-                <Text size="sm">{premiumStats.badgeIcon}</Text>
-                <Text size="sm" fw={500}>
+                <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.95)" }}>{premiumStats.badgeIcon}</Text>
+                <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                   {premiumStats.badgeRank}
                 </Text>
               </Group>
@@ -218,7 +218,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500}>
+                    <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
                       Reviews This Cycle
                     </Text>
                     <IconTrendingUp size={16} />
@@ -238,7 +238,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500}>
+                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                       Reviews Received
                     </Text>
                     <IconStar size={16} />
@@ -253,7 +253,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="queue-position-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500}>
+                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                       Queue Position
                     </Text>
                     <IconTarget size={16} />
@@ -268,7 +268,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="avg-turnaround-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500}>
+                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                       Avg. Turnaround
                     </Text>
                     <IconClock size={16} />
@@ -333,10 +333,10 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       {trend.month}
                     </Text>
                     <Stack align="center" gap={2}>
-                      <Text size="sm" fw={500} c="blue">
+                      <Text size="sm" fw={500} style={{ color: "#3b82f6" }}>
                         {trend.submitted}
                       </Text>
-                      <Text size="sm" fw={500} c="teal">
+                      <Text size="sm" fw={500} style={{ color: "#10b981" }}>
                         {trend.received}
                       </Text>
                     </Stack>
@@ -387,7 +387,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   {premiumStats.reviewerFeedbackHighlights.map(
                     (feedback, index) => (
                       <Alert key={index} color="green" variant="light" p="sm">
-                        <Text size="sm">{feedback}</Text>
+                        <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.95)" }}>{feedback}</Text>
                       </Alert>
                     ),
                   )}
@@ -405,35 +405,35 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             <Accordion.Panel>
               <SimpleGrid cols={3} spacing="md">
                 <Stack align="center" gap={4}>
-                  <Text size="lg" fw={700}>
+                  <Text size="lg" fw={700} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                     {premiumStats.totalReviewsSubmitted}
                   </Text>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your Reviews
                   </Text>
-                  <Text size="xs" c="blue">
+                  <Text size="xs" style={{ color: "#3b82f6" }}>
                     vs {premiumStats.platformAverages.avgSubmitted} avg
                   </Text>
                 </Stack>
                 <Stack align="center" gap={4}>
-                  <Text size="lg" fw={700}>
+                  <Text size="lg" fw={700} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your Speed
                   </Text>
-                  <Text size="xs" c="blue">
+                  <Text size="xs" style={{ color: "#3b82f6" }}>
                     vs {premiumStats.platformAverages.avgTurnaround}h avg
                   </Text>
                 </Stack>
                 <Stack align="center" gap={4}>
-                  <Text size="lg" fw={700} c="yellow">
+                  <Text size="lg" fw={700} style={{ color: "#fbbf24" }}>
                     Fast Track
                   </Text>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your Status
                   </Text>
-                                    <Text size="xs" c="green">
+                                    <Text size="xs" style={{ color: "#10b981" }}>
                     Premium Member
                   </Text>
                 </Stack>

@@ -135,6 +135,19 @@ b {
   color: rgba(255, 255, 255, 0.95) !important;
 }
 
+/* ULTIMATE FAILSAFE - FORCE ALL TEXT IN ACCORDION PANELS TO BE BRIGHT */
+.mantine-Accordion-panel,
+.mantine-Accordion-content,
+.mantine-Card-root {
+  --mantine-color-text: rgba(255, 255, 255, 0.95) !important;
+}
+
+.mantine-Accordion-panel .mantine-Text-root:not([style*="color"]),
+.mantine-Accordion-content .mantine-Text-root:not([style*="color"]),
+.mantine-Card-root .mantine-Text-root:not([style*="color"]) {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
 /* Enhanced Headings - Better contrast on gradient backgrounds */
 h1,
 h2,
