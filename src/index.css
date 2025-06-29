@@ -1068,22 +1068,46 @@ h6 {
     color: rgba(255, 255, 255, 0.95) !important;
   }
 
-  /* EXCEPTION: Allow colored numbers to show in Fast Track cards */
-  .reviews-cycle-card div[style*="color: #10b981"],
-  .reviews-received-card div[style*="color: #8b5cf6"],
-  .queue-position-card div[style*="color: #f59e0b"],
-  .avg-turnaround-card div[style*="color: #06b6d4"] {
-    -webkit-text-fill-color: initial !important;
-    text-fill-color: initial !important;
+  /* NUCLEAR OVERRIDE: Force colored numbers to show with MAXIMUM specificity */
+  body .mantine-Card-root.reviews-cycle-card div[style*="fontSize: '32px'"] {
+    color: #10b981 !important;
+    -webkit-text-fill-color: #10b981 !important;
+    text-fill-color: #10b981 !important;
   }
 
-  /* EXCEPTION: Allow colored icons to show */
-  .reviews-cycle-card svg[style*="color: #10b981"],
-  .reviews-received-card svg[style*="color: #8b5cf6"],
-  .queue-position-card svg[style*="color: #f59e0b"],
-  .avg-turnaround-card svg[style*="color: #06b6d4"] {
-    -webkit-text-fill-color: initial !important;
-    text-fill-color: initial !important;
+  body .mantine-Card-root.reviews-received-card div[style*="fontSize: '32px'"] {
+    color: #8b5cf6 !important;
+    -webkit-text-fill-color: #8b5cf6 !important;
+    text-fill-color: #8b5cf6 !important;
+  }
+
+  body .mantine-Card-root.queue-position-card div[style*="fontSize: '32px'"] {
+    color: #f59e0b !important;
+    -webkit-text-fill-color: #f59e0b !important;
+    text-fill-color: #f59e0b !important;
+  }
+
+  body .mantine-Card-root.avg-turnaround-card div[style*="fontSize: '32px'"] {
+    color: #06b6d4 !important;
+    -webkit-text-fill-color: #06b6d4 !important;
+    text-fill-color: #06b6d4 !important;
+  }
+
+  /* NUCLEAR OVERRIDE: Force colored icons to show */
+  body .mantine-Card-root.reviews-cycle-card svg {
+    color: #10b981 !important;
+  }
+
+  body .mantine-Card-root.reviews-received-card svg {
+    color: #8b5cf6 !important;
+  }
+
+  body .mantine-Card-root.queue-position-card svg {
+    color: #f59e0b !important;
+  }
+
+  body .mantine-Card-root.avg-turnaround-card svg {
+    color: #06b6d4 !important;
   }
 
   /* BEAUTIFUL CARD COLORS - Reviews This Cycle (Green) */
