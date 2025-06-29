@@ -328,14 +328,14 @@ export function UpgradePage() {
                     <Title order={2} c="white">
                       Yearly Plan
                     </Title>
-                    <Group align="baseline" gap="xs">
-                      <Text size="3rem" fw={800} c="violet">
-                        ${yearlyProduct.price}
-                      </Text>
-                      <Text size="lg" c="violet">
-                        /year
-                      </Text>
-                    </Group>
+                                         <Group align="baseline" gap="xs">
+                       <Text size="3rem" fw={800} style={{ color: '#8b5cf6' }}>
+                         ${yearlyProduct.price}
+                       </Text>
+                       <Text size="lg" style={{ color: '#8b5cf6' }}>
+                         /year
+                       </Text>
+                     </Group>
                     <Text size="sm" c="rgba(255,255,255,0.8)" ta="center">
                       Billed annually • Best value
                     </Text>
