@@ -102,7 +102,9 @@ body {
   color: rgba(255, 255, 255, 0.95) !important;
 }
 
-.mantine-Accordion-panel .mantine-Card-root .mantine-Text-root[data-c="dimmed"] {
+.mantine-Accordion-panel
+  .mantine-Card-root
+  .mantine-Text-root[data-c="dimmed"] {
   color: rgba(255, 255, 255, 0.7) !important;
 }
 
@@ -1018,15 +1020,20 @@ h6 {
     background: rgba(255, 255, 255, 0.1);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: white !important;
   }
-  
+
   /* Ensure all card content is readable in dark mode - BRIGHT WHITE */
   .mantine-Card-root {
     color: rgba(255, 255, 255, 1) !important;
   }
-  
+
   .mantine-Card-root * {
     color: rgba(255, 255, 255, 1) !important;
   }
@@ -1177,7 +1184,7 @@ h6 {
   /* ========================================
      NUCLEAR PLATFORM STATS LABEL FORCING
      ======================================== */
-  
+
   /* NUCLEAR: Target any div with Platform Stats styling characteristics */
   div[style*="textAlign: 'center'"],
   div[style*="text-align: center"],
@@ -1189,7 +1196,7 @@ h6 {
   div[style*="font-weight: 600"] {
     color: #ffffff !important;
     font-weight: 600 !important;
-    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.9) !important;
     opacity: 1 !important;
     visibility: visible !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -1202,19 +1209,21 @@ h6 {
   .mantine-Container-root div[style*="fontSize: '14px'"] {
     color: #ffffff !important;
     font-weight: 600 !important;
-    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.9) !important;
     opacity: 1 !important;
     visibility: visible !important;
     -webkit-text-fill-color: #ffffff !important;
   }
 
   /* ULTIMATE NUCLEAR: Target all divs with inline styles indicating labels */
-  div[style*="color: #ffffff"]:not([style*="fontSize: '2.2rem'"]):not([style*="font-size: 2.2rem"]) {
+  div[style*="color: #ffffff"]:not([style*="fontSize: '2.2rem'"]):not(
+      [style*="font-size: 2.2rem"]
+    ) {
     color: #ffffff !important;
     opacity: 1 !important;
     visibility: visible !important;
     -webkit-text-fill-color: #ffffff !important;
-    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.9) !important;
     font-weight: 600 !important;
   }
 
@@ -1228,16 +1237,22 @@ h6 {
     text-fill-color: #ffffff !important;
     opacity: 1 !important;
     visibility: visible !important;
-    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.9) !important;
     font-weight: 600 !important;
   }
 
   /* SPECIFIC PLATFORM STATS TARGETING */
-  .mantine-Container-root .mantine-Grid-root .mantine-Box-root div:not([style*="fontSize: '2.2rem'"]),
-  .mantine-Card-root .mantine-Grid-root .mantine-Box-root div:not([style*="fontSize: '2.2rem'"]) {
+  .mantine-Container-root
+    .mantine-Grid-root
+    .mantine-Box-root
+    div:not([style*="fontSize: '2.2rem'"]),
+  .mantine-Card-root
+    .mantine-Grid-root
+    .mantine-Box-root
+    div:not([style*="fontSize: '2.2rem'"]) {
     color: #ffffff !important;
     font-weight: 600 !important;
-    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.9) !important;
     opacity: 1 !important;
     visibility: visible !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -1246,7 +1261,7 @@ h6 {
   /* ========================================
      ULTIMATE NUCLEAR: Platform Stats Label Class
      ======================================== */
-  
+
   .platform-stats-label-nuclear {
     color: #ffffff !important;
     font-weight: 600 !important;
@@ -1255,7 +1270,7 @@ h6 {
     opacity: 1 !important;
     visibility: visible !important;
     -webkit-text-fill-color: #ffffff !important;
-    text-shadow: 0 0 3px rgba(255,255,255,1) !important;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 1) !important;
     background: transparent !important;
     text-decoration: none !important;
     display: block !important;
@@ -1273,7 +1288,7 @@ h6 {
     opacity: 1 !important;
     visibility: visible !important;
     -webkit-text-fill-color: #ffffff !important;
-    text-shadow: 0 0 3px rgba(255,255,255,1) !important;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 1) !important;
   }
 
   /* NUCLEAR BACKUP: Use pseudo-element if text is still invisible */
@@ -1282,7 +1297,7 @@ h6 {
     color: #ffffff !important;
     font-weight: 600 !important;
     font-size: 14px !important;
-    text-shadow: 0 0 3px rgba(255,255,255,1) !important;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 1) !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
@@ -1309,7 +1324,7 @@ h6 {
   font-size: 14px !important;
   opacity: 1 !important;
   visibility: visible !important;
-  text-shadow: 0 0 2px rgba(255,107,53,0.9) !important;
+  text-shadow: 0 0 2px rgba(255, 107, 53, 0.9) !important;
 }
 
 /* LANDING PAGE CARD NUMBERS - MATCH ICON COLORS */
@@ -1342,4 +1357,29 @@ h6 {
 .yearly-plan-price-purple {
   color: #8b5cf6 !important;
   -webkit-text-fill-color: #8b5cf6 !important;
+}
+
+/* SIDEBAR CONDITIONAL COLORS - MAXIMUM SPECIFICITY */
+.mantine-AppShell-navbar .mantine-Text-root[style*="color: rgb(239, 68, 68)"],
+.mantine-AppShell-navbar .mantine-Text-root[style*="color: #ef4444"],
+.mantine-AppShell-navbar [style*="color: rgb(239, 68, 68)"],
+.mantine-AppShell-navbar [style*="color: #ef4444"] {
+  color: #ef4444 !important;
+  -webkit-text-fill-color: #ef4444 !important;
+  text-fill-color: #ef4444 !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.mantine-AppShell-navbar .mantine-Text-root[style*="color: rgb(16, 185, 129)"],
+.mantine-AppShell-navbar .mantine-Text-root[style*="color: #10b981"],
+.mantine-AppShell-navbar [style*="color: rgb(16, 185, 129)"],
+.mantine-AppShell-navbar [style*="color: #10b981"] {
+  color: #10b981 !important;
+  -webkit-text-fill-color: #10b981 !important;
+  text-fill-color: #10b981 !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }

@@ -110,7 +110,12 @@ export function SideNav() {
           <Text
             size="sm"
             fw={600}
-            c={(profile?.credit_balance || 0) === 0 ? "red" : "green"}
+            style={{
+              color:
+                (profile?.credit_balance || 0) === 0 ? "#ef4444" : "#10b981",
+              WebkitTextFillColor:
+                (profile?.credit_balance || 0) === 0 ? "#ef4444" : "#10b981",
+            }}
           >
             {profile?.credit_balance || 0}
           </Text>
@@ -119,7 +124,14 @@ export function SideNav() {
           <Text size="sm" c="dimmed">
             Plan
           </Text>
-          <Text size="sm" fw={600} c={isPremium ? "green" : "red"}>
+          <Text
+            size="sm"
+            fw={600}
+            style={{
+              color: isPremium ? "#10b981" : "#ef4444",
+              WebkitTextFillColor: isPremium ? "#10b981" : "#ef4444",
+            }}
+          >
             {isPremium ? "Review Fast Track" : "Free"}
           </Text>
         </Group>
