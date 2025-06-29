@@ -407,7 +407,7 @@ export function AddExtensionModal({
       withinPortal={true}
       closeOnClickOutside={true}
       closeOnEscape={true}
-      zIndex={1000}
+      zIndex={900}
       overlayProps={{
         backgroundOpacity: 1.0,
         blur: 0,
@@ -562,6 +562,10 @@ export function AddExtensionModal({
               data={CATEGORIES}
               {...form.getInputProps("category")}
               radius="md"
+              withinPortal={true}
+              zIndex={1500}
+              dropdownPosition="bottom"
+              maxDropdownHeight={200}
               styles={{
                 label: { color: '#374151', fontWeight: 600 },
                 input: {
@@ -572,6 +576,20 @@ export function AddExtensionModal({
                   background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
                   color: 'white',
                   fontWeight: 600
+                },
+                dropdown: {
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #8b5cf6',
+                  zIndex: 1500
+                },
+                option: {
+                  '&[data-selected]': {
+                    backgroundColor: '#8b5cf6',
+                    color: 'white'
+                  },
+                  '&[data-hovered]': {
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)'
+                  }
                 }
               }}
             />
@@ -622,11 +640,30 @@ export function AddExtensionModal({
               data={ACCESS_TYPES}
               {...form.getInputProps("access_type")}
               radius="md"
+              withinPortal={true}
+              zIndex={1500}
+              dropdownPosition="bottom"
+              maxDropdownHeight={200}
               styles={{
                 label: { color: '#374151', fontWeight: 600 },
                 input: {
                   borderColor: '#10b981',
                   '&:focus': { borderColor: '#059669', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
+                },
+                dropdown: {
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #10b981',
+                  zIndex: 1500
+                },
+                option: {
+                  color: '#ffffff',
+                  '&[data-selected]': {
+                    backgroundColor: '#10b981',
+                    color: 'white'
+                  },
+                  '&[data-hovered]': {
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)'
+                  }
                 }
               }}
             />
