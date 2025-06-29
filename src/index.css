@@ -1055,15 +1055,33 @@ h6 {
     font-weight: 500 !important;
   }
 
-  /* GLOBAL EMERGENCY: Force ALL text to be visible - BUT ALLOW COLOR OVERRIDES */
-  [class*="mantine-"]:not([style*="color"]),
-  [class*="mantine-"] *:not([style*="color"]) {
+  /* GLOBAL EMERGENCY: Force ALL text to be visible */
+  [class*="mantine-"],
+  [class*="mantine-"] * {
     opacity: 1 !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, 1) !important;
+    text-fill-color: rgba(255, 255, 255, 1) !important;
+  }
+
+  /* Specifically target any remaining invisible text elements */
+  [data-mantine-color-scheme="dark"] *:not([style*="color"]) {
     color: rgba(255, 255, 255, 0.95) !important;
   }
 
-  /* Reset webkit text fill to allow colors to show */
-  * {
+  /* EXCEPTION: Allow colored numbers to show in Fast Track cards */
+  .reviews-cycle-card div[style*="color: #10b981"],
+  .reviews-received-card div[style*="color: #8b5cf6"],
+  .queue-position-card div[style*="color: #f59e0b"],
+  .avg-turnaround-card div[style*="color: #06b6d4"] {
+    -webkit-text-fill-color: initial !important;
+    text-fill-color: initial !important;
+  }
+
+  /* EXCEPTION: Allow colored icons to show */
+  .reviews-cycle-card svg[style*="color: #10b981"],
+  .reviews-received-card svg[style*="color: #8b5cf6"],
+  .queue-position-card svg[style*="color: #f59e0b"],
+  .avg-turnaround-card svg[style*="color: #06b6d4"] {
     -webkit-text-fill-color: initial !important;
     text-fill-color: initial !important;
   }
