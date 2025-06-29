@@ -152,6 +152,38 @@ b {
   color: rgba(255, 255, 255, 1) !important;
 }
 
+/* FORCE COLORED NUMBERS TO BE VISIBLE */
+.reviews-cycle-card .mantine-Text-root[data-size="xl"],
+.reviews-received-card .mantine-Text-root[data-size="xl"],
+.queue-position-card .mantine-Text-root[data-size="xl"],
+.avg-turnaround-card .mantine-Text-root[data-size="xl"] {
+  color: inherit !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-weight: 700 !important;
+}
+
+/* SPECIFIC COLOR OVERRIDES FOR NUMBERS */
+.reviews-cycle-card [style*="color: #3b82f6"],
+.reviews-cycle-card [style*="color:#3b82f6"] {
+  color: #3b82f6 !important;
+}
+
+.reviews-received-card [style*="color: #8b5cf6"],
+.reviews-received-card [style*="color:#8b5cf6"] {
+  color: #8b5cf6 !important;
+}
+
+.queue-position-card [style*="color: #f59e0b"],
+.queue-position-card [style*="color:#f59e0b"] {
+  color: #f59e0b !important;
+}
+
+.avg-turnaround-card [style*="color: #06b6d4"],
+.avg-turnaround-card [style*="color:#06b6d4"] {
+  color: #06b6d4 !important;
+}
+
 /* ULTIMATE FAILSAFE - FORCE ALL TEXT IN ACCORDION PANELS TO BE BRIGHT */
 .mantine-Accordion-panel,
 .mantine-Accordion-content,

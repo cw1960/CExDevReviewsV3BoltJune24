@@ -234,13 +234,13 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <div style={{ color: 'red', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold', padding: '10px', border: '3px solid blue' }}>
-                      🔥 TESTING - SHOULD BE VISIBLE 🔥
+                    <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
+                      Reviews This Cycle
                     </div>
                     <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700} style={{ color: '#3b82f6' }}>
+                    <Text size="xl" fw={700} style={{ color: '#3b82f6 !important', fontSize: '24px', fontWeight: 'bold' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
                     </Text>
                     <Text size="sm" style={{ color: '#10b981' }}>
@@ -259,7 +259,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     </div>
                     <IconStar size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
+                  <Text size="xl" fw={700} style={{ color: '#8b5cf6 !important', fontSize: '24px', fontWeight: 'bold' }}>
                     {premiumStats.reviewsReceivedThisCycle}
                   </Text>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
