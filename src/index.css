@@ -148,6 +148,30 @@ b {
   color: rgba(255, 255, 255, 0.95) !important;
 }
 
+/* FORCE SOLID BACKGROUNDS FOR ACCORDION CONTENT */
+.mantine-Accordion-panel,
+.mantine-Accordion-content {
+  background: rgb(37, 38, 43) !important;
+  backdrop-filter: none !important;
+}
+
+.mantine-Accordion-panel .mantine-Card-root {
+  background: rgb(45, 48, 55) !important;
+  backdrop-filter: none !important;
+}
+
+/* EMERGENCY TEXT VISIBILITY FIX - FORCE MAXIMUM CONTRAST */
+.mantine-Accordion-panel *,
+.mantine-Accordion-content *,
+.reviews-cycle-card *,
+.reviews-received-card *,
+.queue-position-card *,
+.avg-turnaround-card * {
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8) !important;
+}
+
 /* Enhanced Headings - Better contrast on gradient backgrounds */
 h1,
 h2,
@@ -174,7 +198,7 @@ h6 {
 /* Enhanced Alert Styling - Restore Beautiful Colors */
 .mantine-Alert-root {
   border-radius: 12px !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   font-weight: 500;
 }
 
@@ -258,7 +282,7 @@ h6 {
 /* Enhanced Sidebar Styling */
 .mantine-AppShell-navbar {
   background: var(--sidebar-bg) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 }
@@ -309,12 +333,11 @@ h6 {
   color: rgba(255, 255, 255, 0.95) !important; /* White for selected items */
 }
 
-/* Enhanced Card Styling with Subtle Colors */
+/* Enhanced Card Styling - SOLID DARK BACKGROUNDS */
 .mantine-Card-root {
-  background: var(--panel-bg-light) !important;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: rgb(37, 38, 43) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 
@@ -514,7 +537,7 @@ h6 {
     rgba(255, 255, 255, 0.95) 0%,
     rgba(248, 250, 252, 0.9) 100%
   ) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
@@ -712,13 +735,13 @@ h6 {
 }
 
 .glassmorphism {
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   background: var(--glassmorphism);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .glassmorphism-dark {
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   background: var(--glassmorphism-dark);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -802,7 +825,7 @@ h6 {
 /* Enhanced Card Styles */
 .card-enhanced {
   background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -849,7 +872,7 @@ h6 {
 .mantine-Badge-root {
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
+  backdrop-filter: none;
 }
 
 /* Enhanced Progress Bar */
