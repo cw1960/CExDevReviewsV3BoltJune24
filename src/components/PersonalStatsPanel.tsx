@@ -307,19 +307,47 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             });
           }
           
-          // 6-MONTH REVIEW TRENDS section
-          if (panelText.includes('6-month') || panelText.includes('review trends') || panelText.includes('trend')) {
-            console.log('📊 FORCING COLORS for 6-Month Review Trends section');
+          // 6-MONTH REVIEW TRENDS section - SUPER AGGRESSIVE
+          if (panelText.includes('6-month') || panelText.includes('6-Month') || panelText.includes('Review Trends') || panelText.includes('Jan 25') || panelText.includes('Submitted') || panelText.includes('Received')) {
+            console.log('📊 NUCLEAR: FORCING COLORS for 6-Month Review Trends section');
+            console.log('📊 Full panel text:', panelText);
             
-            const trendNumbers = panel.querySelectorAll('.mantine-Text-root, div, span');
-            trendNumbers.forEach((el) => {
+            // Target ALL possible number elements
+            const allElements = panel.querySelectorAll('*');
+            allElements.forEach((el, idx) => {
               if (el instanceof HTMLElement && el.textContent) {
                 const text = el.textContent.trim();
-                // Look for numbers or percentage patterns
-                if (/^\d+(\.\d+)?$/.test(text) || text.includes('%') || text.includes('avg')) {
-                  el.style.color = '#8b5cf6'; // Purple for trends
+                
+                // Color the month numbers (0, 0, 0, 5, 2, etc)
+                if (/^\d+$/.test(text) && text !== '') {
+                  const colors = ['#8b5cf6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#ec4899'];
+                  const color = colors[idx % colors.length];
+                  console.log(`📊 FORCING ${color} for trend number: "${text}"`);
+                  
+                  el.style.color = color;
+                  el.style.setProperty('color', color, 'important');
+                  (el.style as any).webkitTextFillColor = color;
+                  el.style.setProperty('-webkit-text-fill-color', color, 'important');
+                  el.style.fontWeight = 'bold';
+                  el.style.setProperty('font-weight', 'bold', 'important');
+                }
+                
+                // Color the month labels 
+                if (text.includes('Jan') || text.includes('Feb') || text.includes('Mar') || text.includes('Apr') || text.includes('May') || text.includes('Jun')) {
+                  console.log(`📊 FORCING CYAN for month label: "${text}"`);
+                  el.style.color = '#06b6d4';
+                  el.style.setProperty('color', '#06b6d4', 'important');
+                }
+                
+                // Color "Submitted" and "Received" labels
+                if (text.includes('Submitted')) {
+                  console.log(`📊 FORCING GREEN for Submitted label`);
+                  el.style.color = '#10b981';
+                  el.style.setProperty('color', '#10b981', 'important');
+                } else if (text.includes('Received')) {
+                  console.log(`📊 FORCING PURPLE for Received label`);
+                  el.style.color = '#8b5cf6';
                   el.style.setProperty('color', '#8b5cf6', 'important');
-                  console.log(`Set purple for trend number: ${text}`);
                 }
               }
             });
@@ -347,20 +375,97 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             });
           }
           
-          // PLATFORM COMPARISON section
-          if (panelText.includes('Platform Comparison') || panelText.includes('comparison')) {
-            console.log('📈 FORCING COLORS for Platform Comparison section');
+          // PLATFORM COMPARISON section - SUPER AGGRESSIVE
+          if (panelText.includes('Platform Comparison') || panelText.includes('Your Reviews') || panelText.includes('Your Speed') || panelText.includes('vs') || panelText.includes('avg') || panelText.includes('Fast Track')) {
+            console.log('📈 NUCLEAR: FORCING COLORS for Platform Comparison section');
+            console.log('📈 Full panel text:', panelText);
             
-            const comparisonNumbers = panel.querySelectorAll('.mantine-Text-root, div, span');
-            comparisonNumbers.forEach((el, idx) => {
+            // Target ALL elements and be very specific
+            const allElements = panel.querySelectorAll('*');
+            allElements.forEach((el, idx) => {
               if (el instanceof HTMLElement && el.textContent) {
                 const text = el.textContent.trim();
-                if (/^\d+(\.\d+)?/.test(text) || text.includes('%')) {
-                  const colors = ['#06b6d4', '#f59e0b', '#8b5cf6']; // Cyan, Orange, Purple
-                  const color = colors[idx % colors.length];
-                  el.style.color = color;
-                  el.style.setProperty('color', color, 'important');
-                  console.log(`Set ${color} for comparison number: ${text}`);
+                console.log(`📈 Checking element: "${text}"`);
+                
+                // Color specific numbers in "Your Reviews vs avg"
+                if (text === '5' || (text.includes('5') && text.includes('Your Reviews'))) {
+                  console.log(`📈 FORCING BRIGHT GREEN for "5" (Your Reviews)`);
+                  el.style.color = '#10b981';
+                  el.style.setProperty('color', '#10b981', 'important');
+                  (el.style as any).webkitTextFillColor = '#10b981';
+                  el.style.setProperty('-webkit-text-fill-color', '#10b981', 'important');
+                  el.style.fontWeight = 'bold';
+                  el.style.setProperty('font-weight', 'bold', 'important');
+                }
+                
+                if (text === '3' || (text.includes('3') && text.includes('avg'))) {
+                  console.log(`📈 FORCING BRIGHT ORANGE for "3" (avg)`);
+                  el.style.color = '#f59e0b';
+                  el.style.setProperty('color', '#f59e0b', 'important');
+                  (el.style as any).webkitTextFillColor = '#f59e0b';
+                  el.style.setProperty('-webkit-text-fill-color', '#f59e0b', 'important');
+                  el.style.fontWeight = 'bold';
+                  el.style.setProperty('font-weight', 'bold', 'important');
+                }
+                
+                // Color speed times
+                if (text.includes('11.8') || text.includes('hours')) {
+                  console.log(`📈 FORCING BRIGHT CYAN for speed time "${text}"`);
+                  el.style.color = '#06b6d4';
+                  el.style.setProperty('color', '#06b6d4', 'important');
+                  (el.style as any).webkitTextFillColor = '#06b6d4';
+                  el.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
+                }
+                
+                if (text.includes('12.8h') || text.includes('12.8')) {
+                  console.log(`📈 FORCING BRIGHT PURPLE for avg speed "${text}"`);
+                  el.style.color = '#8b5cf6';
+                  el.style.setProperty('color', '#8b5cf6', 'important');
+                  (el.style as any).webkitTextFillColor = '#8b5cf6';
+                  el.style.setProperty('-webkit-text-fill-color', '#8b5cf6', 'important');
+                }
+                
+                // Color status labels
+                if (text.includes('Fast Track')) {
+                  console.log(`📈 FORCING GOLD for Fast Track status`);
+                  el.style.color = '#fbbf24';
+                  el.style.setProperty('color', '#fbbf24', 'important');
+                  (el.style as any).webkitTextFillColor = '#fbbf24';
+                  el.style.setProperty('-webkit-text-fill-color', '#fbbf24', 'important');
+                }
+                
+                if (text.includes('Premium Member')) {
+                  console.log(`📈 FORCING EMERALD for Premium Member`);
+                  el.style.color = '#059669';
+                  el.style.setProperty('color', '#059669', 'important');
+                  (el.style as any).webkitTextFillColor = '#059669';
+                  el.style.setProperty('-webkit-text-fill-color', '#059669', 'important');
+                }
+                
+                // Color "vs" and "avg" text
+                if (text === 'vs' || text.includes('vs ')) {
+                  console.log(`📈 FORCING WHITE for "vs"`);
+                  el.style.color = '#ffffff';
+                  el.style.setProperty('color', '#ffffff', 'important');
+                }
+                
+                // Color descriptive labels
+                if (text.includes('Your Reviews') && !text.includes('vs')) {
+                  console.log(`📈 FORCING LIGHT BLUE for Your Reviews label`);
+                  el.style.color = '#7dd3fc';
+                  el.style.setProperty('color', '#7dd3fc', 'important');
+                }
+                
+                if (text.includes('Your Speed') && !text.includes('vs')) {
+                  console.log(`📈 FORCING LIGHT CYAN for Your Speed label`);
+                  el.style.color = '#67e8f9';
+                  el.style.setProperty('color', '#67e8f9', 'important');
+                }
+                
+                if (text.includes('Your Status') && !text.includes('vs')) {
+                  console.log(`📈 FORCING LIGHT YELLOW for Your Status label`);
+                  el.style.color = '#fde047';
+                  el.style.setProperty('color', '#fde047', 'important');
                 }
               }
             });
