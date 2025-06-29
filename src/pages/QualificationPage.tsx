@@ -308,13 +308,104 @@ export function QualificationPage() {
                 );
               }
             } else if (cardText?.includes("What You Get")) {
-              console.log(`Setting BRIGHT ORANGE for benefits icon ${index}`);
-              icon.style.backgroundColor = "#ea580c";
-              icon.style.setProperty(
-                "background-color",
-                "#ea580c",
-                "important",
-              );
+              // Find which benefit this icon belongs to by looking at surrounding text
+              const parentGroup =
+                icon.closest('[class*="Group"]') || icon.parentElement;
+              const groupText = parentGroup?.textContent || "";
+
+              if (
+                groupText.includes("Earn 1 credit for each completed review")
+              ) {
+                console.log(
+                  `Setting VIBRANT CYAN for Credits benefit icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #06b6d4, #0891b2)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #06b6d4, #0891b2)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Get authentic reviews for your own extensions",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT EMERALD for Authentic Reviews benefit icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #10b981, #059669)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #10b981, #059669)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Connect with a community of Chrome extension developers",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT AMBER for Community benefit icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #f59e0b, #d97706)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #f59e0b, #d97706)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Improve your own extensions through feedback exchange",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT PURPLE for Improvement benefit icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #8b5cf6, #7c3aed)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                  "important",
+                );
+              } else if (
+                groupText.includes(
+                  "Build your reputation in the developer community",
+                )
+              ) {
+                console.log(
+                  `Setting VIBRANT ROSE for Reputation benefit icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #f43f5e, #e11d48)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #f43f5e, #e11d48)",
+                  "important",
+                );
+              } else {
+                // Fallback - use position-based coloring for 5 benefits
+                const benefitIndex = index % 5;
+                const colors = [
+                  "linear-gradient(135deg, #06b6d4, #0891b2)", // Cyan
+                  "linear-gradient(135deg, #10b981, #059669)", // Emerald
+                  "linear-gradient(135deg, #f59e0b, #d97706)", // Amber
+                  "linear-gradient(135deg, #8b5cf6, #7c3aed)", // Purple
+                  "linear-gradient(135deg, #f43f5e, #e11d48)", // Rose
+                ];
+                console.log(
+                  `Setting fallback color for benefit icon ${index}: ${colors[benefitIndex]}`,
+                );
+                icon.style.background = colors[benefitIndex];
+                icon.style.setProperty(
+                  "background",
+                  colors[benefitIndex],
+                  "important",
+                );
+              }
             }
           }
         }
