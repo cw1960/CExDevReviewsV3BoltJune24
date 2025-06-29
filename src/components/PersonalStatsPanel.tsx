@@ -92,7 +92,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           <Accordion.Item value="current-cycle">
             <Accordion.Control icon={<IconUser size={20} />}>
               <Group justify="space-between" style={{ width: '100%', marginRight: 20 }}>
-                <Text fw={600} size="lg" style={{ color: "rgba(255, 255, 255, 0.95)" }}>
+                <Text fw={600} size="lg" style={{ color: "rgba(255, 255, 255, 1)" }}>
                   Your Usage This Cycle
                 </Text>
                 <Badge color="blue" variant="light">
@@ -102,15 +102,15 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             </Accordion.Control>
             <Accordion.Panel>
               <Stack gap="md">
-                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 1)' }}>
                   Cycle: {new Date(freeStats.cycleStart).toLocaleDateString()} –{" "}
                   {new Date(freeStats.cycleEnd).toLocaleDateString()}
                   <br />
                   <b style={{ color: 'rgba(255, 255, 255, 1)' }}>{freeStats.daysLeftInCycle}</b> days left in this cycle
                 </Text>
                 <Group justify="space-between">
-                  <Text style={{ color: 'rgba(255, 255, 255, 0.95)' }}>Reviews Submitted</Text>
-                  <Text style={{ color: 'rgba(255, 255, 255, 0.95)' }}>{freeStats.reviewsSubmittedThisCycle} / 4</Text>
+                  <Text style={{ color: 'rgba(255, 255, 255, 1)' }}>Reviews Submitted</Text>
+                  <Text style={{ color: 'rgba(255, 255, 255, 1)' }}>{freeStats.reviewsSubmittedThisCycle} / 4</Text>
                 </Group>
                 <Progress
                   value={reviewSubmitPct}
@@ -191,7 +191,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
         <Accordion.Item value="overview">
           <Accordion.Control icon={<IconTrophy size={20} />}>
             <Group justify="space-between" style={{ width: '100%', marginRight: 20 }}>
-              <Text fw={600} size="lg" style={{ color: "rgba(255, 255, 255, 0.95)" }}>
+              <Text fw={600} size="lg" style={{ color: "rgba(255, 255, 255, 1)" }}>
                 Review Fast Track Dashboard
               </Text>
               <Group>
@@ -218,7 +218,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
+                    <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 1)' }}>
                       Reviews This Cycle
                     </Text>
                     <IconTrendingUp size={16} />
@@ -231,14 +231,14 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     Submitted
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
+                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 1)" }}>
                       Reviews Received
                     </Text>
                     <IconStar size={16} />
@@ -246,14 +246,14 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
                     {premiumStats.reviewsReceivedThisCycle}
                   </Text>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     This cycle
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="queue-position-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
+                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 1)" }}>
                       Queue Position
                     </Text>
                     <IconTarget size={16} />
@@ -261,14 +261,14 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="xl" fw={700} style={{ color: '#f59e0b' }}>
                     #{premiumStats.queuePosition}
                   </Text>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     Priority queue
                   </Text>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="avg-turnaround-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
+                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 1)" }}>
                       Avg. Turnaround
                     </Text>
                     <IconClock size={16} />
@@ -276,7 +276,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="xl" fw={700} style={{ color: '#06b6d4' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     Your reviews
                   </Text>
                 </Card>
