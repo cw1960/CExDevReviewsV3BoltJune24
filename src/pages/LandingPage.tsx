@@ -692,8 +692,8 @@ export function LandingPage() {
                 >
                   <Badge 
                     size="lg" 
-                    variant="white" 
-                    color="dark"
+                    variant="filled" 
+                    color="green"
                     style={{ 
                       position: 'absolute',
                       top: -10,
@@ -710,7 +710,7 @@ export function LandingPage() {
                         Review Fast Track - For Serious Growth
                       </Badge>
                       <Group align="baseline" gap="xs">
-                        <Text size="2.5rem" fw={800} c="white">
+                        <Text size="2.5rem" fw={800} className="landing-card-number-green">
                           $19.99
                         </Text>
                         <Text size="lg" c="rgba(255,255,255,0.8)">
@@ -750,8 +750,8 @@ export function LandingPage() {
 
                     <Button 
                       size="lg" 
-                      variant="white"
-                      color="dark"
+                      variant="filled"
+                      color="green"
                       fullWidth
                       onClick={() => navigate('/upgrade')}
                       leftSection={<Crown size={20} />}
