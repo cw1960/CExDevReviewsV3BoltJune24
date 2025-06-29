@@ -1055,17 +1055,17 @@ h6 {
     font-weight: 500 !important;
   }
 
-  /* GLOBAL EMERGENCY: Force ALL text to be visible */
-  [class*="mantine-"],
-  [class*="mantine-"] * {
+  /* GLOBAL EMERGENCY: Force ALL text to be visible - BUT ALLOW COLOR OVERRIDES */
+  [class*="mantine-"]:not([style*="color"]),
+  [class*="mantine-"] *:not([style*="color"]) {
     opacity: 1 !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 1) !important;
-    text-fill-color: rgba(255, 255, 255, 1) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
   }
 
-  /* Specifically target any remaining invisible text elements */
-  [data-mantine-color-scheme="dark"] *:not([style*="color"]) {
-    color: rgba(255, 255, 255, 0.95) !important;
+  /* Reset webkit text fill to allow colors to show */
+  * {
+    -webkit-text-fill-color: initial !important;
+    text-fill-color: initial !important;
   }
 
   /* BEAUTIFUL CARD COLORS - Reviews This Cycle (Green) */
