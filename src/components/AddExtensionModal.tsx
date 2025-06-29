@@ -414,12 +414,12 @@ export function AddExtensionModal({
       closeOnEscape={true}
       zIndex={900}
       overlayProps={{
-        backgroundOpacity: 0.8,
+        backgroundOpacity: 0.6,
         blur: 2,
       }}
       styles={{
         overlay: {
-          backgroundColor: "#25262B",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
         },
         inner: {
           padding: "16px",
