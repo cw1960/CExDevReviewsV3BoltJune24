@@ -216,12 +216,17 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
       // Force Reviews Received to Purple
       const reviewsReceivedCards = document.querySelectorAll('.reviews-received-card');
+      console.log('Found Reviews Received cards:', reviewsReceivedCards.length);
       reviewsReceivedCards.forEach(card => {
         const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
+        console.log('Reviews Received - Found numberDiv:', !!numberDiv, 'Found icon:', !!icon);
         if (numberDiv) {
+          console.log('Setting PURPLE color for Reviews Received');
           numberDiv.style.color = '#8b5cf6';
           numberDiv.style.setProperty('color', '#8b5cf6', 'important');
+          (numberDiv.style as any).webkitTextFillColor = '#8b5cf6';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#8b5cf6', 'important');
         }
         if (icon) {
           icon.style.color = '#8b5cf6';
@@ -231,12 +236,17 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
       // Force Queue Position to Orange
       const queuePositionCards = document.querySelectorAll('.queue-position-card');
+      console.log('Found Queue Position cards:', queuePositionCards.length);
       queuePositionCards.forEach(card => {
         const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
+        console.log('Queue Position - Found numberDiv:', !!numberDiv, 'Found icon:', !!icon);
         if (numberDiv) {
+          console.log('Setting ORANGE color for Queue Position');
           numberDiv.style.color = '#f59e0b';
           numberDiv.style.setProperty('color', '#f59e0b', 'important');
+          (numberDiv.style as any).webkitTextFillColor = '#f59e0b';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#f59e0b', 'important');
         }
         if (icon) {
           icon.style.color = '#f59e0b';
@@ -246,12 +256,17 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
       // Force Avg Turnaround to Cyan
       const avgTurnaroundCards = document.querySelectorAll('.avg-turnaround-card');
+      console.log('Found Avg Turnaround cards:', avgTurnaroundCards.length);
       avgTurnaroundCards.forEach(card => {
         const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
+        console.log('Avg Turnaround - Found numberDiv:', !!numberDiv, 'Found icon:', !!icon);
         if (numberDiv) {
+          console.log('Setting CYAN color for Avg Turnaround');
           numberDiv.style.color = '#06b6d4';
           numberDiv.style.setProperty('color', '#06b6d4', 'important');
+          (numberDiv.style as any).webkitTextFillColor = '#06b6d4';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
         }
         if (icon) {
           icon.style.color = '#06b6d4';
