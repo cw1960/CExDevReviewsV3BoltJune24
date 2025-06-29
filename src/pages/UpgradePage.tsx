@@ -240,9 +240,10 @@ export function UpgradePage() {
                   color="green"
                   style={{
                     position: "absolute",
-                    top: -10,
+                    top: 15,
                     left: "50%",
                     transform: "translateX(-50%)",
+                    zIndex: 1,
                   }}
                 >
                   Most Popular
@@ -252,7 +253,7 @@ export function UpgradePage() {
                   align="center"
                   gap="lg"
                   h="100%"
-                  style={{ paddingTop: "20px" }}
+                  style={{ paddingTop: "30px" }}
                 >
                   <Stack align="center" gap="xs">
                     <Title order={2}>Monthly Plan</Title>
@@ -327,14 +328,14 @@ export function UpgradePage() {
                     <Title order={2} c="white">
                       Yearly Plan
                     </Title>
-                                         <Group align="baseline" gap="xs">
-                       <Text size="3rem" fw={800} c="violet">
-                         ${yearlyProduct.price}
-                       </Text>
-                       <Text size="lg" c="violet">
-                         /year
-                       </Text>
-                     </Group>
+                    <Group align="baseline" gap="xs">
+                      <Text size="3rem" fw={800} c="violet">
+                        ${yearlyProduct.price}
+                      </Text>
+                      <Text size="lg" c="violet">
+                        /year
+                      </Text>
+                    </Group>
                     <Text size="sm" c="rgba(255,255,255,0.8)" ta="center">
                       Billed annually • Best value
                     </Text>
@@ -344,26 +345,26 @@ export function UpgradePage() {
                     {yearlyProduct.description}
                   </Text>
 
-                                     <Button
-                     size="lg"
-                     variant="filled"
-                     color="violet"
-                     fullWidth
-                     onClick={() => handlePurchase(1)}
-                     leftSection={<Crown size={20} />}
-                     styles={{
-                       root: {
-                         fontSize: "1.1rem",
-                         fontWeight: 600,
-                         "&:hover": {
-                           transform: "translateY(-2px)",
-                           boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                         },
-                       },
-                     }}
-                   >
-                     Choose Yearly
-                   </Button>
+                  <Button
+                    size="lg"
+                    variant="filled"
+                    color="violet"
+                    fullWidth
+                    onClick={() => handlePurchase(1)}
+                    leftSection={<Crown size={20} />}
+                    styles={{
+                      root: {
+                        fontSize: "1.1rem",
+                        fontWeight: 600,
+                        "&:hover": {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                        },
+                      },
+                    }}
+                  >
+                    Choose Yearly
+                  </Button>
                 </Stack>
               </Card>
             </Grid.Col>
