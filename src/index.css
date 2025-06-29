@@ -170,6 +170,22 @@ b {
   opacity: 1 !important;
   filter: none !important;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8) !important;
+  -webkit-text-fill-color: initial !important;
+  background-clip: initial !important;
+  -webkit-background-clip: initial !important;
+}
+
+/* ULTIMATE NUCLEAR OPTION - OVERRIDE EVERYTHING FOR ACCORDION TEXT */
+.mantine-Accordion-panel .mantine-Text-root,
+.mantine-Accordion-content .mantine-Text-root,
+.mantine-Accordion-panel span,
+.mantine-Accordion-content span,
+.mantine-Accordion-panel p,
+.mantine-Accordion-content p {
+  color: rgba(255, 255, 255, 1) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-weight: 500 !important;
 }
 
 /* Enhanced Headings - Better contrast on gradient backgrounds */
@@ -853,19 +869,21 @@ h6 {
   animation: shimmer 1.5s infinite;
 }
 
-/* Text Gradients */
+/* Text Gradients - DISABLED TO PREVENT TRANSPARENCY ISSUES */
 .text-gradient {
-  background: var(--gradient-primary);
+  /* background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background-clip: text; */
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 .text-gradient-secondary {
-  background: var(--gradient-secondary);
+  /* background: var(--gradient-secondary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background-clip: text; */
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 /* Enhanced Badge Styling */
@@ -937,9 +955,9 @@ h6 {
 /* Dark Mode Overrides for proper contrast */
 @media (prefers-color-scheme: dark) {
   .card-enhanced {
-    background: rgba(37, 38, 43, 0.9);
+    background: rgb(37, 38, 43);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 1);
   }
 
   .shimmer {
@@ -955,12 +973,12 @@ h6 {
     color: white !important;
   }
   
-  /* Ensure all card content is readable in dark mode */
+  /* Ensure all card content is readable in dark mode - BRIGHT WHITE */
   .mantine-Card-root {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: rgba(255, 255, 255, 1) !important;
   }
   
   .mantine-Card-root * {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: rgba(255, 255, 255, 1) !important;
   }
 }
