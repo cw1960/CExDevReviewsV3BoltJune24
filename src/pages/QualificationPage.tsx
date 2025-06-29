@@ -94,13 +94,86 @@ export function QualificationPage() {
             const cardText = parentCard.textContent;
 
             if (cardText?.includes("Review Guidelines")) {
-              console.log(`Setting BRIGHT BLUE for guidelines icon ${index}`);
-              icon.style.backgroundColor = "#2563eb";
-              icon.style.setProperty(
-                "background-color",
-                "#2563eb",
-                "important",
-              );
+              // Find which guideline this icon belongs to by looking at surrounding text
+              const parentGroup =
+                icon.closest('[class*="Group"]') || icon.parentElement;
+              const groupText = parentGroup?.textContent || "";
+
+              if (groupText.includes("Provide Honest Reviews")) {
+                console.log(
+                  `Setting VIBRANT GREEN for Honest Reviews icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #10b981, #059669)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #10b981, #059669)",
+                  "important",
+                );
+              } else if (groupText.includes("Use Extensions for 1+ Hours")) {
+                console.log(
+                  `Setting VIBRANT ORANGE for Use Extensions icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #f59e0b, #d97706)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #f59e0b, #d97706)",
+                  "important",
+                );
+              } else if (
+                groupText.includes("Follow Chrome Web Store Policies")
+              ) {
+                console.log(
+                  `Setting VIBRANT PURPLE for Chrome Policies icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #8b5cf6, #7c3aed)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                  "important",
+                );
+              } else if (groupText.includes("Maintain Quality Standards")) {
+                console.log(
+                  `Setting VIBRANT RED for Quality Standards icon ${index}`,
+                );
+                icon.style.background =
+                  "linear-gradient(135deg, #ef4444, #dc2626)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #ef4444, #dc2626)",
+                  "important",
+                );
+              } else if (groupText.includes("Respect the Community")) {
+                console.log(`Setting VIBRANT CYAN for Community icon ${index}`);
+                icon.style.background =
+                  "linear-gradient(135deg, #06b6d4, #0891b2)";
+                icon.style.setProperty(
+                  "background",
+                  "linear-gradient(135deg, #06b6d4, #0891b2)",
+                  "important",
+                );
+              } else {
+                // Fallback - use position-based coloring if text matching fails
+                const guidelineIndex = index % 5;
+                const colors = [
+                  "linear-gradient(135deg, #10b981, #059669)", // Green
+                  "linear-gradient(135deg, #f59e0b, #d97706)", // Orange
+                  "linear-gradient(135deg, #8b5cf6, #7c3aed)", // Purple
+                  "linear-gradient(135deg, #ef4444, #dc2626)", // Red
+                  "linear-gradient(135deg, #06b6d4, #0891b2)", // Cyan
+                ];
+                console.log(
+                  `Setting fallback color for guidelines icon ${index}: ${colors[guidelineIndex]}`,
+                );
+                icon.style.background = colors[guidelineIndex];
+                icon.style.setProperty(
+                  "background",
+                  colors[guidelineIndex],
+                  "important",
+                );
+              }
             } else if (cardText?.includes("Reviewer Requirements")) {
               console.log(
                 `Setting BRIGHT GREEN for requirements icon ${index}`,
