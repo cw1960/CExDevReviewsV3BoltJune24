@@ -223,42 +223,47 @@ export function DashboardPage() {
       setPersonalStatsError(undefined);
       try {
         // Add detailed debugging for premium detection
-        console.log('🔍 DEBUG: Premium detection details:', {
+        console.log("🔍 DEBUG: Premium detection details:", {
           isPremium,
           profileSubscriptionStatus: profile?.subscription_status,
-          planName
+          planName,
         });
-        
+
         const functionName = isPremium
           ? "fetch-premium-personal-stats"
           : "fetch-personal-stats";
-        
+
         console.log(`📊 Calling ${functionName} for user:`, profile.id);
-        console.log('🔑 isPremium:', isPremium);
-        console.log('📋 Function body:', { userId: profile.id });
-        
+        console.log("🔑 isPremium:", isPremium);
+        console.log("📋 Function body:", { userId: profile.id });
+
         const { data: statsResponse, error: statsError } = await withTimeout(
           supabase.functions.invoke(functionName, {
             body: { userId: profile.id },
           }),
           10000,
         );
-        
-        console.log('📊 Personal stats response:', { statsResponse, statsError });
-        console.log('📊 Stats response details:', {
+
+        console.log("📊 Personal stats response:", {
+          statsResponse,
+          statsError,
+        });
+        console.log("📊 Stats response details:", {
           success: statsResponse?.success,
           hasData: !!statsResponse?.data,
           errorMessage: statsResponse?.error,
-          functionError: statsError
+          functionError: statsError,
         });
-        
+
         if (statsError) {
-          console.error('❌ Personal stats error:', statsError);
+          console.error("❌ Personal stats error:", statsError);
           // FALLBACK: Provide placeholder data instead of failing
-          console.log('🔄 Using fallback placeholder data for personal stats');
+          console.log("🔄 Using fallback placeholder data for personal stats");
           const fallbackStats = {
             cycleStart: new Date().toISOString(),
-            cycleEnd: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+            cycleEnd: new Date(
+              Date.now() + 28 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
             daysLeftInCycle: 28,
             reviewsSubmittedThisCycle: 0,
             reviewsReceivedThisCycle: 0,
@@ -268,17 +273,24 @@ export function DashboardPage() {
             totalReviewsReceived: 0,
           };
           setPersonalStats(fallbackStats);
-          setPersonalStatsError("Personal stats temporarily unavailable - showing placeholder data");
+          setPersonalStatsError(
+            "Personal stats temporarily unavailable - showing placeholder data",
+          );
         } else if (statsResponse?.success) {
-          console.log('✅ Personal stats loaded successfully');
+          console.log("✅ Personal stats loaded successfully");
           setPersonalStats(statsResponse.data);
         } else {
-          console.error('❌ Personal stats function returned error:', statsResponse);
+          console.error(
+            "❌ Personal stats function returned error:",
+            statsResponse,
+          );
           // FALLBACK: Provide placeholder data instead of failing
-          console.log('🔄 Using fallback placeholder data for personal stats');
+          console.log("🔄 Using fallback placeholder data for personal stats");
           const fallbackStats = {
             cycleStart: new Date().toISOString(),
-            cycleEnd: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+            cycleEnd: new Date(
+              Date.now() + 28 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
             daysLeftInCycle: 28,
             reviewsSubmittedThisCycle: 0,
             reviewsReceivedThisCycle: 0,
@@ -288,15 +300,19 @@ export function DashboardPage() {
             totalReviewsReceived: 0,
           };
           setPersonalStats(fallbackStats);
-          setPersonalStatsError("Personal stats temporarily unavailable - showing placeholder data");
+          setPersonalStatsError(
+            "Personal stats temporarily unavailable - showing placeholder data",
+          );
         }
       } catch (err: any) {
-        console.error('💥 Personal stats catch error:', err);
+        console.error("💥 Personal stats catch error:", err);
         // FALLBACK: Provide placeholder data instead of failing
-        console.log('🔄 Using fallback placeholder data for personal stats');
+        console.log("🔄 Using fallback placeholder data for personal stats");
         const fallbackStats = {
           cycleStart: new Date().toISOString(),
-          cycleEnd: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+          cycleEnd: new Date(
+            Date.now() + 28 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
           daysLeftInCycle: 28,
           reviewsSubmittedThisCycle: 0,
           reviewsReceivedThisCycle: 0,
@@ -306,7 +322,9 @@ export function DashboardPage() {
           totalReviewsReceived: 0,
         };
         setPersonalStats(fallbackStats);
-        setPersonalStatsError("Personal stats temporarily unavailable - showing placeholder data");
+        setPersonalStatsError(
+          "Personal stats temporarily unavailable - showing placeholder data",
+        );
       } finally {
         setPersonalStatsLoading(false);
       }
@@ -366,6 +384,9 @@ export function DashboardPage() {
           color: "green",
           icon: <Star size={16} />,
         });
+
+        // Navigate to Review Queue page to see the new assignment
+        navigate("/reviews");
       }
 
       // Refresh dashboard data to show the new assignment
@@ -562,62 +583,78 @@ export function DashboardPage() {
   // FORCE DASHBOARD CARD COLORS WITH JAVASCRIPT
   useEffect(() => {
     const forceDashboardColors = () => {
-      console.log('🎨 FORCING DASHBOARD COLORS - JavaScript is running!');
-      
+      console.log("🎨 FORCING DASHBOARD COLORS - JavaScript is running!");
+
       // Force Extensions Card to Cyan
-      const extensionsCards = document.querySelectorAll('.extensions-card');
-      console.log('Found Extensions cards:', extensionsCards.length);
-      extensionsCards.forEach(card => {
-        const numberDiv = card.querySelector('.stats-number') as HTMLElement;
-        const icon = card.querySelector('svg') as SVGElement;
+      const extensionsCards = document.querySelectorAll(".extensions-card");
+      console.log("Found Extensions cards:", extensionsCards.length);
+      extensionsCards.forEach((card) => {
+        const numberDiv = card.querySelector(".stats-number") as HTMLElement;
+        const icon = card.querySelector("svg") as SVGElement;
         if (numberDiv) {
-          console.log('Setting CYAN color for Extensions');
-          numberDiv.style.color = '#06b6d4';
-          numberDiv.style.setProperty('color', '#06b6d4', 'important');
-          (numberDiv.style as any).webkitTextFillColor = '#06b6d4';
-          numberDiv.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
+          console.log("Setting CYAN color for Extensions");
+          numberDiv.style.color = "#06b6d4";
+          numberDiv.style.setProperty("color", "#06b6d4", "important");
+          (numberDiv.style as any).webkitTextFillColor = "#06b6d4";
+          numberDiv.style.setProperty(
+            "-webkit-text-fill-color",
+            "#06b6d4",
+            "important",
+          );
         }
         if (icon) {
-          icon.style.color = '#06b6d4';
-          icon.style.setProperty('color', '#06b6d4', 'important');
+          icon.style.color = "#06b6d4";
+          icon.style.setProperty("color", "#06b6d4", "important");
         }
       });
 
       // Force Pending Reviews Card to Red
-      const pendingReviewsCards = document.querySelectorAll('.pending-reviews-card');
-      console.log('Found Pending Reviews cards:', pendingReviewsCards.length);
-      pendingReviewsCards.forEach(card => {
-        const numberDiv = card.querySelector('.stats-number') as HTMLElement;
-        const icon = card.querySelector('svg') as SVGElement;
+      const pendingReviewsCards = document.querySelectorAll(
+        ".pending-reviews-card",
+      );
+      console.log("Found Pending Reviews cards:", pendingReviewsCards.length);
+      pendingReviewsCards.forEach((card) => {
+        const numberDiv = card.querySelector(".stats-number") as HTMLElement;
+        const icon = card.querySelector("svg") as SVGElement;
         if (numberDiv) {
-          console.log('Setting RED color for Pending Reviews');
-          numberDiv.style.color = '#ef4444';
-          numberDiv.style.setProperty('color', '#ef4444', 'important');
-          (numberDiv.style as any).webkitTextFillColor = '#ef4444';
-          numberDiv.style.setProperty('-webkit-text-fill-color', '#ef4444', 'important');
+          console.log("Setting RED color for Pending Reviews");
+          numberDiv.style.color = "#ef4444";
+          numberDiv.style.setProperty("color", "#ef4444", "important");
+          (numberDiv.style as any).webkitTextFillColor = "#ef4444";
+          numberDiv.style.setProperty(
+            "-webkit-text-fill-color",
+            "#ef4444",
+            "important",
+          );
         }
         if (icon) {
-          icon.style.color = '#ef4444';
-          icon.style.setProperty('color', '#ef4444', 'important');
+          icon.style.color = "#ef4444";
+          icon.style.setProperty("color", "#ef4444", "important");
         }
       });
 
       // Force Credits Balance Card to Green
-      const creditsBalanceCards = document.querySelectorAll('.credits-balance-card');
-      console.log('Found Credits Balance cards:', creditsBalanceCards.length);
-      creditsBalanceCards.forEach(card => {
-        const numberDiv = card.querySelector('.stats-number') as HTMLElement;
-        const icon = card.querySelector('svg') as SVGElement;
+      const creditsBalanceCards = document.querySelectorAll(
+        ".credits-balance-card",
+      );
+      console.log("Found Credits Balance cards:", creditsBalanceCards.length);
+      creditsBalanceCards.forEach((card) => {
+        const numberDiv = card.querySelector(".stats-number") as HTMLElement;
+        const icon = card.querySelector("svg") as SVGElement;
         if (numberDiv) {
-          console.log('Setting GREEN color for Credits Balance');
-          numberDiv.style.color = '#059669';
-          numberDiv.style.setProperty('color', '#059669', 'important');
-          (numberDiv.style as any).webkitTextFillColor = '#059669';
-          numberDiv.style.setProperty('-webkit-text-fill-color', '#059669', 'important');
+          console.log("Setting GREEN color for Credits Balance");
+          numberDiv.style.color = "#059669";
+          numberDiv.style.setProperty("color", "#059669", "important");
+          (numberDiv.style as any).webkitTextFillColor = "#059669";
+          numberDiv.style.setProperty(
+            "-webkit-text-fill-color",
+            "#059669",
+            "important",
+          );
         }
         if (icon) {
-          icon.style.color = '#059669';
-          icon.style.setProperty('color', '#059669', 'important');
+          icon.style.color = "#059669";
+          icon.style.setProperty("color", "#059669", "important");
         }
       });
     };
@@ -625,7 +662,7 @@ export function DashboardPage() {
     // Run immediately and also with a small delay to ensure DOM is ready
     forceDashboardColors();
     const timeout = setTimeout(forceDashboardColors, 100);
-    
+
     return () => clearTimeout(timeout);
   }, [extensions, assignments, profile]);
 
@@ -678,7 +715,7 @@ export function DashboardPage() {
       <Group justify="space-between" mb="xl">
         <Stack gap="xs">
           <Title order={1}>Welcome back, {profile?.name}!</Title>
-          <Text size="lg" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+          <Text size="lg" style={{ color: "rgba(255, 255, 255, 0.8)" }}>
             Here's what's happening with your extensions and reviews
           </Text>
         </Stack>
@@ -762,12 +799,16 @@ export function DashboardPage() {
               <Text fw={600}>Extensions</Text>
               <Package size={20} />
             </Group>
-            <Text size="2.5rem" fw={800} mb="xs" className="stats-number" style={{ color: '#06b6d4' }}>
+            <Text
+              size="2.5rem"
+              fw={800}
+              mb="xs"
+              className="stats-number"
+              style={{ color: "#06b6d4" }}
+            >
               {extensions.length}
             </Text>
-            <Text size="sm">
-              Total extensions in your library
-            </Text>
+            <Text size="sm">Total extensions in your library</Text>
           </Card>
         </Grid.Col>
 
@@ -777,12 +818,16 @@ export function DashboardPage() {
               <Text fw={600}>Pending Reviews</Text>
               <Star size={20} />
             </Group>
-            <Text size="2.5rem" fw={800} mb="xs" className="stats-number" style={{ color: '#ef4444' }}>
+            <Text
+              size="2.5rem"
+              fw={800}
+              mb="xs"
+              className="stats-number"
+              style={{ color: "#ef4444" }}
+            >
               {assignments.length}
             </Text>
-            <Text size="sm">
-              Reviews assigned to you
-            </Text>
+            <Text size="sm">Reviews assigned to you</Text>
           </Card>
         </Grid.Col>
 
@@ -792,12 +837,16 @@ export function DashboardPage() {
               <Text fw={600}>Credits Balance</Text>
               <TrendingUp size={20} />
             </Group>
-            <Text size="2.5rem" fw={800} mb="xs" className="stats-number" style={{ color: '#059669' }}>
+            <Text
+              size="2.5rem"
+              fw={800}
+              mb="xs"
+              className="stats-number"
+              style={{ color: "#059669" }}
+            >
               {profile?.credit_balance || 0}
             </Text>
-            <Text size="sm">
-              Available for queue submissions
-            </Text>
+            <Text size="sm">Available for queue submissions</Text>
           </Card>
         </Grid.Col>
 
@@ -844,12 +893,17 @@ export function DashboardPage() {
                       <Avatar size="sm" src={extension.logo_url} />
                       <Stack gap="xs">
                         <Text fw={500}>{extension.name}</Text>
-                        <Text size="sm" maw={300} truncate style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                        <Text
+                          size="sm"
+                          maw={300}
+                          truncate
+                          style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                        >
                           {extension.description || "No description"}
                         </Text>
                         {extension.status === "pending_verification" &&
                           extension.submitted_to_queue_at && (
-                            <Text size="xs" style={{ color: '#3b82f6' }}>
+                            <Text size="xs" style={{ color: "#3b82f6" }}>
                               In queue since{" "}
                               {new Date(
                                 extension.submitted_to_queue_at,
@@ -857,7 +911,7 @@ export function DashboardPage() {
                             </Text>
                           )}
                         {extension.status === "assigned" && (
-                          <Text size="xs" style={{ color: '#8b5cf6' }}>
+                          <Text size="xs" style={{ color: "#8b5cf6" }}>
                             Currently being reviewed
                           </Text>
                         )}
@@ -952,7 +1006,11 @@ export function DashboardPage() {
                     <Text fw={600} size="lg">
                       No pending reviews
                     </Text>
-                    <Text size="sm" ta="center" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                    <Text
+                      size="sm"
+                      ta="center"
+                      style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                    >
                       {profile?.has_completed_qualification
                         ? "Click 'Request Assignment' to get started and earn credits!"
                         : "Complete your qualification to start receiving review assignments."}
@@ -985,7 +1043,10 @@ export function DashboardPage() {
                           ? truncate(assignment.extension.name, 20)
                           : "Unknown Extension"}
                       </Text>
-                      <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                      <Text
+                        size="xs"
+                        style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                      >
                         Due: {new Date(assignment.due_at).toLocaleDateString()}
                       </Text>
                       <Progress
