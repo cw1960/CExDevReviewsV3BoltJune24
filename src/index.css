@@ -1030,4 +1030,41 @@ h6 {
   .mantine-Card-root * {
     color: rgba(255, 255, 255, 1) !important;
   }
+
+  /* EMERGENCY: Force ALL Accordion Control Text to be Visible */
+  .mantine-Accordion-control,
+  .mantine-Accordion-control *,
+  [data-accordion-control],
+  [data-accordion-control] * {
+    color: rgba(255, 255, 255, 1) !important;
+    opacity: 1 !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, 1) !important;
+    text-fill-color: rgba(255, 255, 255, 1) !important;
+    font-weight: 600 !important;
+  }
+
+  /* EMERGENCY: Force ALL Accordion Panel Content to be Visible */
+  .mantine-Accordion-panel,
+  .mantine-Accordion-panel *,
+  [data-accordion-panel],
+  [data-accordion-panel] * {
+    color: rgba(255, 255, 255, 1) !important;
+    opacity: 1 !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, 1) !important;
+    text-fill-color: rgba(255, 255, 255, 1) !important;
+    font-weight: 500 !important;
+  }
+
+  /* GLOBAL EMERGENCY: Force ALL text to be visible */
+  [class*="mantine-"],
+  [class*="mantine-"] * {
+    opacity: 1 !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, 1) !important;
+    text-fill-color: rgba(255, 255, 255, 1) !important;
+  }
+
+  /* Specifically target any remaining invisible text elements */
+  [data-mantine-color-scheme="dark"] *:not([style*="color"]) {
+    color: rgba(255, 255, 255, 0.95) !important;
+  }
 }
