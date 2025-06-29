@@ -33,6 +33,45 @@ export function ProfilePage() {
   const { planName, isPremium } = useSubscription()
   const navigate = useNavigate()
 
+  // FORCE PROFILE PAGE COLORS WITH JAVASCRIPT
+  React.useEffect(() => {
+    const forceProfileColors = () => {
+      console.log('🎨 FORCING PROFILE COLORS - JavaScript is running!');
+      
+      // Force Credits display to bright blue
+      const creditsNumbers = document.querySelectorAll('div[class*="mantine-Text-root"][class*="2.5rem"][class*="fw-800"]');
+      console.log('Found profile credits numbers:', creditsNumbers.length);
+      
+      creditsNumbers.forEach((numberElement) => {
+        if (numberElement instanceof HTMLElement) {
+          const parentCard = numberElement.closest('.mantine-Card-root');
+          if (parentCard) {
+            const titleElement = parentCard.querySelector('div[class*="fw-700"]') as HTMLElement;
+            const iconElement = parentCard.querySelector('svg') as SVGElement;
+            
+            if (titleElement && titleElement.textContent?.includes('Credits')) {
+              console.log('Setting BRIGHT BLUE color for Credits');
+              numberElement.style.color = '#2563eb'; // Bright Blue
+              numberElement.style.setProperty('color', '#2563eb', 'important');
+              (numberElement.style as any).webkitTextFillColor = '#2563eb';
+              numberElement.style.setProperty('-webkit-text-fill-color', '#2563eb', 'important');
+              if (iconElement) {
+                iconElement.style.color = '#2563eb';
+                iconElement.style.setProperty('color', '#2563eb', 'important');
+              }
+            }
+          }
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceProfileColors();
+    const timeout = setTimeout(forceProfileColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [profile]);
+
   const form = useForm({
     initialValues: {
       name: profile?.name || ''

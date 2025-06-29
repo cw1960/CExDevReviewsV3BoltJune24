@@ -232,6 +232,78 @@ export function AdminDashboardPage() {
     }
   };
 
+  // FORCE ADMIN DASHBOARD CARD COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceAdminColors = () => {
+      console.log('🎨 FORCING ADMIN DASHBOARD COLORS - JavaScript is running!');
+      
+      // Get all text elements that are likely stat numbers
+      const statNumbers = document.querySelectorAll('div[class*="mantine-Text-root"][class*="xl"][class*="fw-700"]');
+      console.log('Found admin stat numbers:', statNumbers.length);
+      
+      statNumbers.forEach((numberElement) => {
+        if (numberElement instanceof HTMLElement) {
+          // Find the parent card and check the title
+          const parentCard = numberElement.closest('.mantine-Card-root');
+          if (parentCard) {
+            const titleElement = parentCard.querySelector('div[class*="fw-600"]') as HTMLElement;
+            const iconElement = parentCard.querySelector('svg') as SVGElement;
+            
+            if (titleElement) {
+              const title = titleElement.textContent?.trim();
+              console.log('Processing admin card:', title);
+              
+              switch (title) {
+                case 'Total Users':
+                  numberElement.style.color = '#3b82f6'; // Blue
+                  numberElement.style.setProperty('color', '#3b82f6', 'important');
+                  if (iconElement) iconElement.style.color = '#3b82f6';
+                  console.log('Set Total Users to BLUE');
+                  break;
+                case 'Total Extensions':
+                  numberElement.style.color = '#10b981'; // Green
+                  numberElement.style.setProperty('color', '#10b981', 'important');
+                  if (iconElement) iconElement.style.color = '#10b981';
+                  console.log('Set Total Extensions to GREEN');
+                  break;
+                case 'Extensions in Queue':
+                  numberElement.style.color = '#f59e0b'; // Orange
+                  numberElement.style.setProperty('color', '#f59e0b', 'important');
+                  if (iconElement) iconElement.style.color = '#f59e0b';
+                  console.log('Set Extensions in Queue to ORANGE');
+                  break;
+                case 'Active Reviews':
+                  numberElement.style.color = '#8b5cf6'; // Purple
+                  numberElement.style.setProperty('color', '#8b5cf6', 'important');
+                  if (iconElement) iconElement.style.color = '#8b5cf6';
+                  console.log('Set Active Reviews to PURPLE');
+                  break;
+                case 'Credits Issued':
+                  numberElement.style.color = '#fbbf24'; // Yellow
+                  numberElement.style.setProperty('color', '#fbbf24', 'important');
+                  if (iconElement) iconElement.style.color = '#fbbf24';
+                  console.log('Set Credits Issued to YELLOW');
+                  break;
+                case 'Avg Queue Time':
+                  numberElement.style.color = '#06b6d4'; // Cyan
+                  numberElement.style.setProperty('color', '#06b6d4', 'important');
+                  if (iconElement) iconElement.style.color = '#06b6d4';
+                  console.log('Set Avg Queue Time to CYAN');
+                  break;
+              }
+            }
+          }
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceAdminColors();
+    const timeout = setTimeout(forceAdminColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [stats]);
+
   if (profile?.role !== "admin") {
     console.log("🚫 Access denied - user is not admin");
     console.log("👤 Current profile:", profile);
