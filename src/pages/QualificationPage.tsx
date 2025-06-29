@@ -186,6 +186,75 @@ export function QualificationPage() {
           }
         }
       });
+
+      // Force Complete Qualification button to be VIBRANT GREEN when enabled
+      const buttons = document.querySelectorAll(".mantine-Button-root");
+      buttons.forEach((button) => {
+        if (
+          button instanceof HTMLElement &&
+          button.textContent?.includes("Complete Qualification") &&
+          !button.hasAttribute("disabled")
+        ) {
+          console.log(
+            "Setting VIBRANT GREEN for Complete Qualification button",
+          );
+          button.style.background = "linear-gradient(135deg, #10b981, #059669)";
+          button.style.color = "#ffffff";
+          button.style.border = "none";
+          button.style.fontWeight = "600";
+          button.style.fontSize = "16px";
+          button.style.padding = "12px 24px";
+          button.style.borderRadius = "8px";
+          button.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.3)";
+          button.style.transition = "all 0.3s ease";
+          button.style.setProperty(
+            "background",
+            "linear-gradient(135deg, #10b981, #059669)",
+            "important",
+          );
+          button.style.setProperty("color", "#ffffff", "important");
+          button.style.setProperty(
+            "box-shadow",
+            "0 4px 12px rgba(16, 185, 129, 0.3)",
+            "important",
+          );
+
+          // Add hover effect
+          button.addEventListener("mouseenter", () => {
+            button.style.background =
+              "linear-gradient(135deg, #059669, #047857)";
+            button.style.transform = "translateY(-2px)";
+            button.style.boxShadow = "0 6px 20px rgba(16, 185, 129, 0.4)";
+            button.style.setProperty(
+              "background",
+              "linear-gradient(135deg, #059669, #047857)",
+              "important",
+            );
+            button.style.setProperty(
+              "box-shadow",
+              "0 6px 20px rgba(16, 185, 129, 0.4)",
+              "important",
+            );
+          });
+
+          button.addEventListener("mouseleave", () => {
+            button.style.background =
+              "linear-gradient(135deg, #10b981, #059669)";
+            button.style.transform = "translateY(0)";
+            button.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.3)";
+            button.style.setProperty(
+              "background",
+              "linear-gradient(135deg, #10b981, #059669)",
+              "important",
+            );
+            button.style.setProperty(
+              "box-shadow",
+              "0 4px 12px rgba(16, 185, 129, 0.3)",
+              "important",
+            );
+          });
+        }
+      });
     };
 
     // Run immediately and also with a small delay to ensure DOM is ready
