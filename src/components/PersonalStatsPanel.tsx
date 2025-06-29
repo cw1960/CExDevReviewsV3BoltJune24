@@ -218,22 +218,22 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: 'red', fontWeight: 900 }}>
+                    <Text size="sm" fw={500} style={{ color: 'red !important', fontWeight: '900 !important', backgroundColor: 'yellow !important', border: '5px solid blue !important' }}>
                       Reviews This Cycle
                     </Text>
                     <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700} style={{ color: '#FF0000', backgroundColor: 'yellow', border: '3px solid red' }}>
+                    <div style={{ color: '#FF0000 !important', backgroundColor: 'yellow !important', border: '3px solid red !important', fontSize: '24px', fontWeight: '700', padding: '10px' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
-                    </Text>
+                    </div>
                     <Text size="sm" style={{ color: '#10b981' }}>
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.05)", fontWeight: 900, fontSize: '16px' }}>
-                    Submitted
-                  </Text>
+                  <span style={{ color: '#FF0000 !important', backgroundColor: '#00FF00 !important', border: '5px solid #0000FF !important', fontSize: '20px !important', fontWeight: '900 !important', display: 'block !important', padding: '10px !important' }}>
+                    SUBMITTED TEST
+                  </span>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
