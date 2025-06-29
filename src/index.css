@@ -132,20 +132,20 @@ b {
 .reviews-received-card *,
 .queue-position-card *,
 .avg-turnaround-card * {
-  color: rgba(255, 255, 255, 0.95) !important;
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 /* ULTIMATE FAILSAFE - FORCE ALL TEXT IN ACCORDION PANELS TO BE BRIGHT */
 .mantine-Accordion-panel,
 .mantine-Accordion-content,
 .mantine-Card-root {
-  --mantine-color-text: rgba(255, 255, 255, 0.95) !important;
+  --mantine-color-text: rgba(255, 255, 255, 1) !important;
 }
 
 .mantine-Accordion-panel .mantine-Text-root:not([style*="color"]),
 .mantine-Accordion-content .mantine-Text-root:not([style*="color"]),
 .mantine-Card-root .mantine-Text-root:not([style*="color"]) {
-  color: rgba(255, 255, 255, 0.95) !important;
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 /* FORCE SOLID BACKGROUNDS FOR ACCORDION CONTENT */
