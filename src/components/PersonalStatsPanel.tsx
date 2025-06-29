@@ -234,9 +234,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 1)', fontWeight: 500 }}>
+                    <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
                       Reviews This Cycle
-                    </Text>
+                    </div>
                     <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
@@ -247,16 +247,16 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
+                  <div style={{ color: '#FFFFFF', fontSize: '12px' }}>
                     Submitted
-                  </Text>
+                  </div>
                 </Card>
 
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-received-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 1)" }}>
+                    <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
                       Reviews Received
-                    </Text>
+                    </div>
                     <IconStar size={16} />
                   </Group>
                   <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
