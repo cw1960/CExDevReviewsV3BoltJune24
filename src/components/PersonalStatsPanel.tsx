@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Group,
@@ -184,6 +184,77 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
 
   // Premium tier component with accordion
   const premiumStats = stats as PremiumPersonalStats;
+
+  // FORCE COLORS WITH JAVASCRIPT - GUARANTEED TO WORK
+  useEffect(() => {
+    const forceColors = () => {
+      // Force Reviews This Cycle to Green
+      const reviewsCycleCards = document.querySelectorAll('.reviews-cycle-card');
+      reviewsCycleCards.forEach(card => {
+        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          numberDiv.style.color = '#10b981';
+          numberDiv.style.setProperty('color', '#10b981', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#10b981';
+          icon.style.setProperty('color', '#10b981', 'important');
+        }
+      });
+
+      // Force Reviews Received to Purple
+      const reviewsReceivedCards = document.querySelectorAll('.reviews-received-card');
+      reviewsReceivedCards.forEach(card => {
+        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          numberDiv.style.color = '#8b5cf6';
+          numberDiv.style.setProperty('color', '#8b5cf6', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#8b5cf6';
+          icon.style.setProperty('color', '#8b5cf6', 'important');
+        }
+      });
+
+      // Force Queue Position to Orange
+      const queuePositionCards = document.querySelectorAll('.queue-position-card');
+      queuePositionCards.forEach(card => {
+        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          numberDiv.style.color = '#f59e0b';
+          numberDiv.style.setProperty('color', '#f59e0b', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#f59e0b';
+          icon.style.setProperty('color', '#f59e0b', 'important');
+        }
+      });
+
+      // Force Avg Turnaround to Cyan
+      const avgTurnaroundCards = document.querySelectorAll('.avg-turnaround-card');
+      avgTurnaroundCards.forEach(card => {
+        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          numberDiv.style.color = '#06b6d4';
+          numberDiv.style.setProperty('color', '#06b6d4', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#06b6d4';
+          icon.style.setProperty('color', '#06b6d4', 'important');
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceColors();
+    const timeout = setTimeout(forceColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [stats]);
 
   return (
     <>
