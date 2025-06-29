@@ -49,38 +49,23 @@ body {
   min-height: 100vh;
 }
 
-/* Dark mode support with proper contrast */
-@media (prefers-color-scheme: dark) {
-  body {
-    background: var(--gradient-page-dark);
-  }
-
-  :root {
-    --panel-bg-light: rgba(37, 38, 43, 0.95);
-    --panel-bg-subtle: rgba(30, 41, 59, 0.8);
-    --panel-bg-accent: rgba(30, 58, 138, 0.2);
-    --sidebar-bg: var(--sidebar-bg-dark);
-  }
+/* Proper global styles for Mantine dark theme */
+body {
+  background-color: var(--mantine-color-dark-7);
+  color: var(--mantine-color-dark-0);
 }
 
-/* Ensure proper text contrast on dark cards */
-.mantine-Card-root[style*="rgb(37, 38, 43)"],
-.mantine-Card-root[style*="rgba(37, 38, 43)"],
-.mantine-Card-root[style*="rgb(30, 41, 59)"],
-.mantine-Card-root[style*="rgba(30, 41, 59)"] {
-  color: rgba(255, 255, 255, 0.9) !important;
+/* Ensure Mantine cards use proper dark theme text colors */
+.mantine-Card-root {
+  color: var(--mantine-color-dark-0) !important;
 }
 
-.mantine-Card-root[style*="rgb(37, 38, 43)"] *,
-.mantine-Card-root[style*="rgba(37, 38, 43)"] *,
-.mantine-Card-root[style*="rgb(30, 41, 59)"] *,
-.mantine-Card-root[style*="rgba(30, 41, 59)"] * {
-  color: rgba(255, 255, 255, 0.9) !important;
+.mantine-Text-root {
+  color: inherit !important;
 }
 
-/* Ensure readable text in dark theme cards */
-.mantine-Card-root .mantine-Text-root[data-c="dimmed"] {
-  color: rgba(255, 255, 255, 0.6) !important;
+.mantine-Text-root[data-c="dimmed"] {
+  color: var(--mantine-color-dark-2) !important;
 }
 
 /* Enhanced Headings - Better contrast on gradient backgrounds */
