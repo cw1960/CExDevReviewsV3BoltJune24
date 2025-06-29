@@ -403,14 +403,36 @@ export function AddExtensionModal({
       size="lg"
       radius="lg"
       shadow="xl"
+      centered={true}
+      withinPortal={true}
+      closeOnClickOutside={true}
+      closeOnEscape={true}
+      zIndex={1000}
+      overlayProps={{
+        backgroundOpacity: 0.7,
+        blur: 3,
+        color: '#000'
+      }}
       styles={{
+        overlay: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(4px)'
+        },
+        inner: {
+          padding: '20px'
+        },
         header: { 
           background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05))',
           borderBottom: '2px solid rgba(16, 185, 129, 0.2)',
           borderRadius: '12px 12px 0 0'
         },
         content: { 
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(59, 130, 246, 0.02))'
+          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(59, 130, 246, 0.02))',
+          maxHeight: '90vh',
+          overflowY: 'auto'
+        },
+        body: {
+          padding: '20px'
         }
       }}
     >
