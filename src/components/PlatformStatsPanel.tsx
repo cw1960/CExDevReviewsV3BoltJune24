@@ -145,14 +145,88 @@ export function PlatformStatsPanel() {
     fetchStats();
   }, []);
 
-  // NO JAVASCRIPT MANIPULATION - pure JSX inline styles only
+  // TARGETED JAVASCRIPT - Only target Platform Stats container
+  useEffect(() => {
+    const forceColorsInPlatformStatsOnly = () => {
+      console.log('🎯 TARGETED: Only Platform Stats container');
+      
+      // Find ONLY the Platform Stats container - don't touch anything else!
+      const platformContainer = document.querySelector('[data-testid="platform-stats-container"]');
+      if (!platformContainer) {
+        console.log('❌ No Platform Stats container found');
+        return;
+      }
+      
+      console.log('✅ Found Platform Stats container - applying colors');
+      
+      // Only search within the Platform Stats container
+      const elements = platformContainer.querySelectorAll('*');
+      
+      elements.forEach((element, index) => {
+        if (!(element instanceof HTMLElement)) return;
+        
+        const text = element.textContent?.trim() || '';
+        if (!text) return;
+        
+        // BRIGHT ORANGE LABELS
+        if (text === 'Total Users' || text === 'Free Tier Users' || text === 'Review Fast Track Users' ||
+            text === 'Extensions in Libraries' || text === 'Extensions in Queue' || text === 'Reviews Assigned' ||
+            text === 'Reviews Completed' || text === 'Reviews In Progress' || text === 'Credits Earned' ||
+            text.includes('Active Reviewers') || text.includes('Avg. Review Completion')) {
+          
+          console.log(`🟠 LABEL: "${text}" -> BRIGHT ORANGE`);
+          
+          element.style.color = '#ff6b35';
+          element.style.setProperty('color', '#ff6b35', 'important');
+          element.style.fontWeight = 'bold';
+          element.style.setProperty('font-weight', 'bold', 'important');
+          element.style.fontSize = '14px';
+          element.style.setProperty('font-size', '14px', 'important');
+          element.style.opacity = '1';
+          element.style.setProperty('opacity', '1', 'important');
+          element.style.visibility = 'visible';
+          element.style.setProperty('visibility', 'visible', 'important');
+          (element.style as any).webkitTextFillColor = '#ff6b35';
+          element.style.setProperty('-webkit-text-fill-color', '#ff6b35', 'important');
+        }
+        
+        // VIBRANT COLORED NUMBERS
+        if (/^\d+$/.test(text) && text.length >= 1 && parseInt(text) > 0) {
+          const colors = ['#6366f1', '#3b82f6', '#14b8a6', '#8b5cf6', '#06b6d4', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#84cc16', '#9333ea', '#6b7280'];
+          const color = colors[index % colors.length];
+          
+          console.log(`🌈 NUMBER: "${text}" -> ${color}`);
+          
+          element.style.color = color;
+          element.style.setProperty('color', color, 'important');
+          element.style.fontWeight = '800';
+          element.style.setProperty('font-weight', '800', 'important');
+          element.style.fontSize = '2.2rem';
+          element.style.setProperty('font-size', '2.2rem', 'important');
+          element.style.opacity = '1';
+          element.style.setProperty('opacity', '1', 'important');
+          element.style.visibility = 'visible';
+          element.style.setProperty('visibility', 'visible', 'important');
+          (element.style as any).webkitTextFillColor = color;
+          element.style.setProperty('-webkit-text-fill-color', color, 'important');
+        }
+      });
+    };
+
+    // Apply colors when stats load
+    if (stats) {
+      setTimeout(forceColorsInPlatformStatsOnly, 100);
+      setTimeout(forceColorsInPlatformStatsOnly, 500);
+      setTimeout(forceColorsInPlatformStatsOnly, 1000);
+    }
+  }, [stats]);
 
   if (loading) return <Center my="xl"><Loader /></Center>;
   if (error) return <Center my="xl"><Text c="red">{error}</Text></Center>;
   if (!stats) return null;
 
   return (
-    <Container size="lg" my="xl">
+    <Container size="lg" my="xl" data-testid="platform-stats-container">
       <Card
         withBorder
         radius="lg"
