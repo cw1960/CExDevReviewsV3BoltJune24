@@ -419,19 +419,22 @@ function StatItem({
       >
         {value}
       </Text>
-      <Text 
-        size="sm" 
-        ta="center" 
-        mt={2} 
+      <div
         style={{ 
-          color: '#ffffff',
-          fontWeight: '500',
-          opacity: 1,
-          WebkitTextFillColor: '#ffffff'
+          color: '#ffffff !important',
+          fontWeight: '600',
+          fontSize: '14px',
+          textAlign: 'center',
+          marginTop: '8px',
+          opacity: '1',
+          WebkitTextFillColor: '#ffffff',
+          textShadow: '0 0 2px rgba(255,255,255,0.9)',
+          lineHeight: '1.4',
+          fontFamily: 'inherit'
         }}
       >
         {label}
-      </Text>
+      </div>
     </Box>
   );
 }
