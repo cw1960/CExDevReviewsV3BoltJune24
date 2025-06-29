@@ -1311,3 +1311,29 @@ h6 {
   visibility: visible !important;
   text-shadow: 0 0 2px rgba(255,107,53,0.9) !important;
 }
+
+/* LANDING PAGE CARD NUMBERS - MATCH ICON COLORS */
+.landing-card-number-blue {
+  color: #2196f3 !important;
+  -webkit-text-fill-color: #2196f3 !important;
+}
+
+.landing-card-number-green {
+  color: #10b981 !important;
+  -webkit-text-fill-color: #10b981 !important;
+}
+
+.landing-card-number-purple {
+  color: #8b5cf6 !important;
+  -webkit-text-fill-color: #8b5cf6 !important;
+}
+
+.landing-card-number-orange {
+  color: #f59e0b !important;
+  -webkit-text-fill-color: #f59e0b !important;
+}
+
+.landing-card-number-red {
+  color: #ef4444 !important;
+  -webkit-text-fill-color: #ef4444 !important;
+}

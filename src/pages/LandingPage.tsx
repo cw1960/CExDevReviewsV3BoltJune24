@@ -290,7 +290,7 @@ export function LandingPage() {
                   <Text fw={600} size="lg" ta="center">
                     Average Ranking Improvement
                   </Text>
-                  <Text size="3rem" fw={800} style={{ color: "#2196f3" }}>
+                  <Text size="3rem" fw={800} className="landing-card-number-blue">
                     8.3x
                   </Text>
                   <Text size="sm" c="dimmed" ta="center">
@@ -310,7 +310,7 @@ export function LandingPage() {
                   <Text fw={600} size="lg" ta="center">
                     Reviews in First Month
                   </Text>
-                  <Text size="3rem" fw={800} style={{ color: "#10b981" }}>
+                  <Text size="3rem" fw={800} className="landing-card-number-green">
                     20+
                   </Text>
                   <Text size="sm" c="dimmed" ta="center">
@@ -362,7 +362,7 @@ export function LandingPage() {
                   <Text fw={600} size="lg" ta="center">
                     Compete Successfully
                   </Text>
-                  <Text size="3rem" fw={800} style={{ color: "#8b5cf6" }}>
+                  <Text size="3rem" fw={800} className="landing-card-number-purple">
                     89%
                   </Text>
                   <Text size="sm" c="dimmed" ta="center">
@@ -382,7 +382,7 @@ export function LandingPage() {
                   <Text fw={600} size="lg" ta="center">
                     Time Saved Weekly
                   </Text>
-                  <Text size="3rem" fw={800} style={{ color: "#f59e0b" }}>
+                  <Text size="3rem" fw={800} className="landing-card-number-orange">
                     15h
                   </Text>
                   <Text size="sm" c="dimmed" ta="center">
@@ -455,7 +455,7 @@ export function LandingPage() {
                   <Text fw={600} size="lg" ta="center">
                     Growth Momentum
                   </Text>
-                  <Text size="3rem" fw={800} style={{ color: "#ef4444" }}>
+                  <Text size="3rem" fw={800} className="landing-card-number-red">
                     340%
                   </Text>
                   <Text size="sm" c="dimmed" ta="center">
