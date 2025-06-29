@@ -444,31 +444,52 @@ export function QualificationPage() {
         }
       });
 
-      // Force checkbox to be more vibrant when checked
-      const checkboxes = document.querySelectorAll(
-        'input[type="checkbox"]:checked',
-      );
-      checkboxes.forEach((checkbox) => {
+      // Force ALL checkboxes to have BRIGHT ORANGE border for attention
+      const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      allCheckboxes.forEach((checkbox) => {
         if (checkbox instanceof HTMLInputElement) {
-          console.log("Setting BRIGHT GREEN for checked checkbox");
           const checkboxWrapper = checkbox.closest(".mantine-Checkbox-root");
           if (checkboxWrapper instanceof HTMLElement) {
             const checkboxInput = checkboxWrapper.querySelector(
               ".mantine-Checkbox-input",
             );
             if (checkboxInput instanceof HTMLElement) {
-              checkboxInput.style.backgroundColor = "#059669";
-              checkboxInput.style.borderColor = "#059669";
-              checkboxInput.style.setProperty(
-                "background-color",
-                "#059669",
-                "important",
+              // Always give bright orange border for attention
+              console.log(
+                "Setting BRIGHT ORANGE border for checkbox attention",
               );
+              checkboxInput.style.borderColor = "#ea580c";
+              checkboxInput.style.borderWidth = "2px";
+              checkboxInput.style.boxShadow =
+                "0 0 0 2px rgba(234, 88, 12, 0.2)";
               checkboxInput.style.setProperty(
                 "border-color",
-                "#059669",
+                "#ea580c",
                 "important",
               );
+              checkboxInput.style.setProperty(
+                "border-width",
+                "2px",
+                "important",
+              );
+              checkboxInput.style.setProperty(
+                "box-shadow",
+                "0 0 0 2px rgba(234, 88, 12, 0.2)",
+                "important",
+              );
+
+              // If checked, also make it green background
+              if (checkbox.checked) {
+                console.log(
+                  "Setting BRIGHT GREEN background for checked checkbox",
+                );
+                checkboxInput.style.backgroundColor = "#059669";
+                checkboxInput.style.setProperty(
+                  "background-color",
+                  "#059669",
+                  "important",
+                );
+              }
             }
           }
         }
