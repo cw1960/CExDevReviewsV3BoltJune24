@@ -185,24 +185,24 @@ export function ProfilePage() {
                     <Text mb="xs" fw={500} style={{ color: '#FFFFFF' }}>
                       Your Message
                     </Text>
-                    <textarea
-                      name="fields[name]"
-                      placeholder="Please describe your question, issue, or feedback..."
-                      required
-                      rows={5}
-                      style={{
-                        backgroundColor: '#ffffff',
-                        color: '#333333',
-                        border: '1px solid #cccccc',
-                        borderRadius: '4px',
-                        padding: '10px',
-                        width: '100%',
-                        fontFamily: "'Open Sans', Arial, Helvetica, sans-serif",
-                        fontSize: '14px',
-                        resize: 'vertical',
-                        minHeight: '120px'
-                      }}
-                    />
+                                         <textarea
+                       name="fields[name]"
+                       placeholder="Please describe your question, issue, or feedback..."
+                       required
+                       rows={5}
+                       className="contact-form-textarea"
+                       style={{
+                         backgroundColor: '#ffffff',
+                         border: '1px solid #cccccc',
+                         borderRadius: '4px',
+                         padding: '10px',
+                         width: '100%',
+                         fontFamily: "'Open Sans', Arial, Helvetica, sans-serif",
+                         fontSize: '14px',
+                         resize: 'vertical',
+                         minHeight: '120px'
+                       }}
+                     />
                   </div>
                   
                   <input type="hidden" name="ml-submit" value="1" />

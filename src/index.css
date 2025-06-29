@@ -1359,6 +1359,16 @@ h6 {
   -webkit-text-fill-color: #8b5cf6 !important;
 }
 
+/* CONTACT FORM TEXTAREA STYLING */
+.contact-form-textarea {
+  color: #333333 !important;
+  -webkit-text-fill-color: #333333 !important;
+}
+
+.contact-form-textarea::placeholder {
+  color: #666666 !important;
+}
+
 /* SIDEBAR CONDITIONAL COLORS - MAXIMUM SPECIFICITY */
 .mantine-AppShell-navbar .mantine-Text-root[style*="color: rgb(239, 68, 68)"],
 .mantine-AppShell-navbar .mantine-Text-root[style*="color: #ef4444"],
