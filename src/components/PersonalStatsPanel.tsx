@@ -240,9 +240,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700} style={{ color: '#3b82f6 !important', fontSize: '24px', fontWeight: 'bold' }}>
+                    <div style={{ color: '#3b82f6', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
-                    </Text>
+                    </div>
                     <Text size="sm" style={{ color: '#10b981' }}>
                       Unlimited
                     </Text>
@@ -259,9 +259,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     </div>
                     <IconStar size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#8b5cf6 !important', fontSize: '24px', fontWeight: 'bold' }}>
+                  <div style={{ color: '#8b5cf6', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                     {premiumStats.reviewsReceivedThisCycle}
-                  </Text>
+                  </div>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     This cycle
                   </Text>
@@ -274,9 +274,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     </Text>
                     <IconTarget size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#f59e0b' }}>
+                  <div style={{ color: '#f59e0b', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                     #{premiumStats.queuePosition}
-                  </Text>
+                  </div>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     Priority queue
                   </Text>
@@ -289,9 +289,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     </Text>
                     <IconClock size={16} />
                   </Group>
-                  <Text size="xl" fw={700} style={{ color: '#06b6d4' }}>
+                  <div style={{ color: '#06b6d4', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
-                  </Text>
+                  </div>
                   <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
                     Your reviews
                   </Text>
@@ -308,25 +308,25 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           <Accordion.Panel>
             <Group justify="space-around">
               <Stack align="center" gap={4}>
-                <Text size="2xl" fw={700} style={{ color: '#3b82f6' }}>
+                <div style={{ color: '#3b82f6', fontSize: '36px', fontWeight: 'bold', lineHeight: '1.2' }}>
                   {premiumStats.totalReviewsSubmitted}
-                </Text>
+                </div>
                 <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Total Submitted
                 </Text>
               </Stack>
               <Stack align="center" gap={4}>
-                <Text size="2xl" fw={700} style={{ color: '#10b981' }}>
+                <div style={{ color: '#10b981', fontSize: '36px', fontWeight: 'bold', lineHeight: '1.2' }}>
                   {premiumStats.totalReviewsReceived}
-                </Text>
+                </div>
                 <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Total Received
                 </Text>
               </Stack>
               <Stack align="center" gap={4}>
-                <Text size="2xl" fw={700} style={{ color: '#f59e0b' }}>
+                <div style={{ color: '#f59e0b', fontSize: '36px', fontWeight: 'bold', lineHeight: '1.2' }}>
                   {premiumStats.nextReviewETA}
-                </Text>
+                </div>
                 <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Next Review ETA
                 </Text>
