@@ -398,14 +398,14 @@ export function AddExtensionModal({
           >
             <Package size={20} color="white" />
           </ThemeIcon>
-          <Text fw={700} size="xl" c="dark.8">
+          <Text fw={700} size="xl" c="white">
             {initialExtensionData?.id
               ? "✨ Edit Extension"
               : "🚀 Add Extension"}
           </Text>
         </Group>
       }
-      size="xl"
+      size="lg"
       radius="lg"
       shadow="xl"
       centered={true}
@@ -414,51 +414,47 @@ export function AddExtensionModal({
       closeOnEscape={true}
       zIndex={900}
       overlayProps={{
-        backgroundOpacity: 0.7,
-        blur: 4,
+        backgroundOpacity: 0.8,
+        blur: 2,
       }}
       styles={{
         overlay: {
-          background:
-            "linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8))",
+          backgroundColor: "#25262B",
         },
         inner: {
-          padding: "20px",
+          padding: "16px",
         },
         header: {
-          background: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(10px)",
-          borderBottom: "none",
+          background: "#25262B",
+          borderBottom: "1px solid #3a3b40",
           borderRadius: "12px 12px 0 0",
-          padding: "20px 24px",
+          padding: "16px 20px",
         },
         content: {
-          background: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(10px)",
-          maxHeight: "90vh",
+          background: "#25262B",
+          maxHeight: "85vh",
           overflowY: "auto",
-          border: "none",
+          border: "1px solid #3a3b40",
           borderRadius: "12px",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.5)",
         },
         body: {
-          padding: "24px",
-          background: "transparent",
+          padding: "20px",
+          background: "#25262B",
         },
       }}
     >
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="lg">
           <Badge
-            size="lg"
+            size="md"
             variant="light"
             color="blue"
             styles={{
               root: {
-                background:
-                  "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1))",
-                color: "#3b82f6",
-                border: "1px solid rgba(59, 130, 246, 0.2)",
+                background: "rgba(59, 130, 246, 0.15)",
+                color: "#60a5fa",
+                border: "1px solid rgba(59, 130, 246, 0.3)",
               },
             }}
           >
@@ -470,18 +466,17 @@ export function AddExtensionModal({
           <Card
             shadow="md"
             radius="lg"
-            p="xl"
+            p="lg"
             style={{
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(5px)",
-              border: "2px solid rgba(16, 185, 129, 0.1)",
+              background: "#242424",
+              border: "1px solid rgba(16, 185, 129, 0.3)",
             }}
           >
-            <Group gap="sm" mb="lg">
-              <ThemeIcon color="green" size={32} radius="xl">
-                <Star size={18} />
+            <Group gap="sm" mb="md">
+              <ThemeIcon color="green" size={28} radius="xl">
+                <Star size={16} />
               </ThemeIcon>
-              <Text fw={700} size="lg" c="dark.8">
+              <Text fw={600} size="md" c="white">
                 Extension Details
               </Text>
             </Group>
@@ -493,18 +488,20 @@ export function AddExtensionModal({
               size="md"
               styles={{
                 label: {
-                  color: "#374151",
-                  fontWeight: 600,
+                  color: "#d1d5db",
+                  fontWeight: 500,
                   fontSize: "14px",
-                  marginBottom: "8px",
+                  marginBottom: "6px",
                 },
                 input: {
+                  backgroundColor: "#2a2a2a",
                   borderColor: "#10b981",
-                  borderWidth: "2px",
+                  borderWidth: "1px",
+                  color: "white",
                   fontSize: "14px",
                   "&:focus": {
                     borderColor: "#059669",
-                    boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)",
+                    boxShadow: "0 0 0 2px rgba(16, 185, 129, 0.2)",
                   },
                 },
               }}
@@ -515,18 +512,17 @@ export function AddExtensionModal({
           <Card
             shadow="md"
             radius="lg"
-            p="xl"
+            p="lg"
             style={{
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(5px)",
-              border: "2px solid rgba(245, 158, 11, 0.1)",
+              background: "#242424",
+              border: "1px solid rgba(245, 158, 11, 0.3)",
             }}
           >
-            <Group gap="sm" mb="lg">
-              <ThemeIcon color="orange" size={32} radius="xl">
-                <Upload size={18} />
+            <Group gap="sm" mb="md">
+              <ThemeIcon color="orange" size={28} radius="xl">
+                <Upload size={16} />
               </ThemeIcon>
-              <Text fw={700} size="lg" c="dark.8">
+              <Text fw={600} size="md" c="white">
                 Extension Logo (Optional)
               </Text>
             </Group>
@@ -541,11 +537,13 @@ export function AddExtensionModal({
                 style={{ flex: 1 }}
                 styles={{
                   input: {
+                    backgroundColor: "#2a2a2a",
                     borderColor: "#f59e0b",
-                    borderWidth: "2px",
+                    borderWidth: "1px",
+                    color: "white",
                     "&:focus": {
                       borderColor: "#d97706",
-                      boxShadow: "0 0 0 3px rgba(245, 158, 11, 0.1)",
+                      boxShadow: "0 0 0 2px rgba(245, 158, 11, 0.2)",
                     },
                   },
                 }}
@@ -553,15 +551,15 @@ export function AddExtensionModal({
               {previewUrl && (
                 <Box
                   style={{
-                    padding: "8px",
+                    padding: "6px",
                     background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
                   }}
                 >
                   <Avatar
                     src={previewUrl}
-                    size="xl"
+                    size="lg"
                     radius="md"
                     alt="Extension logo preview"
                   />
@@ -576,18 +574,17 @@ export function AddExtensionModal({
           <Card
             shadow="md"
             radius="lg"
-            p="xl"
+            p="lg"
             style={{
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(5px)",
-              border: "2px solid rgba(59, 130, 246, 0.1)",
+              background: "#242424",
+              border: "1px solid rgba(59, 130, 246, 0.3)",
             }}
           >
-            <Group gap="sm" mb="lg">
-              <ThemeIcon color="blue" size={32} radius="xl">
-                <Globe size={18} />
+            <Group gap="sm" mb="md">
+              <ThemeIcon color="blue" size={28} radius="xl">
+                <Globe size={16} />
               </ThemeIcon>
-              <Text fw={700} size="lg" c="dark.8">
+              <Text fw={600} size="md" c="white">
                 Chrome Web Store
               </Text>
             </Group>
@@ -599,18 +596,20 @@ export function AddExtensionModal({
               size="md"
               styles={{
                 label: {
-                  color: "#374151",
-                  fontWeight: 600,
+                  color: "#d1d5db",
+                  fontWeight: 500,
                   fontSize: "14px",
-                  marginBottom: "8px",
+                  marginBottom: "6px",
                 },
                 input: {
+                  backgroundColor: "#2a2a2a",
                   borderColor: "#3b82f6",
-                  borderWidth: "2px",
+                  borderWidth: "1px",
+                  color: "white",
                   fontSize: "14px",
                   "&:focus": {
                     borderColor: "#2563eb",
-                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
+                    boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.2)",
                   },
                 },
               }}
@@ -621,18 +620,17 @@ export function AddExtensionModal({
           <Card
             shadow="md"
             radius="lg"
-            p="xl"
+            p="lg"
             style={{
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(5px)",
-              border: "2px solid rgba(139, 92, 246, 0.1)",
+              background: "#242424",
+              border: "1px solid rgba(139, 92, 246, 0.3)",
             }}
           >
-            <Group gap="sm" mb="lg">
-              <ThemeIcon color="violet" size={32} radius="xl">
-                <Tag size={18} />
+            <Group gap="sm" mb="md">
+              <ThemeIcon color="violet" size={28} radius="xl">
+                <Tag size={16} />
               </ThemeIcon>
-              <Text fw={700} size="lg" c="dark.8">
+              <Text fw={600} size="md" c="white">
                 Categories & Tags
               </Text>
             </Group>
@@ -648,39 +646,41 @@ export function AddExtensionModal({
               maxDropdownHeight={200}
               styles={{
                 label: {
-                  color: "#374151",
-                  fontWeight: 600,
+                  color: "#d1d5db",
+                  fontWeight: 500,
                   fontSize: "14px",
-                  marginBottom: "8px",
+                  marginBottom: "6px",
                 },
                 input: {
+                  backgroundColor: "#2a2a2a",
                   borderColor: "#8b5cf6",
-                  borderWidth: "2px",
+                  borderWidth: "1px",
+                  color: "white",
                   "&:focus": {
                     borderColor: "#7c3aed",
-                    boxShadow: "0 0 0 3px rgba(139, 92, 246, 0.1)",
+                    boxShadow: "0 0 0 2px rgba(139, 92, 246, 0.2)",
                   },
                 },
                 pill: {
                   background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
                   color: "white",
-                  fontWeight: 600,
+                  fontWeight: 500,
                 },
                 dropdown: {
-                  backgroundColor: "white",
-                  border: "2px solid #8b5cf6",
-                  borderRadius: "12px",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "#242424",
+                  border: "1px solid #8b5cf6",
+                  borderRadius: "8px",
+                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
                   zIndex: 1500,
                 },
                 option: {
-                  color: "#374151",
+                  color: "white",
                   "&[data-selected]": {
                     backgroundColor: "#8b5cf6",
                     color: "white",
                   },
                   "&[data-hovered]": {
-                    backgroundColor: "rgba(139, 92, 246, 0.1)",
+                    backgroundColor: "rgba(139, 92, 246, 0.2)",
                   },
                 },
               }}
@@ -691,18 +691,17 @@ export function AddExtensionModal({
           <Card
             shadow="md"
             radius="lg"
-            p="xl"
+            p="lg"
             style={{
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(5px)",
-              border: "2px solid rgba(6, 182, 212, 0.1)",
+              background: "#242424",
+              border: "1px solid rgba(6, 182, 212, 0.3)",
             }}
           >
-            <Group gap="sm" mb="lg">
-              <ThemeIcon color="cyan" size={32} radius="xl">
-                <FileText size={18} />
+            <Group gap="sm" mb="md">
+              <ThemeIcon color="cyan" size={28} radius="xl">
+                <FileText size={16} />
               </ThemeIcon>
-              <Text fw={700} size="lg" c="dark.8">
+              <Text fw={600} size="md" c="white">
                 Description & Details
               </Text>
             </Group>
@@ -714,17 +713,19 @@ export function AddExtensionModal({
               size="md"
               styles={{
                 label: {
-                  color: "#374151",
-                  fontWeight: 600,
+                  color: "#d1d5db",
+                  fontWeight: 500,
                   fontSize: "14px",
-                  marginBottom: "8px",
+                  marginBottom: "6px",
                 },
                 input: {
+                  backgroundColor: "#2a2a2a",
                   borderColor: "#06b6d4",
-                  borderWidth: "2px",
+                  borderWidth: "1px",
+                  color: "white",
                   "&:focus": {
                     borderColor: "#0891b2",
-                    boxShadow: "0 0 0 3px rgba(6, 182, 212, 0.1)",
+                    boxShadow: "0 0 0 2px rgba(6, 182, 212, 0.2)",
                   },
                 },
               }}
@@ -735,18 +736,17 @@ export function AddExtensionModal({
           <Card
             shadow="md"
             radius="lg"
-            p="xl"
+            p="lg"
             style={{
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(5px)",
-              border: "2px solid rgba(16, 185, 129, 0.1)",
+              background: "#242424",
+              border: "1px solid rgba(16, 185, 129, 0.3)",
             }}
           >
-            <Group gap="sm" mb="lg">
-              <ThemeIcon color="teal" size={32} radius="xl">
-                <Shield size={18} />
+            <Group gap="sm" mb="md">
+              <ThemeIcon color="teal" size={28} radius="xl">
+                <Shield size={16} />
               </ThemeIcon>
-              <Text fw={700} size="lg" c="dark.8">
+              <Text fw={600} size="md" c="white">
                 Access & Pricing
               </Text>
             </Group>
@@ -761,34 +761,36 @@ export function AddExtensionModal({
               maxDropdownHeight={200}
               styles={{
                 label: {
-                  color: "#374151",
-                  fontWeight: 600,
+                  color: "#d1d5db",
+                  fontWeight: 500,
                   fontSize: "14px",
-                  marginBottom: "8px",
+                  marginBottom: "6px",
                 },
                 input: {
+                  backgroundColor: "#2a2a2a",
                   borderColor: "#10b981",
-                  borderWidth: "2px",
+                  borderWidth: "1px",
+                  color: "white",
                   "&:focus": {
                     borderColor: "#059669",
-                    boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)",
+                    boxShadow: "0 0 0 2px rgba(16, 185, 129, 0.2)",
                   },
                 },
                 dropdown: {
-                  backgroundColor: "white",
-                  border: "2px solid #10b981",
-                  borderRadius: "12px",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "#242424",
+                  border: "1px solid #10b981",
+                  borderRadius: "8px",
+                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
                   zIndex: 1500,
                 },
                 option: {
-                  color: "#374151",
+                  color: "white",
                   "&[data-selected]": {
                     backgroundColor: "#10b981",
                     color: "white",
                   },
                   "&[data-hovered]": {
-                    backgroundColor: "rgba(16, 185, 129, 0.1)",
+                    backgroundColor: "rgba(16, 185, 129, 0.2)",
                   },
                 },
               }}
@@ -800,18 +802,17 @@ export function AddExtensionModal({
             <Card
               shadow="md"
               radius="lg"
-              p="xl"
+              p="lg"
               style={{
-                background: "rgba(255,255,255,0.9)",
-                backdropFilter: "blur(5px)",
-                border: "2px solid rgba(245, 101, 101, 0.1)",
+                background: "#242424",
+                border: "1px solid rgba(245, 101, 101, 0.3)",
               }}
             >
-              <Group gap="sm" mb="lg">
-                <ThemeIcon color="red" size={32} radius="xl">
-                  <Gift size={18} />
+              <Group gap="sm" mb="md">
+                <ThemeIcon color="red" size={28} radius="xl">
+                  <Gift size={16} />
                 </ThemeIcon>
-                <Text fw={700} size="lg" c="dark.8">
+                <Text fw={600} size="md" c="white">
                   🎁 Promo Code Details
                 </Text>
               </Group>
@@ -823,17 +824,19 @@ export function AddExtensionModal({
                   size="md"
                   styles={{
                     label: {
-                      color: "#374151",
-                      fontWeight: 600,
+                      color: "#d1d5db",
+                      fontWeight: 500,
                       fontSize: "14px",
-                      marginBottom: "8px",
+                      marginBottom: "6px",
                     },
                     input: {
+                      backgroundColor: "#2a2a2a",
                       borderColor: "#f56565",
-                      borderWidth: "2px",
+                      borderWidth: "1px",
+                      color: "white",
                       "&:focus": {
                         borderColor: "#e53e3e",
-                        boxShadow: "0 0 0 3px rgba(245, 101, 101, 0.1)",
+                        boxShadow: "0 0 0 2px rgba(245, 101, 101, 0.2)",
                       },
                     },
                   }}
@@ -846,17 +849,19 @@ export function AddExtensionModal({
                   size="md"
                   styles={{
                     label: {
-                      color: "#374151",
-                      fontWeight: 600,
+                      color: "#d1d5db",
+                      fontWeight: 500,
                       fontSize: "14px",
-                      marginBottom: "8px",
+                      marginBottom: "6px",
                     },
                     input: {
+                      backgroundColor: "#2a2a2a",
                       borderColor: "#f56565",
-                      borderWidth: "2px",
+                      borderWidth: "1px",
+                      color: "white",
                       "&:focus": {
                         borderColor: "#e53e3e",
-                        boxShadow: "0 0 0 3px rgba(245, 101, 101, 0.1)",
+                        boxShadow: "0 0 0 2px rgba(245, 101, 101, 0.2)",
                       },
                     },
                   }}
@@ -871,40 +876,38 @@ export function AddExtensionModal({
               icon={<AlertCircle size={16} />}
               color="blue"
               title="🚀 Image Upload Ready"
-              radius="lg"
+              radius="md"
               styles={{
                 root: {
-                  background: "rgba(255,255,255,0.9)",
-                  backdropFilter: "blur(5px)",
-                  border: "2px solid rgba(59, 130, 246, 0.2)",
-                  boxShadow: "0 4px 12px rgba(59, 130, 246, 0.1)",
+                  background: "#242424",
+                  border: "1px solid rgba(59, 130, 246, 0.4)",
+                  boxShadow: "0 2px 8px rgba(59, 130, 246, 0.2)",
                 },
-                title: { color: "#3b82f6", fontWeight: 700 },
-                body: { color: "#374151" },
+                title: { color: "#60a5fa", fontWeight: 600 },
+                body: { color: "#d1d5db" },
               }}
             >
               ✨ Your logo will be uploaded when you save the extension.
             </Alert>
           )}
 
-          <Group justify="flex-end" gap="md" pt="lg">
+          <Group justify="flex-end" gap="md" pt="md">
             <Button
-              variant="light"
+              variant="subtle"
               onClick={handleClose}
               radius="md"
-              size="lg"
+              size="md"
               styles={{
                 root: {
-                  background: "rgba(255,255,255,0.8)",
-                  backdropFilter: "blur(5px)",
-                  border: "2px solid rgba(107, 114, 128, 0.2)",
-                  color: "#6b7280",
-                  fontWeight: 600,
+                  background: "transparent",
+                  border: "1px solid #6b7280",
+                  color: "#9ca3af",
+                  fontWeight: 500,
                   fontSize: "14px",
                   "&:hover": {
-                    background: "rgba(255,255,255,0.9)",
-                    border: "2px solid rgba(107, 114, 128, 0.3)",
-                    transform: "translateY(-1px)",
+                    background: "rgba(107, 114, 128, 0.1)",
+                    border: "1px solid #9ca3af",
+                    color: "#d1d5db",
                   },
                 },
               }}
@@ -915,19 +918,19 @@ export function AddExtensionModal({
               type="submit"
               loading={uploading}
               radius="md"
-              size="lg"
+              size="md"
               styles={{
                 root: {
                   background: "linear-gradient(135deg, #10b981, #059669)",
                   border: "none",
                   color: "white",
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: "14px",
-                  boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)",
+                  boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
                   "&:hover": {
                     background: "linear-gradient(135deg, #059669, #047857)",
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 6px 20px rgba(16, 185, 129, 0.4)",
+                    transform: "translateY(-1px)",
+                    boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
                   },
                   "&:disabled": {
                     background: "linear-gradient(135deg, #9ca3af, #6b7280)",
