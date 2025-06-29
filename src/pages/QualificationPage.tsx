@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Confetti from 'react-confetti'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Confetti from "react-confetti";
 import {
   Container,
   Title,
@@ -15,123 +15,155 @@ import {
   Box,
   Alert,
   Checkbox,
-  Divider
-} from '@mantine/core'
-import { notifications } from '@mantine/notifications'
-import { 
-  CheckCircle, 
-  Star, 
-  Shield, 
-  AlertTriangle, 
+  Divider,
+} from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import {
+  CheckCircle,
+  Star,
+  Shield,
+  AlertTriangle,
   BookOpen,
   ArrowRight,
   Award,
   Clock,
-  Users
-} from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
-import { triggerMailerLiteEvent } from '../utils/sendTransactionalEmail'
+  Users,
+} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { triggerMailerLiteEvent } from "../utils/sendTransactionalEmail";
 
 // Custom hook to get window dimensions
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
-  })
+  });
 
   React.useEffect(() => {
     function handleResize() {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
-      })
+      });
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  return windowSize
+  return windowSize;
 }
 
 export function QualificationPage() {
-  const { profile, updateProfile } = useAuth()
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const [acknowledged, setAcknowledged] = useState(false)
-  const [showConfetti, setShowConfetti] = useState(false)
-  const { width, height } = useWindowSize()
+  const { profile, updateProfile } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { width, height } = useWindowSize();
 
   // FORCE QUALIFICATION PAGE COLORS WITH JAVASCRIPT
   useEffect(() => {
     const forceQualificationColors = () => {
-      console.log('🎨 FORCING QUALIFICATION COLORS - JavaScript is running!');
-      
+      console.log("🎨 FORCING QUALIFICATION COLORS - JavaScript is running!");
+
       // Force badges to be more vibrant
-      const badges = document.querySelectorAll('.mantine-Badge-root');
+      const badges = document.querySelectorAll(".mantine-Badge-root");
       badges.forEach((badge) => {
-        if (badge instanceof HTMLElement && badge.textContent?.includes('Reviewer Qualification')) {
-          console.log('Setting BRIGHT BLUE for Reviewer Qualification badge');
-          badge.style.backgroundColor = '#2563eb';
-          badge.style.color = '#ffffff';
-          badge.style.setProperty('background-color', '#2563eb', 'important');
-          badge.style.setProperty('color', '#ffffff', 'important');
+        if (
+          badge instanceof HTMLElement &&
+          badge.textContent?.includes("Reviewer Qualification")
+        ) {
+          console.log("Setting BRIGHT BLUE for Reviewer Qualification badge");
+          badge.style.backgroundColor = "#2563eb";
+          badge.style.color = "#ffffff";
+          badge.style.setProperty("background-color", "#2563eb", "important");
+          badge.style.setProperty("color", "#ffffff", "important");
         }
       });
 
       // Force ThemeIcon elements to be more vibrant based on their context
-      const themeIcons = document.querySelectorAll('.mantine-ThemeIcon-root');
-      console.log('Found Qualification theme icons:', themeIcons.length);
-      
+      const themeIcons = document.querySelectorAll(".mantine-ThemeIcon-root");
+      console.log("Found Qualification theme icons:", themeIcons.length);
+
       themeIcons.forEach((icon, index) => {
         if (icon instanceof HTMLElement) {
           // Determine color based on the icon's context
-          const parentCard = icon.closest('.mantine-Card-root');
+          const parentCard = icon.closest(".mantine-Card-root");
           if (parentCard) {
             const cardText = parentCard.textContent;
-            
-            if (cardText?.includes('Review Guidelines')) {
+
+            if (cardText?.includes("Review Guidelines")) {
               console.log(`Setting BRIGHT BLUE for guidelines icon ${index}`);
-              icon.style.backgroundColor = '#2563eb';
-              icon.style.setProperty('background-color', '#2563eb', 'important');
-            } else if (cardText?.includes('Reviewer Requirements')) {
-              console.log(`Setting BRIGHT GREEN for requirements icon ${index}`);
-              icon.style.backgroundColor = '#059669';
-              icon.style.setProperty('background-color', '#059669', 'important');
-            } else if (cardText?.includes('What You Get')) {
+              icon.style.backgroundColor = "#2563eb";
+              icon.style.setProperty(
+                "background-color",
+                "#2563eb",
+                "important",
+              );
+            } else if (cardText?.includes("Reviewer Requirements")) {
+              console.log(
+                `Setting BRIGHT GREEN for requirements icon ${index}`,
+              );
+              icon.style.backgroundColor = "#059669";
+              icon.style.setProperty(
+                "background-color",
+                "#059669",
+                "important",
+              );
+            } else if (cardText?.includes("What You Get")) {
               console.log(`Setting BRIGHT ORANGE for benefits icon ${index}`);
-              icon.style.backgroundColor = '#ea580c';
-              icon.style.setProperty('background-color', '#ea580c', 'important');
+              icon.style.backgroundColor = "#ea580c";
+              icon.style.setProperty(
+                "background-color",
+                "#ea580c",
+                "important",
+              );
             }
           }
         }
       });
 
       // Force Alert to be more vibrant
-      const alerts = document.querySelectorAll('.mantine-Alert-root');
+      const alerts = document.querySelectorAll(".mantine-Alert-root");
       alerts.forEach((alert) => {
-        if (alert instanceof HTMLElement && alert.textContent?.includes('Important Notice')) {
-          console.log('Setting BRIGHT ORANGE for Important Notice alert');
-          alert.style.backgroundColor = '#fed7aa';
-          alert.style.borderColor = '#ea580c';
-          alert.style.setProperty('background-color', '#fed7aa', 'important');
-          alert.style.setProperty('border-color', '#ea580c', 'important');
+        if (
+          alert instanceof HTMLElement &&
+          alert.textContent?.includes("Important Notice")
+        ) {
+          console.log("Setting BRIGHT ORANGE for Important Notice alert");
+          alert.style.backgroundColor = "#fed7aa";
+          alert.style.borderColor = "#ea580c";
+          alert.style.setProperty("background-color", "#fed7aa", "important");
+          alert.style.setProperty("border-color", "#ea580c", "important");
         }
       });
 
       // Force checkbox to be more vibrant when checked
-      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+      const checkboxes = document.querySelectorAll(
+        'input[type="checkbox"]:checked',
+      );
       checkboxes.forEach((checkbox) => {
         if (checkbox instanceof HTMLInputElement) {
-          console.log('Setting BRIGHT GREEN for checked checkbox');
-          const checkboxWrapper = checkbox.closest('.mantine-Checkbox-root');
+          console.log("Setting BRIGHT GREEN for checked checkbox");
+          const checkboxWrapper = checkbox.closest(".mantine-Checkbox-root");
           if (checkboxWrapper instanceof HTMLElement) {
-            const checkboxInput = checkboxWrapper.querySelector('.mantine-Checkbox-input');
+            const checkboxInput = checkboxWrapper.querySelector(
+              ".mantine-Checkbox-input",
+            );
             if (checkboxInput instanceof HTMLElement) {
-              checkboxInput.style.backgroundColor = '#059669';
-              checkboxInput.style.borderColor = '#059669';
-              checkboxInput.style.setProperty('background-color', '#059669', 'important');
-              checkboxInput.style.setProperty('border-color', '#059669', 'important');
+              checkboxInput.style.backgroundColor = "#059669";
+              checkboxInput.style.borderColor = "#059669";
+              checkboxInput.style.setProperty(
+                "background-color",
+                "#059669",
+                "important",
+              );
+              checkboxInput.style.setProperty(
+                "border-color",
+                "#059669",
+                "important",
+              );
             }
           }
         }
@@ -141,111 +173,124 @@ export function QualificationPage() {
     // Run immediately and also with a small delay to ensure DOM is ready
     forceQualificationColors();
     const timeout = setTimeout(forceQualificationColors, 100);
-    
+
     return () => clearTimeout(timeout);
   }, [acknowledged]); // Re-run when acknowledgment state changes
 
   const handleCompleteQualification = async () => {
     if (!acknowledged) {
       notifications.show({
-        title: 'Acknowledgment Required',
-        message: 'Please acknowledge that you understand the review guidelines.',
-        color: 'orange'
-      })
-      return
+        title: "Acknowledgment Required",
+        message:
+          "Please acknowledge that you understand the review guidelines.",
+        color: "orange",
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
-      await updateProfile({ has_completed_qualification: true })
-      
+      await updateProfile({ has_completed_qualification: true });
+
       // Trigger MailerLite event for qualification completion
       if (profile?.email) {
         try {
-          await triggerMailerLiteEvent(profile.email, 'qualification_completed', {
-            user_name: profile.name || 'Developer',
-            completion_date: new Date().toISOString()
-          })
+          await triggerMailerLiteEvent(
+            profile.email,
+            "qualification_completed",
+            {
+              user_name: profile.name || "Developer",
+              completion_date: new Date().toISOString(),
+            },
+          );
         } catch (mailerLiteError) {
-          console.error('Failed to trigger MailerLite qualification event:', mailerLiteError)
+          console.error(
+            "Failed to trigger MailerLite qualification event:",
+            mailerLiteError,
+          );
           // Don't fail the qualification process if MailerLite fails
         }
       }
-      
+
       // Show confetti celebration
-      setShowConfetti(true)
-      
+      setShowConfetti(true);
+
       // Set flag for welcome modal on dashboard
-      localStorage.setItem('showWelcomeModal', 'true')
-      
+      localStorage.setItem("showWelcomeModal", "true");
+
       notifications.show({
-        title: 'Qualification Complete!',
-        message: 'You can now participate in the review exchange program.',
-        color: 'green',
-        icon: <Award size={16} />
-      })
-      
+        title: "Qualification Complete!",
+        message: "You can now participate in the review exchange program.",
+        color: "green",
+        icon: <Award size={16} />,
+      });
+
       // Stop confetti after 5 seconds and navigate
       setTimeout(() => {
-        setShowConfetti(false)
-        navigate('/dashboard')
-      }, 5000)
+        setShowConfetti(false);
+        navigate("/dashboard");
+      }, 5000);
     } catch (error: any) {
       notifications.show({
-        title: 'Error',
-        message: error.message || 'Failed to complete qualification',
-        color: 'red'
-      })
+        title: "Error",
+        message: error.message || "Failed to complete qualification",
+        color: "red",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const guidelines = [
     {
       icon: Star,
-      title: 'Provide Honest Reviews',
-      description: 'Write genuine, helpful reviews based on your actual experience with the extension.'
+      title: "Provide Honest Reviews",
+      description:
+        "Write genuine, helpful reviews based on your actual experience with the extension.",
     },
     {
       icon: Clock,
-      title: 'Use Extensions for 1+ Hours',
-      description: 'Install and actively use extensions for at least an hour before reviewing to provide meaningful feedback.'
+      title: "Use Extensions for 1+ Hours",
+      description:
+        "Install and actively use extensions for at least an hour before reviewing to provide meaningful feedback.",
     },
     {
       icon: BookOpen,
-      title: 'Follow Chrome Web Store Policies',
-      description: 'All reviews must comply with Google\'s Chrome Web Store review policies and guidelines.'
+      title: "Follow Chrome Web Store Policies",
+      description:
+        "All reviews must comply with Google's Chrome Web Store review policies and guidelines.",
     },
     {
       icon: Shield,
-      title: 'Maintain Quality Standards',
-      description: 'Write detailed reviews (minimum 50 characters) that help other users make informed decisions.'
+      title: "Maintain Quality Standards",
+      description:
+        "Write detailed reviews (minimum 50 characters) that help other users make informed decisions.",
     },
     {
       icon: Users,
-      title: 'Respect the Community',
-      description: 'Treat fellow developers with respect and provide constructive feedback that helps improve their extensions.'
-    }
-  ]
+      title: "Respect the Community",
+      description:
+        "Treat fellow developers with respect and provide constructive feedback that helps improve their extensions.",
+    },
+  ];
 
   const requirements = [
-    'Write reviews in clear, understandable English',
-    'Provide specific feedback about functionality, usability, and value',
-    'Rate extensions fairly based on their actual performance',
-    'Include both positive aspects and areas for improvement when applicable',
-    'Never write fake, misleading, or spam reviews',
-    'Complete all assigned reviews within the given timeframe (7 days)',
-    'Provide proof of your Chrome Web Store review submission'
-  ]
+    "Write reviews in clear, understandable English",
+    "Provide specific feedback about functionality, usability, and value",
+    "Rate extensions fairly based on their actual performance",
+    "Include both positive aspects and areas for improvement when applicable",
+    "Never write fake, misleading, or spam reviews",
+    "Complete all assigned reviews within the given timeframe (7 days)",
+    "Provide proof of your Chrome Web Store review submission",
+  ];
 
   const benefits = [
-    'Earn 1 credit for each completed review',
-    'Get authentic reviews for your own extensions',
-    'Connect with a community of Chrome extension developers',
-    'Improve your own extensions through feedback exchange',
-    'Build your reputation in the developer community'
-  ]
+    "Earn 1 credit for each completed review",
+    "Get authentic reviews for your own extensions",
+    "Connect with a community of Chrome extension developers",
+    "Improve your own extensions through feedback exchange",
+    "Build your reputation in the developer community",
+  ];
 
   return (
     <Box bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" mih="100vh">
@@ -256,63 +301,65 @@ export function QualificationPage() {
           recycle={false}
           numberOfPieces={500}
           gravity={0.3}
-          colors={['#667eea', '#764ba2', '#10b981', '#ffd700', '#ff6b6b', '#4ecdc4']}
+          colors={[
+            "#667eea",
+            "#764ba2",
+            "#10b981",
+            "#ffd700",
+            "#ff6b6b",
+            "#4ecdc4",
+          ]}
         />
       )}
       <Container size="md" py={60}>
         <Stack align="center" gap="xl">
           {/* Logo */}
           <Group mb="xl">
-            <img 
-              src="https://i.imgur.com/PL0Syo1.png" 
-              alt="ChromeExDev Logo" 
-              style={{ width: 200, height: 'auto' }}
+            <img
+              src="https://i.imgur.com/PL0Syo1.png"
+              alt="ChromeExDev Logo"
+              style={{ width: 200, height: "auto" }}
             />
           </Group>
 
           {/* Header Card */}
-          <Card 
-            shadow="xl" 
-            radius="lg" 
-            p="xl" 
+          <Card
+            shadow="xl"
+            radius="lg"
+            p="xl"
             maw={700}
-            style={{ 
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(10px)'
-            }}
+            className="qualification-header-card"
           >
             <Stack align="center" gap="lg">
               <Badge size="lg" variant="light" color="blue">
                 Reviewer Qualification
               </Badge>
-              
-              <Title order={1} ta="center" c="dark.8">
+
+              <Title order={1} ta="center">
                 Become a Qualified Reviewer
               </Title>
-              
-              <Text size="lg" ta="center" c="dimmed" lh={1.6}>
-                To maintain the quality and integrity of our review exchange program, 
-                all reviewers must understand and agree to follow our community guidelines.
+
+              <Text size="lg" ta="center" lh={1.6}>
+                To maintain the quality and integrity of our review exchange
+                program, all reviewers must understand and agree to follow our
+                community guidelines.
               </Text>
             </Stack>
           </Card>
 
           {/* Guidelines Card */}
-          <Card 
-            shadow="lg" 
-            radius="lg" 
-            p="xl" 
+          <Card
+            shadow="lg"
+            radius="lg"
+            p="xl"
             maw={700}
-            style={{ 
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(10px)'
-            }}
+            className="qualification-guidelines-card"
           >
             <Stack gap="lg">
-              <Title order={2} ta="center" c="dark.8">
+              <Title order={2} ta="center">
                 Review Guidelines
               </Title>
-              
+
               <Stack gap="md">
                 {guidelines.map((guideline, index) => (
                   <Group key={index} align="flex-start" gap="md">
@@ -320,7 +367,9 @@ export function QualificationPage() {
                       <guideline.icon size={20} />
                     </ThemeIcon>
                     <Stack gap={4} flex={1}>
-                      <Text fw={600} size="md">{guideline.title}</Text>
+                      <Text fw={600} size="md">
+                        {guideline.title}
+                      </Text>
                       <Text size="sm" c="dimmed" lh={1.4}>
                         {guideline.description}
                       </Text>
@@ -332,21 +381,18 @@ export function QualificationPage() {
           </Card>
 
           {/* Requirements Card */}
-          <Card 
-            shadow="lg" 
-            radius="lg" 
-            p="xl" 
+          <Card
+            shadow="lg"
+            radius="lg"
+            p="xl"
             maw={700}
-            style={{ 
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(10px)'
-            }}
+            className="qualification-requirements-card"
           >
             <Stack gap="lg">
               <Title order={2} ta="center" c="dark.8">
                 Reviewer Requirements
               </Title>
-              
+
               <List
                 spacing="sm"
                 size="sm"
@@ -367,21 +413,18 @@ export function QualificationPage() {
           </Card>
 
           {/* Benefits Card */}
-          <Card 
-            shadow="lg" 
-            radius="lg" 
-            p="xl" 
+          <Card
+            shadow="lg"
+            radius="lg"
+            p="xl"
             maw={700}
-            style={{ 
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(10px)'
-            }}
+            className="qualification-benefits-card"
           >
             <Stack gap="lg">
               <Title order={2} ta="center" c="dark.8">
                 What You Get
               </Title>
-              
+
               <List
                 spacing="sm"
                 size="sm"
@@ -402,15 +445,12 @@ export function QualificationPage() {
           </Card>
 
           {/* Important Notice */}
-          <Card 
-            shadow="lg" 
-            radius="lg" 
-            p="xl" 
+          <Card
+            shadow="lg"
+            radius="lg"
+            p="xl"
             maw={700}
-            style={{ 
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(10px)'
-            }}
+            className="qualification-notice-card"
           >
             <Alert
               icon={<AlertTriangle size={16} />}
@@ -418,8 +458,9 @@ export function QualificationPage() {
               color="orange"
               mb="lg"
             >
-              Violating these guidelines may result in suspension from the review program. 
-              We monitor all reviews for quality and compliance with Chrome Web Store policies.
+              Violating these guidelines may result in suspension from the
+              review program. We monitor all reviews for quality and compliance
+              with Chrome Web Store policies.
             </Alert>
 
             <Divider my="lg" />
@@ -427,18 +468,21 @@ export function QualificationPage() {
             <Stack gap="lg">
               <Checkbox
                 checked={acknowledged}
-                onChange={(event) => setAcknowledged(event.currentTarget.checked)}
+                onChange={(event) =>
+                  setAcknowledged(event.currentTarget.checked)
+                }
                 label={
                   <Text size="sm">
-                    I have read and understand the review guidelines and requirements. 
-                    I agree to follow all policies and provide honest, quality reviews.
+                    I have read and understand the review guidelines and
+                    requirements. I agree to follow all policies and provide
+                    honest, quality reviews.
                   </Text>
                 }
                 size="md"
               />
 
-              <Button 
-                size="xl" 
+              <Button
+                size="xl"
                 radius="md"
                 rightSection={<ArrowRight size={20} />}
                 onClick={handleCompleteQualification}
@@ -446,32 +490,35 @@ export function QualificationPage() {
                 disabled={!acknowledged}
                 styles={{
                   root: {
-                    background: acknowledged 
-                      ? 'linear-gradient(45deg, #10b981, #059669)' 
+                    background: acknowledged
+                      ? "linear-gradient(45deg, #10b981, #059669)"
                       : undefined,
-                    fontSize: '1.1rem',
+                    fontSize: "1.1rem",
                     fontWeight: 600,
-                    padding: '16px 32px',
-                    boxShadow: acknowledged 
-                      ? '0 4px 16px rgba(16, 185, 129, 0.3)' 
+                    padding: "16px 32px",
+                    boxShadow: acknowledged
+                      ? "0 4px 16px rgba(16, 185, 129, 0.3)"
                       : undefined,
-                    '&:hover': acknowledged ? {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 6px 20px rgba(16, 185, 129, 0.4)'
-                    } : undefined
-                  }
+                    "&:hover": acknowledged
+                      ? {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 6px 20px rgba(16, 185, 129, 0.4)",
+                        }
+                      : undefined,
+                  },
                 }}
               >
                 Complete Qualification
               </Button>
-              
+
               <Text size="sm" c="dimmed" ta="center">
-                Once qualified, you'll be eligible to receive review assignments and start earning credits.
+                Once qualified, you'll be eligible to receive review assignments
+                and start earning credits.
               </Text>
             </Stack>
           </Card>
         </Stack>
       </Container>
     </Box>
-  )
+  );
 }
