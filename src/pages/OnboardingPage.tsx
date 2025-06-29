@@ -133,6 +133,66 @@ export function OnboardingPage() {
     return '1 of 4 steps'
   }
 
+  // FORCE ONBOARDING COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceOnboardingColors = () => {
+      console.log('🎨 FORCING ONBOARDING COLORS - JavaScript is running!');
+      
+      // Force progress bar to be more vibrant
+      const progressBars = document.querySelectorAll('.mantine-Progress-bar');
+      console.log('Found Onboarding progress bars:', progressBars.length);
+      
+      progressBars.forEach((bar) => {
+        if (bar instanceof HTMLElement) {
+          console.log('Setting BRIGHT GRADIENT for progress bar');
+          bar.style.background = 'linear-gradient(90deg, #3b82f6, #8b5cf6)';
+          bar.style.setProperty('background', 'linear-gradient(90deg, #3b82f6, #8b5cf6)', 'important');
+        }
+      });
+
+      // Force badges to be more vibrant
+      const badges = document.querySelectorAll('.mantine-Badge-root');
+      badges.forEach((badge) => {
+        if (badge instanceof HTMLElement && badge.textContent?.includes('Welcome')) {
+          console.log('Setting BRIGHT BLUE for Welcome badge');
+          badge.style.backgroundColor = '#2563eb';
+          badge.style.color = '#ffffff';
+          badge.style.setProperty('background-color', '#2563eb', 'important');
+          badge.style.setProperty('color', '#ffffff', 'important');
+        }
+      });
+
+      // Force ThemeIcon elements to be more vibrant
+      const themeIcons = document.querySelectorAll('.mantine-ThemeIcon-root');
+      console.log('Found Onboarding theme icons:', themeIcons.length);
+      
+      themeIcons.forEach((icon, index) => {
+        if (icon instanceof HTMLElement) {
+          const colors = ['#2563eb', '#059669', '#f59e0b', '#8b5cf6', '#06b6d4'];
+          const color = colors[index % colors.length];
+          console.log(`Setting vibrant color ${color} for icon ${index}`);
+          icon.style.backgroundColor = color;
+          icon.style.setProperty('background-color', color, 'important');
+        }
+      });
+
+      // Force any star icons to be bright yellow
+      const starIcons = document.querySelectorAll('svg[data-icon="star"]');
+      starIcons.forEach((star) => {
+        if (star instanceof SVGElement) {
+          star.style.color = '#fbbf24';
+          star.style.setProperty('color', '#fbbf24', 'important');
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceOnboardingColors();
+    const timeout = setTimeout(forceOnboardingColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [currentStep]);
+
   return (
     <Box bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" mih="100vh">
       <Container size="md" py={60}>

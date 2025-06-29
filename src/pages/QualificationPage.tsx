@@ -62,6 +62,89 @@ export function QualificationPage() {
   const [showConfetti, setShowConfetti] = useState(false)
   const { width, height } = useWindowSize()
 
+  // FORCE QUALIFICATION PAGE COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceQualificationColors = () => {
+      console.log('🎨 FORCING QUALIFICATION COLORS - JavaScript is running!');
+      
+      // Force badges to be more vibrant
+      const badges = document.querySelectorAll('.mantine-Badge-root');
+      badges.forEach((badge) => {
+        if (badge instanceof HTMLElement && badge.textContent?.includes('Reviewer Qualification')) {
+          console.log('Setting BRIGHT BLUE for Reviewer Qualification badge');
+          badge.style.backgroundColor = '#2563eb';
+          badge.style.color = '#ffffff';
+          badge.style.setProperty('background-color', '#2563eb', 'important');
+          badge.style.setProperty('color', '#ffffff', 'important');
+        }
+      });
+
+      // Force ThemeIcon elements to be more vibrant based on their context
+      const themeIcons = document.querySelectorAll('.mantine-ThemeIcon-root');
+      console.log('Found Qualification theme icons:', themeIcons.length);
+      
+      themeIcons.forEach((icon, index) => {
+        if (icon instanceof HTMLElement) {
+          // Determine color based on the icon's context
+          const parentCard = icon.closest('.mantine-Card-root');
+          if (parentCard) {
+            const cardText = parentCard.textContent;
+            
+            if (cardText?.includes('Review Guidelines')) {
+              console.log(`Setting BRIGHT BLUE for guidelines icon ${index}`);
+              icon.style.backgroundColor = '#2563eb';
+              icon.style.setProperty('background-color', '#2563eb', 'important');
+            } else if (cardText?.includes('Reviewer Requirements')) {
+              console.log(`Setting BRIGHT GREEN for requirements icon ${index}`);
+              icon.style.backgroundColor = '#059669';
+              icon.style.setProperty('background-color', '#059669', 'important');
+            } else if (cardText?.includes('What You Get')) {
+              console.log(`Setting BRIGHT ORANGE for benefits icon ${index}`);
+              icon.style.backgroundColor = '#ea580c';
+              icon.style.setProperty('background-color', '#ea580c', 'important');
+            }
+          }
+        }
+      });
+
+      // Force Alert to be more vibrant
+      const alerts = document.querySelectorAll('.mantine-Alert-root');
+      alerts.forEach((alert) => {
+        if (alert instanceof HTMLElement && alert.textContent?.includes('Important Notice')) {
+          console.log('Setting BRIGHT ORANGE for Important Notice alert');
+          alert.style.backgroundColor = '#fed7aa';
+          alert.style.borderColor = '#ea580c';
+          alert.style.setProperty('background-color', '#fed7aa', 'important');
+          alert.style.setProperty('border-color', '#ea580c', 'important');
+        }
+      });
+
+      // Force checkbox to be more vibrant when checked
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+      checkboxes.forEach((checkbox) => {
+        if (checkbox instanceof HTMLInputElement) {
+          console.log('Setting BRIGHT GREEN for checked checkbox');
+          const checkboxWrapper = checkbox.closest('.mantine-Checkbox-root');
+          if (checkboxWrapper instanceof HTMLElement) {
+            const checkboxInput = checkboxWrapper.querySelector('.mantine-Checkbox-input');
+            if (checkboxInput instanceof HTMLElement) {
+              checkboxInput.style.backgroundColor = '#059669';
+              checkboxInput.style.borderColor = '#059669';
+              checkboxInput.style.setProperty('background-color', '#059669', 'important');
+              checkboxInput.style.setProperty('border-color', '#059669', 'important');
+            }
+          }
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceQualificationColors();
+    const timeout = setTimeout(forceQualificationColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [acknowledged]); // Re-run when acknowledgment state changes
+
   const handleCompleteQualification = async () => {
     if (!acknowledged) {
       notifications.show({
