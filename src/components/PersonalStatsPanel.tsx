@@ -181,13 +181,29 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <Group justify="space-between" mt="md">
                 <Text style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                   Total Submitted:{" "}
-                  <b style={{ color: "#2563eb", fontSize: "1.2rem" }}>
+                  <b
+                    style={{
+                      color: "#3b82f6",
+                      fontSize: "1.4rem",
+                      fontWeight: "bold",
+                      textShadow: "0 0 10px rgba(59, 130, 246, 0.5)",
+                    }}
+                    className="lifetime-submitted-number"
+                  >
                     {freeStats.totalReviewsSubmitted}
                   </b>
                 </Text>
                 <Text style={{ color: "rgba(255, 255, 255, 0.95)" }}>
                   Total Received:{" "}
-                  <b style={{ color: "#059669", fontSize: "1.2rem" }}>
+                  <b
+                    style={{
+                      color: "#10b981",
+                      fontSize: "1.4rem",
+                      fontWeight: "bold",
+                      textShadow: "0 0 10px rgba(16, 185, 129, 0.5)",
+                    }}
+                    className="lifetime-received-number"
+                  >
                     {freeStats.totalReviewsReceived}
                   </b>
                 </Text>
@@ -799,9 +815,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
         }
       });
 
-      // LIFETIME PERFORMANCE SECTION - Force vibrant colors
+      // LIFETIME PERFORMANCE SECTION - Force vibrant colors with class targeting
       const lifetimeNumbers = document.querySelectorAll(
-        '[value="lifetime"] div[style*="font-size: 36px"]',
+        '[value="lifetime"] div[style*="font-size: 36px"], .lifetime-submitted-number, .lifetime-received-number',
       );
       console.log(
         "Found Lifetime Performance numbers:",
@@ -809,17 +825,45 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
       );
       lifetimeNumbers.forEach((numberDiv, index) => {
         const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // Blue, Green, Orange
-        const brightColors = ["#2563eb", "#059669", "#ea580c"]; // Brighter versions
+        const brightColors = ["#3b82f6", "#10b981", "#ea580c"]; // Brighter versions
         if (numberDiv instanceof HTMLElement) {
-          numberDiv.style.color = brightColors[index] || brightColors[0];
-          numberDiv.style.setProperty(
-            "color",
-            brightColors[index] || brightColors[0],
-            "important",
-          );
-          console.log(
-            `Set Lifetime Performance ${index} to ${brightColors[index]}`,
-          );
+          // Target by class name for more specific control
+          if (numberDiv.classList.contains("lifetime-submitted-number")) {
+            console.log("🔵 FORCING BRIGHT BLUE for Lifetime Submitted");
+            numberDiv.style.color = "#3b82f6";
+            numberDiv.style.setProperty("color", "#3b82f6", "important");
+            (numberDiv.style as any).webkitTextFillColor = "#3b82f6";
+            numberDiv.style.setProperty(
+              "-webkit-text-fill-color",
+              "#3b82f6",
+              "important",
+            );
+            numberDiv.style.fontSize = "1.4rem";
+            numberDiv.style.fontWeight = "bold";
+            numberDiv.style.textShadow = "0 0 10px rgba(59, 130, 246, 0.5)";
+          } else if (numberDiv.classList.contains("lifetime-received-number")) {
+            console.log("🟢 FORCING BRIGHT GREEN for Lifetime Received");
+            numberDiv.style.color = "#10b981";
+            numberDiv.style.setProperty("color", "#10b981", "important");
+            (numberDiv.style as any).webkitTextFillColor = "#10b981";
+            numberDiv.style.setProperty(
+              "-webkit-text-fill-color",
+              "#10b981",
+              "important",
+            );
+            numberDiv.style.fontSize = "1.4rem";
+            numberDiv.style.fontWeight = "bold";
+            numberDiv.style.textShadow = "0 0 10px rgba(16, 185, 129, 0.5)";
+          } else {
+            // Fallback for other lifetime numbers
+            numberDiv.style.color = brightColors[index] || brightColors[0];
+            numberDiv.style.setProperty(
+              "color",
+              brightColors[index] || brightColors[0],
+              "important",
+            );
+          }
+          console.log(`Set Lifetime Performance ${index} to bright color`);
         }
       });
 
