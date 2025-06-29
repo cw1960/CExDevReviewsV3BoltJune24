@@ -195,7 +195,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
       console.log('Found Reviews Cycle cards:', reviewsCycleCards.length);
       
       reviewsCycleCards.forEach(card => {
-        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
         console.log('Found numberDiv:', !!numberDiv, 'Found icon:', !!icon);
         
@@ -217,7 +217,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
       // Force Reviews Received to Purple
       const reviewsReceivedCards = document.querySelectorAll('.reviews-received-card');
       reviewsReceivedCards.forEach(card => {
-        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
         if (numberDiv) {
           numberDiv.style.color = '#8b5cf6';
@@ -232,7 +232,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
       // Force Queue Position to Orange
       const queuePositionCards = document.querySelectorAll('.queue-position-card');
       queuePositionCards.forEach(card => {
-        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
         if (numberDiv) {
           numberDiv.style.color = '#f59e0b';
@@ -247,7 +247,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
       // Force Avg Turnaround to Cyan
       const avgTurnaroundCards = document.querySelectorAll('.avg-turnaround-card');
       avgTurnaroundCards.forEach(card => {
-        const numberDiv = card.querySelector('div[style*="fontSize: \'32px\'"]') as HTMLElement;
+        const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
         const icon = card.querySelector('svg') as SVGElement;
         if (numberDiv) {
           numberDiv.style.color = '#06b6d4';
