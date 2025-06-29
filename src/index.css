@@ -1388,13 +1388,13 @@ h6 {
   font-weight: 600 !important;
 }
 
-/* QUALIFICATION PAGE BLACK CARDS WITH VIBRANT ICONS */
+/* QUALIFICATION PAGE DARK GRAY CARDS WITH VIBRANT ICONS */
 .qualification-header-card,
 .qualification-guidelines-card,
 .qualification-requirements-card,
 .qualification-benefits-card,
 .qualification-notice-card {
-  background: rgba(0, 0, 0, 0.8) !important;
+  background: #25262b !important;
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
@@ -1409,21 +1409,177 @@ h6 {
   -webkit-text-fill-color: white !important;
 }
 
-/* Vibrant ThemeIcon colors for each section */
+/* HEADER CARD - Purple/Blue for header icon */
 .qualification-header-card .mantine-ThemeIcon-root {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6) !important;
 }
 
-.qualification-guidelines-card .mantine-ThemeIcon-root {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+/* GUIDELINES CARD - Each guideline icon different color */
+.qualification-guidelines-card
+  .mantine-Group-root
+  > div:nth-child(1)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #10b981,
+    #059669
+  ) !important; /* Green - Study Materials */
 }
 
-.qualification-requirements-card .mantine-ThemeIcon-root {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+.qualification-guidelines-card
+  .mantine-Group-root
+  > div:nth-child(2)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #f59e0b,
+    #d97706
+  ) !important; /* Orange - Best Practices */
 }
 
-.qualification-benefits-card .mantine-ThemeIcon-root {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+.qualification-guidelines-card
+  .mantine-Group-root
+  > div:nth-child(3)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #8b5cf6,
+    #7c3aed
+  ) !important; /* Purple - Technical Knowledge */
+}
+
+.qualification-guidelines-card
+  .mantine-Group-root
+  > div:nth-child(4)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  ) !important; /* Red - Quality Standards */
+}
+
+.qualification-guidelines-card
+  .mantine-Group-root
+  > div:nth-child(5)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #06b6d4,
+    #0891b2
+  ) !important; /* Cyan - Community */
+}
+
+/* REQUIREMENTS CARD - Each requirement icon different color */
+.qualification-requirements-card
+  .mantine-Group-root
+  > div:nth-child(1)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #1d4ed8
+  ) !important; /* Blue - English fluency */
+}
+
+.qualification-requirements-card
+  .mantine-Group-root
+  > div:nth-child(2)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #ec4899,
+    #db2777
+  ) !important; /* Pink - Development experience */
+}
+
+.qualification-requirements-card
+  .mantine-Group-root
+  > div:nth-child(3)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #84cc16,
+    #65a30d
+  ) !important; /* Lime - Chrome extensions */
+}
+
+.qualification-requirements-card
+  .mantine-Group-root
+  > div:nth-child(4)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #a855f7,
+    #9333ea
+  ) !important; /* Violet - Attention to detail */
+}
+
+.qualification-requirements-card
+  .mantine-Group-root
+  > div:nth-child(5)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #f97316,
+    #ea580c
+  ) !important; /* Orange - Time commitment */
+}
+
+/* BENEFITS CARD - Each benefit icon different color */
+.qualification-benefits-card
+  .mantine-Group-root
+  > div:nth-child(1)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #06b6d4,
+    #0891b2
+  ) !important; /* Cyan - Badge */
+}
+
+.qualification-benefits-card
+  .mantine-Group-root
+  > div:nth-child(2)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #10b981,
+    #059669
+  ) !important; /* Emerald - Priority */
+}
+
+.qualification-benefits-card
+  .mantine-Group-root
+  > div:nth-child(3)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #f59e0b,
+    #d97706
+  ) !important; /* Amber - Commission */
+}
+
+.qualification-benefits-card
+  .mantine-Group-root
+  > div:nth-child(4)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #8b5cf6,
+    #7c3aed
+  ) !important; /* Purple - Directory */
+}
+
+.qualification-benefits-card
+  .mantine-Group-root
+  > div:nth-child(5)
+  .mantine-ThemeIcon-root {
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  ) !important; /* Red - Network */
 }
 
 /* Override Alert styling for Important Notice - make it inviting, not scary */
