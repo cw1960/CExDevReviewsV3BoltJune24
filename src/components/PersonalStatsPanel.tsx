@@ -237,10 +237,10 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
                       Reviews This Cycle
                     </div>
-                    <IconTrendingUp size={16} />
+                    <IconTrendingUp size={16} style={{ color: '#10b981' }} />
                   </Group>
                   <Group justify="space-between">
-                    <div style={{ color: '#3b82f6', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
+                    <div style={{ color: '#10b981', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
                     </div>
                     <Text size="sm" style={{ color: '#10b981' }}>
@@ -257,7 +257,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
                       Reviews Received
                     </div>
-                    <IconStar size={16} />
+                    <IconStar size={16} style={{ color: '#8b5cf6' }} />
                   </Group>
                   <div style={{ color: '#8b5cf6', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                     {premiumStats.reviewsReceivedThisCycle}
@@ -272,7 +272,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 1)" }}>
                       Queue Position
                     </Text>
-                    <IconTarget size={16} />
+                    <IconTarget size={16} style={{ color: '#f59e0b' }} />
                   </Group>
                   <div style={{ color: '#f59e0b', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                     #{premiumStats.queuePosition}
@@ -287,7 +287,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                     <Text size="sm" fw={500} style={{ color: "rgba(255, 255, 255, 1)" }}>
                       Avg. Turnaround
                     </Text>
-                    <IconClock size={16} />
+                    <IconClock size={16} style={{ color: '#06b6d4' }} />
                   </Group>
                   <div style={{ color: '#06b6d4', fontSize: '32px', fontWeight: 'bold', lineHeight: '1.2' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
