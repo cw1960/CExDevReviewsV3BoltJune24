@@ -218,20 +218,20 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 1)' }}>
+                    <Text size="sm" fw={500} style={{ color: 'red', fontWeight: 900 }}>
                       Reviews This Cycle
                     </Text>
                     <IconTrendingUp size={16} />
                   </Group>
                   <Group justify="space-between">
-                    <Text size="xl" fw={700} style={{ color: '#3b82f6' }}>
+                    <Text size="xl" fw={700} style={{ color: '#FF0000', backgroundColor: 'yellow', border: '3px solid red' }}>
                       {premiumStats.reviewsSubmittedThisCycle}
                     </Text>
                     <Text size="sm" style={{ color: '#10b981' }}>
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 1)" }}>
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.05)", fontWeight: 900, fontSize: '16px' }}>
                     Submitted
                   </Text>
                 </Card>
