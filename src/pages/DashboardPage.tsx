@@ -989,7 +989,7 @@ export function DashboardPage() {
           <Card withBorder p="xl" h="100%">
             <Group justify="space-between" mb="md">
               <Text fw={600}>Pending Reviews</Text>
-              <Clock size={20} />
+              <Clock size={20} style={{ color: "#06b6d4" }} />
             </Group>
             <Stack gap="md">
               {assignments.length === 0 ? (
@@ -997,13 +997,17 @@ export function DashboardPage() {
                   <ThemeIcon
                     size={60}
                     radius="xl"
-                    variant="light"
-                    color="purple"
+                    variant="filled"
+                    style={{
+                      backgroundColor: "#8b5cf6",
+                      background: "linear-gradient(135deg, #8b5cf6, #a855f7)",
+                      boxShadow: "0 4px 20px rgba(139, 92, 246, 0.4)",
+                    }}
                   >
-                    <Star size={30} />
+                    <Star size={30} style={{ color: "#ffffff" }} />
                   </ThemeIcon>
                   <Stack align="center" gap="xs">
-                    <Text fw={600} size="lg">
+                    <Text fw={600} size="lg" style={{ color: "#ffffff" }}>
                       No pending reviews
                     </Text>
                     <Text
@@ -1020,15 +1024,20 @@ export function DashboardPage() {
                     <Button
                       leftSection={
                         requestingAssignment ? (
-                          <Loader size={14} />
+                          <Loader size={14} style={{ color: "#ffffff" }} />
                         ) : (
-                          <Plus size={14} />
+                          <Plus size={14} style={{ color: "#ffffff" }} />
                         )
                       }
                       onClick={handleRequestAssignment}
                       loading={requestingAssignment}
                       disabled={assignments.length >= 1}
-                      variant="light"
+                      variant="gradient"
+                      gradient={{ from: "#06b6d4", to: "#0891b2", deg: 45 }}
+                      style={{
+                        boxShadow: "0 4px 15px rgba(6, 182, 212, 0.3)",
+                        fontWeight: "600",
+                      }}
                     >
                       Request Assignment
                     </Button>
