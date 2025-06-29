@@ -1067,4 +1067,68 @@ h6 {
   [data-mantine-color-scheme="dark"] *:not([style*="color"]) {
     color: rgba(255, 255, 255, 0.95) !important;
   }
+
+  /* BEAUTIFUL CARD COLORS - Reviews This Cycle (Green) */
+  .reviews-cycle-card .stats-number,
+  .reviews-cycle-card [style*="color: #3b82f6"],
+  .reviews-cycle-card [style*="fontSize: '32px'"],
+  .reviews-cycle-card div[style*="fontSize: '32px'"] {
+    color: #10b981 !important;
+  }
+  .reviews-cycle-card .stats-icon,
+  .reviews-cycle-card svg {
+    color: #10b981 !important;
+  }
+
+  /* BEAUTIFUL CARD COLORS - Reviews Received (Purple) */
+  .reviews-received-card .stats-number,
+  .reviews-received-card [style*="color: #8b5cf6"],
+  .reviews-received-card [style*="fontSize: '32px'"],
+  .reviews-received-card div[style*="fontSize: '32px'"] {
+    color: #8b5cf6 !important;
+  }
+  .reviews-received-card .stats-icon,
+  .reviews-received-card svg {
+    color: #8b5cf6 !important;
+  }
+
+  /* BEAUTIFUL CARD COLORS - Queue Position (Orange) */
+  .queue-position-card .stats-number,
+  .queue-position-card [style*="color: #f59e0b"],
+  .queue-position-card [style*="fontSize: '32px'"],
+  .queue-position-card div[style*="fontSize: '32px'"] {
+    color: #f59e0b !important;
+  }
+  .queue-position-card .stats-icon,
+  .queue-position-card svg {
+    color: #f59e0b !important;
+  }
+
+  /* BEAUTIFUL CARD COLORS - Avg Turnaround (Cyan) */
+  .avg-turnaround-card .stats-number,
+  .avg-turnaround-card [style*="color: #06b6d4"],
+  .avg-turnaround-card [style*="fontSize: '32px'"],
+  .avg-turnaround-card div[style*="fontSize: '32px'"] {
+    color: #06b6d4 !important;
+  }
+  .avg-turnaround-card .stats-icon,
+  .avg-turnaround-card svg {
+    color: #06b6d4 !important;
+  }
+
+  /* Keep card titles WHITE for contrast */
+  .reviews-cycle-card .mantine-Text-root[data-size="sm"],
+  .reviews-received-card .mantine-Text-root[data-size="sm"],
+  .queue-position-card .mantine-Text-root[data-size="sm"],
+  .avg-turnaround-card .mantine-Text-root[data-size="sm"] {
+    color: rgba(255, 255, 255, 0.95) !important;
+  }
+
+  /* Keep small descriptive text WHITE */
+  .reviews-cycle-card .mantine-Text-root[data-size="xs"],
+  .reviews-received-card .mantine-Text-root[data-size="xs"],
+  .queue-position-card .mantine-Text-root[data-size="xs"],
+  .avg-turnaround-card .mantine-Text-root[data-size="xs"] {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
 }
