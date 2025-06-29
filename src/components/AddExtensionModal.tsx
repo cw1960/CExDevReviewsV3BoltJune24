@@ -409,30 +409,33 @@ export function AddExtensionModal({
       closeOnEscape={true}
       zIndex={1000}
       overlayProps={{
-        backgroundOpacity: 0.7,
-        blur: 3,
+        backgroundOpacity: 1.0,
+        blur: 0,
         color: '#000'
       }}
       styles={{
         overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          backdropFilter: 'blur(4px)'
+          backgroundColor: 'rgb(0, 0, 0)',
+          backdropFilter: 'none'
         },
         inner: {
           padding: '20px'
         },
         header: { 
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05))',
-          borderBottom: '2px solid rgba(16, 185, 129, 0.2)',
-          borderRadius: '12px 12px 0 0'
+          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15))',
+          borderBottom: '2px solid rgba(16, 185, 129, 0.3)',
+          borderRadius: '12px 12px 0 0',
+          backgroundColor: '#1f2937'
         },
         content: { 
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(59, 130, 246, 0.02))',
+          background: '#1f2937',
           maxHeight: '90vh',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          border: '1px solid rgba(16, 185, 129, 0.2)'
         },
         body: {
-          padding: '20px'
+          padding: '20px',
+          backgroundColor: '#1f2937'
         }
       }}
     >
