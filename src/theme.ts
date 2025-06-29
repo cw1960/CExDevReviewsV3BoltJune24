@@ -54,7 +54,7 @@ export const animations = {
 };
 
 export const theme = createTheme({
-  colorScheme: 'light', // Force light mode to prevent automatic dark mode
+  colorScheme: 'dark', // Use dark mode theme
   primaryColor: "blue",
   colors: {
     blue: primaryColor,

@@ -207,7 +207,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           </Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
-              <Text size="sm" c="dimmed">
+              <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                 Cycle: {new Date(premiumStats.cycleStart).toLocaleDateString()} –{" "}
                 {new Date(premiumStats.cycleEnd).toLocaleDateString()}
                 <br />
@@ -218,10 +218,10 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={2} spacing="md">
                 <Card shadow="sm" p="md" radius="md" withBorder className="reviews-cycle-card">
                   <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500}>
+                    <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                       Reviews This Cycle
                     </Text>
-                    <IconTrendingUp size={16} />
+                    <IconTrendingUp size={16} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   </Group>
                   <Group justify="space-between">
                     <Text size="xl" fw={700} style={{ color: '#3b82f6' }}>
@@ -231,7 +231,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     Submitted
                   </Text>
                 </Card>
