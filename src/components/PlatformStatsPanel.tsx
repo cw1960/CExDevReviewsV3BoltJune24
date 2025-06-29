@@ -168,11 +168,14 @@ export function PlatformStatsPanel() {
         const text = element.textContent?.trim() || '';
         if (!text) return;
         
-        // BRIGHT ORANGE LABELS
+        // BRIGHT ORANGE LABELS - catch ALL possible variations
         if (text === 'Total Users' || text === 'Free Tier Users' || text === 'Review Fast Track Users' ||
             text === 'Extensions in Libraries' || text === 'Extensions in Queue' || text === 'Reviews Assigned' ||
             text === 'Reviews Completed' || text === 'Reviews In Progress' || text === 'Credits Earned' ||
-            text.includes('Active Reviewers') || text.includes('Avg. Review Completion')) {
+            text.includes('Active Reviewers') || text.includes('Avg. Review Completion') ||
+            text.includes('Reviews Completed') || text.includes('Completed') || text.includes('Progress') ||
+            text.includes('Assigned') || text.includes('Queue') || text.includes('Libraries') ||
+            text.includes('Users') || text.includes('Credits') || text.includes('Extensions')) {
           
           console.log(`🟠 LABEL: "${text}" -> BRIGHT ORANGE`);
           
@@ -209,6 +212,30 @@ export function PlatformStatsPanel() {
           element.style.setProperty('visibility', 'visible', 'important');
           (element.style as any).webkitTextFillColor = color;
           element.style.setProperty('-webkit-text-fill-color', color, 'important');
+        }
+        
+        // FALLBACK: Any small text that looks like a label
+        if (text.length > 3 && text.length < 50 && !(/^\d+$/.test(text)) && 
+            !text.includes('Platform Stats') && !text.includes('Real-time')) {
+          const computedStyle = window.getComputedStyle(element);
+          const fontSize = parseInt(computedStyle.fontSize || '16');
+          
+          if (fontSize <= 16) {
+            console.log(`🔄 FALLBACK LABEL: "${text}" -> BRIGHT ORANGE`);
+            
+            element.style.color = '#ff6b35';
+            element.style.setProperty('color', '#ff6b35', 'important');
+            element.style.fontWeight = 'bold';
+            element.style.setProperty('font-weight', 'bold', 'important');
+            element.style.fontSize = '14px';
+            element.style.setProperty('font-size', '14px', 'important');
+            element.style.opacity = '1';
+            element.style.setProperty('opacity', '1', 'important');
+            element.style.visibility = 'visible';
+            element.style.setProperty('visibility', 'visible', 'important');
+            (element.style as any).webkitTextFillColor = '#ff6b35';
+            element.style.setProperty('-webkit-text-fill-color', '#ff6b35', 'important');
+          }
         }
       });
     };
