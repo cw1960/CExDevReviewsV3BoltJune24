@@ -66,32 +66,38 @@ export function UpgradePage() {
     {
       icon: Infinity,
       title: 'Unlimited Extensions',
-      description: 'Add as many Chrome extensions as you want to your library'
+      description: 'Add as many Chrome extensions as you want to your library',
+      color: 'blue'
     },
     {
       icon: Zap,
       title: 'Unlimited Monthly Submissions',
-      description: 'Submit extensions to the review queue without monthly limits'
+      description: 'Submit extensions to the review queue without monthly limits',
+      color: 'orange'
     },
     {
       icon: Star,
       title: '3x Faster Reviews',
-      description: 'Get your extensions reviewed 3x faster with priority placement in the review queue'
+      description: 'Get your extensions reviewed 3x faster with priority placement in the review queue',
+      color: 'green'
     },
     {
       icon: Users,
       title: 'Advanced Analytics',
-      description: 'Track your extension performance and review metrics'
+      description: 'Track your extension performance and review metrics',
+      color: 'purple'
     },
     {
       icon: Shield,
       title: 'Priority Support',
-      description: 'Get priority customer support and direct access to our team'
+      description: 'Get priority customer support and direct access to our team',
+      color: 'cyan'
     },
     {
       icon: Crown,
       title: 'Exclusive Community',
-      description: 'Access to premium-only developer community and resources'
+      description: 'Access to premium-only developer community and resources',
+      color: 'yellow'
     }
   ]
 
@@ -208,12 +214,27 @@ export function UpgradePage() {
                 p="xl" 
                 h="100%"
                 withBorder
+                style={{ position: 'relative' }}
               >
-                <Stack align="center" gap="lg" h="100%">
+                <Badge 
+                  size="lg" 
+                  variant="filled" 
+                  color="green"
+                  style={{ 
+                    position: 'absolute',
+                    top: -10,
+                    left: '50%',
+                    transform: 'translateX(-50%)'
+                  }}
+                >
+                  Most Popular
+                </Badge>
+                
+                <Stack align="center" gap="lg" h="100%" style={{ paddingTop: '20px' }}>
                   <Stack align="center" gap="xs">
                     <Title order={2}>Monthly Plan</Title>
                     <Group align="baseline" gap="xs">
-                      <Text size="3rem" fw={800} c="blue">
+                      <Text size="3rem" fw={800} className="landing-card-number-green">
                         ${monthlyProduct.price}
                       </Text>
                       <Text size="lg" c="dimmed">
@@ -231,6 +252,7 @@ export function UpgradePage() {
 
                   <Button 
                     size="lg" 
+                    color="green"
                     fullWidth
                     onClick={() => handlePurchase(0)}
                     loading={purchasing && checkoutLoading}
@@ -259,8 +281,8 @@ export function UpgradePage() {
               >
                 <Badge 
                   size="lg" 
-                  variant="white" 
-                  color="dark"
+                  variant="filled" 
+                  color="green"
                   style={{ 
                     position: 'absolute',
                     top: 15,
@@ -327,13 +349,13 @@ export function UpgradePage() {
           <Grid>
             {premiumFeatures.map((feature, index) => (
               <Grid.Col key={index} span={{ base: 12, md: 6 }}>
-                <Card withBorder h="100%" p="lg">
+                <Card withBorder h="100%" p="lg" shadow="sm">
                   <Group align="flex-start" gap="md">
-                    <ThemeIcon color="blue" size={40} radius="xl">
+                    <ThemeIcon color={feature.color} size={40} radius="xl" variant="light">
                       <feature.icon size={20} />
                     </ThemeIcon>
                     <Stack gap={4} flex={1}>
-                      <Text fw={600} size="md">{feature.title}</Text>
+                      <Text fw={600} size="md" c={feature.color}>{feature.title}</Text>
                       <Text size="sm" c="dimmed" lh={1.4}>
                         {feature.description}
                       </Text>
@@ -346,8 +368,8 @@ export function UpgradePage() {
         </div>
 
         {/* Comparison Table */}
-        <Card withBorder p="xl">
-          <Title order={2} ta="center" mb="xl">
+        <Card withBorder p="xl" shadow="md" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 20%, #667eea 100%)' }}>
+          <Title order={2} ta="center" mb="xl" c="white">
             Free vs Premium Comparison
           </Title>
           
@@ -355,19 +377,19 @@ export function UpgradePage() {
             {freeVsPremium.map((item, index) => (
               <div key={index}>
                 <Group justify="space-between" align="center" py="sm">
-                  <Text fw={500}>{item.feature}</Text>
+                  <Text fw={500} c="white">{item.feature}</Text>
                   <Group gap="xl">
                     <Stack align="center" gap={4}>
-                      <Text size="sm" c="dimmed">Free</Text>
-                      <Text size="sm">{item.free}</Text>
+                      <Text size="sm" c="rgba(255, 255, 255, 0.7)" fw={600}>Free</Text>
+                      <Text size="sm" c="rgba(255, 255, 255, 0.9)">{item.free}</Text>
                     </Stack>
                     <Stack align="center" gap={4}>
-                      <Text size="sm" c="blue" fw={600}>Premium</Text>
-                      <Text size="sm" fw={600} c="blue">{item.premium}</Text>
+                      <Text size="sm" c="yellow" fw={700}>Premium</Text>
+                      <Text size="sm" fw={700} c="yellow">{item.premium}</Text>
                     </Stack>
                   </Group>
                 </Group>
-                {index < freeVsPremium.length - 1 && <Divider />}
+                {index < freeVsPremium.length - 1 && <Divider color="rgba(255, 255, 255, 0.2)" />}
               </div>
             ))}
           </Stack>
@@ -392,30 +414,38 @@ export function UpgradePage() {
         </Alert>
 
         {/* FAQ or Additional Info */}
-        <Card withBorder p="xl" bg="gray.0">
+        <Card 
+          withBorder 
+          p="xl" 
+          shadow="lg"
+          style={{ 
+            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+            borderColor: '#667eea'
+          }}
+        >
           <Stack gap="md">
-            <Title order={3} ta="center">
+            <Title order={3} ta="center" c="white">
               Why Join Review Fast Track?
             </Title>
             
-            <Text ta="center" c="dimmed">
+            <Text ta="center" c="rgba(255, 255, 255, 0.9)" size="md">
               Review Fast Track members get their extensions reviewed 3x faster, can submit unlimited extensions, 
               and have access to advanced analytics to track their success. Join hundreds of successful 
               Chrome extension developers who have joined Review Fast Track.
             </Text>
             
-            <Group justify="center" gap="xl" mt="md">
-              <Stack align="center" gap={4}>
-                <Text size="xl" fw={700} c="blue">3x</Text>
-                <Text size="sm" c="dimmed">Faster Reviews</Text>
+            <Group justify="center" gap="xl" mt="xl">
+              <Stack align="center" gap={8}>
+                <Text size="3rem" fw={800} c="green">3x</Text>
+                <Text size="sm" c="white" fw={600}>Faster Reviews</Text>
               </Stack>
-              <Stack align="center" gap={4}>
-                <Text size="xl" fw={700} c="blue">∞</Text>
-                <Text size="sm" c="dimmed">Extensions</Text>
+              <Stack align="center" gap={8}>
+                <Text size="3rem" fw={800} c="blue">∞</Text>
+                <Text size="sm" c="white" fw={600}>Extensions</Text>
               </Stack>
-              <Stack align="center" gap={4}>
-                <Text size="xl" fw={700} c="blue">24/7</Text>
-                <Text size="sm" c="dimmed">Priority Support</Text>
+              <Stack align="center" gap={8}>
+                <Text size="3rem" fw={800} c="orange">24/7</Text>
+                <Text size="sm" c="white" fw={600}>Priority Support</Text>
               </Stack>
             </Group>
           </Stack>
