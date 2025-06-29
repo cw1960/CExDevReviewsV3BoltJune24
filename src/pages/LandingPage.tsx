@@ -1021,6 +1021,7 @@ export function LandingPage() {
             </Group>
             <Text size="sm" c="gray.5" ta="center">
               © 2025 El Barrial Devs | ChromeExDev.Reviews. All rights reserved.
+              Not associated with or endorsed by Google, Chrome Web Store, or Alphabet.
             </Text>
           </Stack>
         </Container>

@@ -536,7 +536,7 @@ export function UpgradePage() {
             background:
               "linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #f5576c 100%)",
             borderColor: "#f5576c",
-            borderWidth: '2px',
+            borderWidth: "2px",
           }}
         >
           <Stack gap="lg">
@@ -554,14 +554,14 @@ export function UpgradePage() {
               </Title>
             </Stack>
 
-            <Text 
-              ta="center" 
-              c="white" 
-              size="lg" 
+            <Text
+              ta="center"
+              c="white"
+              size="lg"
               fw={500}
-              style={{ 
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-                lineHeight: 1.6 
+              style={{
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                lineHeight: 1.6,
               }}
             >
               Review Fast Track members get their extensions reviewed 3x faster,
@@ -577,9 +577,9 @@ export function UpgradePage() {
                 radius="xl"
                 shadow="lg"
                 style={{
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  borderColor: '#10b981',
-                  borderWidth: '2px',
+                  background: "rgba(16, 185, 129, 0.15)",
+                  borderColor: "#10b981",
+                  borderWidth: "2px",
                 }}
               >
                 <Stack align="center" gap="md">
@@ -591,7 +591,12 @@ export function UpgradePage() {
                   >
                     <TrendingUp size={24} />
                   </ThemeIcon>
-                  <Text size="3rem" fw={900} c="#10b981" style={{ textShadow: '0 0 20px rgba(16, 185, 129, 0.6)' }}>
+                  <Text
+                    size="3rem"
+                    fw={900}
+                    c="#10b981"
+                    style={{ textShadow: "0 0 20px rgba(16, 185, 129, 0.6)" }}
+                  >
                     3x
                   </Text>
                   <Text size="md" c="white" fw={700} ta="center">
@@ -606,9 +611,9 @@ export function UpgradePage() {
                 radius="xl"
                 shadow="lg"
                 style={{
-                  background: 'rgba(59, 130, 246, 0.15)',
-                  borderColor: '#3b82f6',
-                  borderWidth: '2px',
+                  background: "rgba(59, 130, 246, 0.15)",
+                  borderColor: "#3b82f6",
+                  borderWidth: "2px",
                 }}
               >
                 <Stack align="center" gap="md">
@@ -620,7 +625,12 @@ export function UpgradePage() {
                   >
                     <Infinity size={24} />
                   </ThemeIcon>
-                  <Text size="3rem" fw={900} c="#3b82f6" style={{ textShadow: '0 0 20px rgba(59, 130, 246, 0.6)' }}>
+                  <Text
+                    size="3rem"
+                    fw={900}
+                    c="#3b82f6"
+                    style={{ textShadow: "0 0 20px rgba(59, 130, 246, 0.6)" }}
+                  >
                     ∞
                   </Text>
                   <Text size="md" c="white" fw={700} ta="center">
@@ -635,9 +645,9 @@ export function UpgradePage() {
                 radius="xl"
                 shadow="lg"
                 style={{
-                  background: 'rgba(249, 115, 22, 0.15)',
-                  borderColor: '#f97316',
-                  borderWidth: '2px',
+                  background: "rgba(249, 115, 22, 0.15)",
+                  borderColor: "#f97316",
+                  borderWidth: "2px",
                 }}
               >
                 <Stack align="center" gap="md">
@@ -649,7 +659,12 @@ export function UpgradePage() {
                   >
                     <Shield size={24} />
                   </ThemeIcon>
-                  <Text size="3rem" fw={900} c="#f97316" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.6)' }}>
+                  <Text
+                    size="3rem"
+                    fw={900}
+                    c="#f97316"
+                    style={{ textShadow: "0 0 20px rgba(249, 115, 22, 0.6)" }}
+                  >
                     24/7
                   </Text>
                   <Text size="md" c="white" fw={700} ta="center">

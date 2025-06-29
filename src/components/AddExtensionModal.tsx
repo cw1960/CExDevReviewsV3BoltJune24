@@ -12,20 +12,24 @@ import {
   Avatar,
   Text,
   Alert,
-  Paper,
+  Card,
+  Badge,
+  ThemeIcon,
+  Box,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { 
-  Upload, 
-  AlertCircle, 
-  Zap, 
-  Globe, 
-  Tag, 
-  FileText, 
+import {
+  Upload,
+  AlertCircle,
+  Zap,
+  Globe,
+  Tag,
+  FileText,
   Shield,
   Star,
-  Gift
+  Gift,
+  Package,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -385,22 +389,23 @@ export function AddExtensionModal({
       onClose={handleClose}
       title={
         <Group gap="sm">
-          <div style={{
-            background: 'linear-gradient(135deg, #667eea, #764ba2)',
-            borderRadius: '8px',
-            padding: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Zap size={20} color="white" />
-          </div>
-          <Text fw={600} size="lg" style={{ color: '#10b981' }}>
-            {initialExtensionData?.id ? "✨ Edit Extension" : "🚀 Add Extension"}
+          <ThemeIcon
+            size={40}
+            radius="xl"
+            style={{
+              background: "linear-gradient(135deg, #667eea, #764ba2)",
+            }}
+          >
+            <Package size={20} color="white" />
+          </ThemeIcon>
+          <Text fw={700} size="xl" c="dark.8">
+            {initialExtensionData?.id
+              ? "✨ Edit Extension"
+              : "🚀 Add Extension"}
           </Text>
         </Group>
       }
-      size="lg"
+      size="xl"
       radius="lg"
       shadow="xl"
       centered={true}
@@ -409,77 +414,121 @@ export function AddExtensionModal({
       closeOnEscape={true}
       zIndex={900}
       overlayProps={{
-        backgroundOpacity: 1.0,
-        blur: 0,
-        color: '#000'
+        backgroundOpacity: 0.7,
+        blur: 4,
       }}
       styles={{
         overlay: {
-          backgroundColor: 'rgb(0, 0, 0)',
-          backdropFilter: 'none'
+          background:
+            "linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8))",
         },
         inner: {
-          padding: '20px'
+          padding: "20px",
         },
-        header: { 
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15))',
-          borderBottom: '2px solid rgba(16, 185, 129, 0.3)',
-          borderRadius: '12px 12px 0 0',
-          backgroundColor: '#1f2937'
+        header: {
+          background: "rgba(255,255,255,0.95)",
+          backdropFilter: "blur(10px)",
+          borderBottom: "none",
+          borderRadius: "12px 12px 0 0",
+          padding: "20px 24px",
         },
-        content: { 
-          background: '#1f2937',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          border: '1px solid rgba(16, 185, 129, 0.2)'
+        content: {
+          background: "rgba(255,255,255,0.95)",
+          backdropFilter: "blur(10px)",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          border: "none",
+          borderRadius: "12px",
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
         },
         body: {
-          padding: '20px',
-          backgroundColor: '#1f2937'
-        }
+          padding: "24px",
+          background: "transparent",
+        },
       }}
     >
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="lg">
-          <Paper
-            p="md"
-            radius="md"
-            style={{
-              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(6, 182, 212, 0.08))',
-              border: '1px solid rgba(16, 185, 129, 0.2)'
+          <Badge
+            size="lg"
+            variant="light"
+            color="blue"
+            styles={{
+              root: {
+                background:
+                  "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1))",
+                color: "#3b82f6",
+                border: "1px solid rgba(59, 130, 246, 0.2)",
+              },
             }}
           >
-            <Group gap="sm" mb="xs">
-              <Star size={16} style={{ color: '#10b981' }} />
-              <Text fw={600} size="sm" style={{ color: '#10b981' }}>Extension Details</Text>
+            {initialExtensionData?.id
+              ? "Edit Extension Details"
+              : "Add New Extension"}
+          </Badge>
+
+          <Card
+            shadow="md"
+            radius="lg"
+            p="xl"
+            style={{
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(5px)",
+              border: "2px solid rgba(16, 185, 129, 0.1)",
+            }}
+          >
+            <Group gap="sm" mb="lg">
+              <ThemeIcon color="green" size={32} radius="xl">
+                <Star size={18} />
+              </ThemeIcon>
+              <Text fw={700} size="lg" c="dark.8">
+                Extension Details
+              </Text>
             </Group>
             <TextInput
               label="Extension Name"
               placeholder="My Awesome Extension"
               required
               radius="md"
+              size="md"
               styles={{
-                label: { color: '#374151', fontWeight: 600 },
+                label: {
+                  color: "#374151",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  marginBottom: "8px",
+                },
                 input: {
-                  borderColor: '#10b981',
-                  '&:focus': { borderColor: '#059669', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
-                }
+                  borderColor: "#10b981",
+                  borderWidth: "2px",
+                  fontSize: "14px",
+                  "&:focus": {
+                    borderColor: "#059669",
+                    boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)",
+                  },
+                },
               }}
               {...form.getInputProps("name")}
             />
-          </Paper>
+          </Card>
 
-          <Paper
-            p="md"
-            radius="md"
+          <Card
+            shadow="md"
+            radius="lg"
+            p="xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(249, 115, 22, 0.08))',
-              border: '1px solid rgba(245, 158, 11, 0.2)'
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(5px)",
+              border: "2px solid rgba(245, 158, 11, 0.1)",
             }}
           >
-            <Group gap="sm" mb="xs">
-              <Upload size={16} style={{ color: '#f59e0b' }} />
-              <Text fw={600} size="sm" style={{ color: '#f59e0b' }}>Extension Logo (Optional)</Text>
+            <Group gap="sm" mb="lg">
+              <ThemeIcon color="orange" size={32} radius="xl">
+                <Upload size={18} />
+              </ThemeIcon>
+              <Text fw={700} size="lg" c="dark.8">
+                Extension Logo (Optional)
+              </Text>
             </Group>
             <Group align="flex-start" gap="lg">
               <FileInput
@@ -488,229 +537,333 @@ export function AddExtensionModal({
                 leftSection={<Upload size={16} />}
                 onChange={handleFileChange}
                 radius="md"
+                size="md"
                 style={{ flex: 1 }}
                 styles={{
                   input: {
-                    borderColor: '#f59e0b',
-                    '&:focus': { borderColor: '#d97706', boxShadow: '0 0 0 2px rgba(245, 158, 11, 0.2)' }
-                  }
+                    borderColor: "#f59e0b",
+                    borderWidth: "2px",
+                    "&:focus": {
+                      borderColor: "#d97706",
+                      boxShadow: "0 0 0 3px rgba(245, 158, 11, 0.1)",
+                    },
+                  },
                 }}
               />
               {previewUrl && (
-                <div style={{
-                  padding: '4px',
-                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                  borderRadius: '12px'
-                }}>
+                <Box
+                  style={{
+                    padding: "8px",
+                    background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)",
+                  }}
+                >
                   <Avatar
                     src={previewUrl}
                     size="xl"
                     radius="md"
                     alt="Extension logo preview"
                   />
-                </div>
+                </Box>
               )}
             </Group>
-            <Text size="xs" mt="sm" style={{ color: "#6b7280" }}>
+            <Text size="sm" mt="md" c="dimmed">
               📁 Maximum file size: 5MB. Supported formats: PNG, JPG, JPEG, SVG
             </Text>
-          </Paper>
+          </Card>
 
-          <Paper
-            p="md"
-            radius="md"
+          <Card
+            shadow="md"
+            radius="lg"
+            p="xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(124, 58, 237, 0.08))',
-              border: '1px solid rgba(59, 130, 246, 0.2)'
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(5px)",
+              border: "2px solid rgba(59, 130, 246, 0.1)",
             }}
           >
-            <Group gap="sm" mb="xs">
-              <Globe size={16} style={{ color: '#3b82f6' }} />
-              <Text fw={600} size="sm" style={{ color: '#3b82f6' }}>Chrome Web Store</Text>
+            <Group gap="sm" mb="lg">
+              <ThemeIcon color="blue" size={32} radius="xl">
+                <Globe size={18} />
+              </ThemeIcon>
+              <Text fw={700} size="lg" c="dark.8">
+                Chrome Web Store
+              </Text>
             </Group>
             <TextInput
               label="Store URL"
               placeholder="https://chromewebstore.google.com/detail/..."
               required
-              {...form.getInputProps("chrome_store_url")}
               radius="md"
+              size="md"
               styles={{
-                label: { color: '#374151', fontWeight: 600 },
+                label: {
+                  color: "#374151",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  marginBottom: "8px",
+                },
                 input: {
-                  borderColor: '#3b82f6',
-                  '&:focus': { borderColor: '#2563eb', boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.2)' }
-                }
+                  borderColor: "#3b82f6",
+                  borderWidth: "2px",
+                  fontSize: "14px",
+                  "&:focus": {
+                    borderColor: "#2563eb",
+                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
+                  },
+                },
               }}
+              {...form.getInputProps("chrome_store_url")}
             />
-          </Paper>
+          </Card>
 
-          <Paper
-            p="md"
-            radius="md"
+          <Card
+            shadow="md"
+            radius="lg"
+            p="xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(168, 85, 247, 0.08))',
-              border: '1px solid rgba(139, 92, 246, 0.2)'
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(5px)",
+              border: "2px solid rgba(139, 92, 246, 0.1)",
             }}
           >
-            <Group gap="sm" mb="xs">
-              <Tag size={16} style={{ color: '#8b5cf6' }} />
-              <Text fw={600} size="sm" style={{ color: '#8b5cf6' }}>Categories & Tags</Text>
+            <Group gap="sm" mb="lg">
+              <ThemeIcon color="violet" size={32} radius="xl">
+                <Tag size={18} />
+              </ThemeIcon>
+              <Text fw={700} size="lg" c="dark.8">
+                Categories & Tags
+              </Text>
             </Group>
             <MultiSelect
               label="Categories"
               placeholder="Select categories"
               data={CATEGORIES}
-              {...form.getInputProps("category")}
               radius="md"
+              size="md"
               withinPortal={true}
               zIndex={1500}
               dropdownPosition="bottom"
               maxDropdownHeight={200}
               styles={{
-                label: { color: '#374151', fontWeight: 600 },
+                label: {
+                  color: "#374151",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  marginBottom: "8px",
+                },
                 input: {
-                  borderColor: '#8b5cf6',
-                  '&:focus': { borderColor: '#7c3aed', boxShadow: '0 0 0 2px rgba(139, 92, 246, 0.2)' }
+                  borderColor: "#8b5cf6",
+                  borderWidth: "2px",
+                  "&:focus": {
+                    borderColor: "#7c3aed",
+                    boxShadow: "0 0 0 3px rgba(139, 92, 246, 0.1)",
+                  },
                 },
                 pill: {
-                  background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                  color: 'white',
-                  fontWeight: 600
+                  background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                  color: "white",
+                  fontWeight: 600,
                 },
                 dropdown: {
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #8b5cf6',
-                  zIndex: 1500
+                  backgroundColor: "white",
+                  border: "2px solid #8b5cf6",
+                  borderRadius: "12px",
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                  zIndex: 1500,
                 },
                 option: {
-                  '&[data-selected]': {
-                    backgroundColor: '#8b5cf6',
-                    color: 'white'
+                  color: "#374151",
+                  "&[data-selected]": {
+                    backgroundColor: "#8b5cf6",
+                    color: "white",
                   },
-                  '&[data-hovered]': {
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)'
-                  }
-                }
+                  "&[data-hovered]": {
+                    backgroundColor: "rgba(139, 92, 246, 0.1)",
+                  },
+                },
               }}
+              {...form.getInputProps("category")}
             />
-          </Paper>
+          </Card>
 
-          <Paper
-            p="md"
-            radius="md"
+          <Card
+            shadow="md"
+            radius="lg"
+            p="xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(14, 165, 233, 0.08))',
-              border: '1px solid rgba(6, 182, 212, 0.2)'
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(5px)",
+              border: "2px solid rgba(6, 182, 212, 0.1)",
             }}
           >
-            <Group gap="sm" mb="xs">
-              <FileText size={16} style={{ color: '#06b6d4' }} />
-              <Text fw={600} size="sm" style={{ color: '#06b6d4' }}>Description & Details</Text>
+            <Group gap="sm" mb="lg">
+              <ThemeIcon color="cyan" size={32} radius="xl">
+                <FileText size={18} />
+              </ThemeIcon>
+              <Text fw={700} size="lg" c="dark.8">
+                Description & Details
+              </Text>
             </Group>
             <Textarea
               label="Description"
               placeholder="Brief description of your extension..."
               rows={3}
-              {...form.getInputProps("description")}
               radius="md"
+              size="md"
               styles={{
-                label: { color: '#374151', fontWeight: 600 },
+                label: {
+                  color: "#374151",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  marginBottom: "8px",
+                },
                 input: {
-                  borderColor: '#06b6d4',
-                  '&:focus': { borderColor: '#0891b2', boxShadow: '0 0 0 2px rgba(6, 182, 212, 0.2)' }
-                }
+                  borderColor: "#06b6d4",
+                  borderWidth: "2px",
+                  "&:focus": {
+                    borderColor: "#0891b2",
+                    boxShadow: "0 0 0 3px rgba(6, 182, 212, 0.1)",
+                  },
+                },
               }}
+              {...form.getInputProps("description")}
             />
-          </Paper>
+          </Card>
 
-          <Paper
-            p="md"
-            radius="md"
+          <Card
+            shadow="md"
+            radius="lg"
+            p="xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.08))',
-              border: '1px solid rgba(16, 185, 129, 0.2)'
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(5px)",
+              border: "2px solid rgba(16, 185, 129, 0.1)",
             }}
           >
-            <Group gap="sm" mb="xs">
-              <Shield size={16} style={{ color: '#10b981' }} />
-              <Text fw={600} size="sm" style={{ color: '#10b981' }}>Access & Pricing</Text>
+            <Group gap="sm" mb="lg">
+              <ThemeIcon color="teal" size={32} radius="xl">
+                <Shield size={18} />
+              </ThemeIcon>
+              <Text fw={700} size="lg" c="dark.8">
+                Access & Pricing
+              </Text>
             </Group>
             <Select
               label="Access Type"
               data={ACCESS_TYPES}
-              {...form.getInputProps("access_type")}
               radius="md"
+              size="md"
               withinPortal={true}
               zIndex={1500}
               dropdownPosition="bottom"
               maxDropdownHeight={200}
               styles={{
-                label: { color: '#374151', fontWeight: 600 },
+                label: {
+                  color: "#374151",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  marginBottom: "8px",
+                },
                 input: {
-                  borderColor: '#10b981',
-                  '&:focus': { borderColor: '#059669', boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' }
+                  borderColor: "#10b981",
+                  borderWidth: "2px",
+                  "&:focus": {
+                    borderColor: "#059669",
+                    boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)",
+                  },
                 },
                 dropdown: {
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #10b981',
-                  zIndex: 1500
+                  backgroundColor: "white",
+                  border: "2px solid #10b981",
+                  borderRadius: "12px",
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                  zIndex: 1500,
                 },
                 option: {
-                  color: '#ffffff',
-                  '&[data-selected]': {
-                    backgroundColor: '#10b981',
-                    color: 'white'
+                  color: "#374151",
+                  "&[data-selected]": {
+                    backgroundColor: "#10b981",
+                    color: "white",
                   },
-                  '&[data-hovered]': {
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)'
-                  }
-                }
+                  "&[data-hovered]": {
+                    backgroundColor: "rgba(16, 185, 129, 0.1)",
+                  },
+                },
               }}
+              {...form.getInputProps("access_type")}
             />
-          </Paper>
+          </Card>
 
           {form.values.access_type === "promo_code" && (
-            <Paper
-              p="md"
-              radius="md"
+            <Card
+              shadow="md"
+              radius="lg"
+              p="xl"
               style={{
-                background: 'linear-gradient(135deg, rgba(245, 101, 101, 0.08), rgba(239, 68, 68, 0.08))',
-                border: '1px solid rgba(245, 101, 101, 0.2)'
+                background: "rgba(255,255,255,0.9)",
+                backdropFilter: "blur(5px)",
+                border: "2px solid rgba(245, 101, 101, 0.1)",
               }}
             >
-              <Group gap="sm" mb="xs">
-                <Gift size={16} style={{ color: '#f56565' }} />
-                <Text fw={600} size="sm" style={{ color: '#f56565' }}>🎁 Promo Code Details</Text>
+              <Group gap="sm" mb="lg">
+                <ThemeIcon color="red" size={32} radius="xl">
+                  <Gift size={18} />
+                </ThemeIcon>
+                <Text fw={700} size="lg" c="dark.8">
+                  🎁 Promo Code Details
+                </Text>
               </Group>
               <Stack gap="md">
                 <TextInput
                   label="Promo Code"
                   placeholder="REVIEW2024"
-                  {...form.getInputProps("promo_code")}
                   radius="md"
+                  size="md"
                   styles={{
-                    label: { color: '#374151', fontWeight: 600 },
+                    label: {
+                      color: "#374151",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      marginBottom: "8px",
+                    },
                     input: {
-                      borderColor: '#f56565',
-                      '&:focus': { borderColor: '#e53e3e', boxShadow: '0 0 0 2px rgba(245, 101, 101, 0.2)' }
-                    }
+                      borderColor: "#f56565",
+                      borderWidth: "2px",
+                      "&:focus": {
+                        borderColor: "#e53e3e",
+                        boxShadow: "0 0 0 3px rgba(245, 101, 101, 0.1)",
+                      },
+                    },
                   }}
+                  {...form.getInputProps("promo_code")}
                 />
                 <TextInput
                   label="Promo Code Expires At"
                   type="date"
-                  {...form.getInputProps("promo_code_expires_at")}
                   radius="md"
+                  size="md"
                   styles={{
-                    label: { color: '#374151', fontWeight: 600 },
+                    label: {
+                      color: "#374151",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      marginBottom: "8px",
+                    },
                     input: {
-                      borderColor: '#f56565',
-                      '&:focus': { borderColor: '#e53e3e', boxShadow: '0 0 0 2px rgba(245, 101, 101, 0.2)' }
-                    }
+                      borderColor: "#f56565",
+                      borderWidth: "2px",
+                      "&:focus": {
+                        borderColor: "#e53e3e",
+                        boxShadow: "0 0 0 3px rgba(245, 101, 101, 0.1)",
+                      },
+                    },
                   }}
+                  {...form.getInputProps("promo_code_expires_at")}
                 />
               </Stack>
-            </Paper>
+            </Card>
           )}
 
           {selectedFile && (
@@ -718,65 +871,73 @@ export function AddExtensionModal({
               icon={<AlertCircle size={16} />}
               color="blue"
               title="🚀 Image Upload Ready"
-              radius="md"
+              radius="lg"
               styles={{
                 root: {
-                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1))',
-                  border: '2px solid rgba(59, 130, 246, 0.3)'
+                  background: "rgba(255,255,255,0.9)",
+                  backdropFilter: "blur(5px)",
+                  border: "2px solid rgba(59, 130, 246, 0.2)",
+                  boxShadow: "0 4px 12px rgba(59, 130, 246, 0.1)",
                 },
-                title: { color: '#3b82f6', fontWeight: 700 },
-                body: { color: '#374151' }
+                title: { color: "#3b82f6", fontWeight: 700 },
+                body: { color: "#374151" },
               }}
             >
               ✨ Your logo will be uploaded when you save the extension.
             </Alert>
           )}
 
-          <Group justify="flex-end" gap="md" pt="md">
-            <Button 
-              variant="light" 
-              onClick={handleClose} 
+          <Group justify="flex-end" gap="md" pt="lg">
+            <Button
+              variant="light"
+              onClick={handleClose}
               radius="md"
-              size="md"
+              size="lg"
               styles={{
                 root: {
-                  background: 'linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(75, 85, 99, 0.1))',
-                  border: '2px solid rgba(107, 114, 128, 0.3)',
-                  color: '#6b7280',
+                  background: "rgba(255,255,255,0.8)",
+                  backdropFilter: "blur(5px)",
+                  border: "2px solid rgba(107, 114, 128, 0.2)",
+                  color: "#6b7280",
                   fontWeight: 600,
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, rgba(107, 114, 128, 0.2), rgba(75, 85, 99, 0.2))',
-                    border: '2px solid rgba(107, 114, 128, 0.5)'
-                  }
-                }
+                  fontSize: "14px",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.9)",
+                    border: "2px solid rgba(107, 114, 128, 0.3)",
+                    transform: "translateY(-1px)",
+                  },
+                },
               }}
             >
-              ❌ Cancel
+              Cancel
             </Button>
-            <Button 
-              type="submit" 
-              loading={uploading} 
+            <Button
+              type="submit"
+              loading={uploading}
               radius="md"
-              size="md"
+              size="lg"
               styles={{
                 root: {
-                  background: 'linear-gradient(135deg, #10b981, #059669)',
-                  border: 'none',
-                  color: 'white',
+                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  border: "none",
+                  color: "white",
                   fontWeight: 700,
-                  fontSize: '14px',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #059669, #047857)',
-                    transform: 'translateY(-1px)',
-                    boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)'
+                  fontSize: "14px",
+                  boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)",
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #059669, #047857)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 6px 20px rgba(16, 185, 129, 0.4)",
                   },
-                  '&:disabled': {
-                    background: 'linear-gradient(135deg, #9ca3af, #6b7280)'
-                  }
-                }
+                  "&:disabled": {
+                    background: "linear-gradient(135deg, #9ca3af, #6b7280)",
+                  },
+                },
               }}
             >
-              {initialExtensionData?.id ? "✨ Update Extension" : "🚀 Add Extension"}
+              {initialExtensionData?.id
+                ? "✨ Update Extension"
+                : "🚀 Add Extension"}
             </Button>
           </Group>
         </Stack>
