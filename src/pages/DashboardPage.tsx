@@ -774,7 +774,7 @@ export function DashboardPage() {
                       <Avatar size="sm" src={extension.logo_url} />
                       <Stack gap="xs">
                         <Text fw={500}>{extension.name}</Text>
-                        <Text size="sm" maw={300} truncate style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                        <Text size="sm" maw={300} truncate style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                           {extension.description || "No description"}
                         </Text>
                         {extension.status === "pending_verification" &&
@@ -882,7 +882,7 @@ export function DashboardPage() {
                     <Text fw={600} size="lg">
                       No pending reviews
                     </Text>
-                    <Text c="dimmed" size="sm" ta="center">
+                    <Text size="sm" ta="center" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                       {profile?.has_completed_qualification
                         ? "Click 'Request Assignment' to get started and earn credits!"
                         : "Complete your qualification to start receiving review assignments."}
@@ -915,7 +915,7 @@ export function DashboardPage() {
                           ? truncate(assignment.extension.name, 20)
                           : "Unknown Extension"}
                       </Text>
-                      <Text size="xs" c="dimmed">
+                      <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                         Due: {new Date(assignment.due_at).toLocaleDateString()}
                       </Text>
                       <Progress
