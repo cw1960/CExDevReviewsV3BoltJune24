@@ -185,36 +185,219 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
   // Premium tier component with accordion
   const premiumStats = stats as PremiumPersonalStats;
 
-  // FORCE COLORS WITH JAVASCRIPT - GUARANTEED TO WORK
+  // NUCLEAR COLOR FORCING - TARGET EVERYTHING POSSIBLE
   useEffect(() => {
     const forceColors = () => {
-      console.log('🎨 FORCING COLORS - JavaScript is running!');
+      console.log('🎨 NUCLEAR COLOR FORCING - JavaScript is running!');
       
-      // Force Reviews This Cycle to Green
-      const reviewsCycleCards = document.querySelectorAll('.reviews-cycle-card');
-      console.log('Found Reviews Cycle cards:', reviewsCycleCards.length);
+      // APPROACH 1: Target by text content - Find cards with specific titles
+      const allCards = document.querySelectorAll('.mantine-Card-root, .mantine-Paper-root');
+      console.log('Found total cards/papers:', allCards.length);
       
-      reviewsCycleCards.forEach(card => {
-        const numberDiv = card.querySelector('div[style*="font-size: 32px"]') as HTMLElement;
-        const icon = card.querySelector('svg') as SVGElement;
-        console.log('Found numberDiv:', !!numberDiv, 'Found icon:', !!icon);
-        
-        if (numberDiv) {
-          console.log('Setting GREEN color for Reviews This Cycle');
-          numberDiv.style.color = '#10b981';
-          numberDiv.style.setProperty('color', '#10b981', 'important');
-          // NUCLEAR OPTION: Set all possible color properties
-          (numberDiv.style as any).webkitTextFillColor = '#10b981';
-          numberDiv.style.setProperty('-webkit-text-fill-color', '#10b981', 'important');
+      allCards.forEach((card, index) => {
+        if (card instanceof HTMLElement) {
+          const cardText = card.textContent || '';
+          console.log(`Card ${index} text snippet:`, cardText.substring(0, 50));
+          
+          // Target the large numbers in each card
+          const numberElements = card.querySelectorAll('div[style*="font-size: 32px"], div[style*="font-size: 36px"], .mantine-Text-root[style*="2.5rem"], .mantine-Text-root[style*="2rem"]');
+          const iconElements = card.querySelectorAll('svg');
+          
+          if (cardText.includes('Reviews This Cycle') || cardText.includes('Reviews Submitted')) {
+            console.log('🟢 FORCING GREEN for Reviews This Cycle card');
+            numberElements.forEach(el => {
+              if (el instanceof HTMLElement) {
+                el.style.color = '#10b981';
+                el.style.setProperty('color', '#10b981', 'important');
+                (el.style as any).webkitTextFillColor = '#10b981';
+                el.style.setProperty('-webkit-text-fill-color', '#10b981', 'important');
+              }
+            });
+            iconElements.forEach(el => {
+              if (el instanceof SVGElement) {
+                el.style.color = '#10b981';
+                el.style.setProperty('color', '#10b981', 'important');
+              }
+            });
+          }
+          
+          if (cardText.includes('Reviews Received')) {
+            console.log('🟣 FORCING PURPLE for Reviews Received card');
+            numberElements.forEach(el => {
+              if (el instanceof HTMLElement) {
+                el.style.color = '#8b5cf6';
+                el.style.setProperty('color', '#8b5cf6', 'important');
+                (el.style as any).webkitTextFillColor = '#8b5cf6';
+                el.style.setProperty('-webkit-text-fill-color', '#8b5cf6', 'important');
+              }
+            });
+            iconElements.forEach(el => {
+              if (el instanceof SVGElement) {
+                el.style.color = '#8b5cf6';
+                el.style.setProperty('color', '#8b5cf6', 'important');
+              }
+            });
+          }
+          
+          if (cardText.includes('Queue Position')) {
+            console.log('🟠 FORCING ORANGE for Queue Position card');
+            numberElements.forEach(el => {
+              if (el instanceof HTMLElement) {
+                el.style.color = '#f59e0b';
+                el.style.setProperty('color', '#f59e0b', 'important');
+                (el.style as any).webkitTextFillColor = '#f59e0b';
+                el.style.setProperty('-webkit-text-fill-color', '#f59e0b', 'important');
+              }
+            });
+            iconElements.forEach(el => {
+              if (el instanceof SVGElement) {
+                el.style.color = '#f59e0b';
+                el.style.setProperty('color', '#f59e0b', 'important');
+              }
+            });
+          }
+          
+          if (cardText.includes('Avg. Turnaround') || cardText.includes('Average Turnaround')) {
+            console.log('🔵 FORCING CYAN for Avg Turnaround card');
+            numberElements.forEach(el => {
+              if (el instanceof HTMLElement) {
+                el.style.color = '#06b6d4';
+                el.style.setProperty('color', '#06b6d4', 'important');
+                (el.style as any).webkitTextFillColor = '#06b6d4';
+                el.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
+              }
+            });
+            iconElements.forEach(el => {
+              if (el instanceof SVGElement) {
+                el.style.color = '#06b6d4';
+                el.style.setProperty('color', '#06b6d4', 'important');
+              }
+            });
+          }
         }
-        if (icon) {
-          console.log('Setting GREEN icon color');
-          icon.style.color = '#10b981';
-          icon.style.setProperty('color', '#10b981', 'important');
+              });
+
+      // APPROACH 2: Target accordion content by looking for specific text patterns
+      const accordionPanels = document.querySelectorAll('.mantine-Accordion-panel, .mantine-Accordion-content');
+      console.log('Found accordion panels:', accordionPanels.length);
+      
+      accordionPanels.forEach((panel, index) => {
+        if (panel instanceof HTMLElement) {
+          const panelText = panel.textContent || '';
+          console.log(`Accordion panel ${index} text:`, panelText.substring(0, 100));
+          
+          // LIFETIME PERFORMANCE section
+          if (panelText.includes('Total Submitted') || panelText.includes('Total Received') || panelText.includes('Next Review ETA')) {
+            console.log('🔵 FORCING COLORS for Lifetime Performance section');
+            
+            // Target all bold elements (numbers) within this panel
+            const boldElements = panel.querySelectorAll('b, strong, .mantine-Text-root[style*="font-weight"]');
+            const numberElements = panel.querySelectorAll('div[style*="font-size: 36px"], .mantine-Text-root');
+            
+            boldElements.forEach((el, idx) => {
+              if (el instanceof HTMLElement) {
+                const colors = ['#2563eb', '#059669', '#ea580c']; // Blue, Green, Orange
+                const color = colors[idx % colors.length];
+                console.log(`Setting ${color} for lifetime bold element ${idx}`);
+                el.style.color = color;
+                el.style.setProperty('color', color, 'important');
+                (el.style as any).webkitTextFillColor = color;
+                el.style.setProperty('-webkit-text-fill-color', color, 'important');
+              }
+            });
+          }
+          
+          // 6-MONTH REVIEW TRENDS section
+          if (panelText.includes('6-month') || panelText.includes('review trends') || panelText.includes('trend')) {
+            console.log('📊 FORCING COLORS for 6-Month Review Trends section');
+            
+            const trendNumbers = panel.querySelectorAll('.mantine-Text-root, div, span');
+            trendNumbers.forEach((el) => {
+              if (el instanceof HTMLElement && el.textContent) {
+                const text = el.textContent.trim();
+                // Look for numbers or percentage patterns
+                if (/^\d+(\.\d+)?$/.test(text) || text.includes('%') || text.includes('avg')) {
+                  el.style.color = '#8b5cf6'; // Purple for trends
+                  el.style.setProperty('color', '#8b5cf6', 'important');
+                  console.log(`Set purple for trend number: ${text}`);
+                }
+              }
+            });
+          }
+          
+          // RECENT POSITIVE FEEDBACK section
+          if (panelText.includes('Recent Positive Feedback') || panelText.includes('feedback')) {
+            console.log('⭐ FORCING COLORS for Recent Positive Feedback section');
+            
+            // Color star ratings gold and feedback text green
+            const stars = panel.querySelectorAll('svg, .star, [data-icon="star"]');
+            stars.forEach(star => {
+              if (star instanceof SVGElement || star instanceof HTMLElement) {
+                star.style.color = '#fbbf24';
+                star.style.setProperty('color', '#fbbf24', 'important');
+              }
+            });
+            
+            const feedbackText = panel.querySelectorAll('.mantine-Text-root');
+            feedbackText.forEach(el => {
+              if (el instanceof HTMLElement && el.textContent && el.textContent.length > 20) {
+                el.style.color = '#059669'; // Green for positive feedback
+                el.style.setProperty('color', '#059669', 'important');
+              }
+            });
+          }
+          
+          // PLATFORM COMPARISON section
+          if (panelText.includes('Platform Comparison') || panelText.includes('comparison')) {
+            console.log('📈 FORCING COLORS for Platform Comparison section');
+            
+            const comparisonNumbers = panel.querySelectorAll('.mantine-Text-root, div, span');
+            comparisonNumbers.forEach((el, idx) => {
+              if (el instanceof HTMLElement && el.textContent) {
+                const text = el.textContent.trim();
+                if (/^\d+(\.\d+)?/.test(text) || text.includes('%')) {
+                  const colors = ['#06b6d4', '#f59e0b', '#8b5cf6']; // Cyan, Orange, Purple
+                  const color = colors[idx % colors.length];
+                  el.style.color = color;
+                  el.style.setProperty('color', color, 'important');
+                  console.log(`Set ${color} for comparison number: ${text}`);
+                }
+              }
+            });
+          }
         }
       });
 
-      // Force Reviews Received to Purple
+      // APPROACH 3: Brute force ALL large numbers on the page
+      const allLargeNumbers = document.querySelectorAll(
+        'div[style*="font-size: 32px"], div[style*="font-size: 36px"], ' +
+        '.mantine-Text-root[style*="2.5rem"], .mantine-Text-root[style*="2rem"], ' +
+        'div[style*="font-size: 2rem"], div[style*="font-size: 2.5rem"]'
+      );
+      console.log('Found all large numbers on page:', allLargeNumbers.length);
+      
+      allLargeNumbers.forEach((el, index) => {
+        if (el instanceof HTMLElement) {
+          const parentCard = el.closest('.mantine-Card-root, .mantine-Paper-root');
+          if (parentCard && parentCard.textContent) {
+            const cardText = parentCard.textContent;
+            
+            // If not already colored, apply a default vibrant color scheme
+            if (!el.style.color || el.style.color.includes('rgb(255, 255, 255)')) {
+              const colors = ['#10b981', '#8b5cf6', '#f59e0b', '#06b6d4', '#2563eb', '#dc2626'];
+              const color = colors[index % colors.length];
+              console.log(`BRUTE FORCE: Setting ${color} for number ${el.textContent} (index ${index})`);
+              
+              el.style.color = color;
+              el.style.setProperty('color', color, 'important');
+              (el.style as any).webkitTextFillColor = color;
+              el.style.setProperty('-webkit-text-fill-color', color, 'important');
+            }
+          }
+        }
+      });
+
+      // Force Reviews Received to Purple (keeping existing logic)
       const reviewsReceivedCards = document.querySelectorAll('.reviews-received-card');
       console.log('Found Reviews Received cards:', reviewsReceivedCards.length);
       reviewsReceivedCards.forEach(card => {
@@ -324,11 +507,26 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
       });
     };
 
-    // Run immediately and also with a small delay to ensure DOM is ready
-    forceColors();
-    const timeout = setTimeout(forceColors, 100);
+    // AGGRESSIVE TIMING: Run multiple times to catch all dynamic content
+    forceColors(); // Run immediately
+    const timeout1 = setTimeout(forceColors, 100);   // After 100ms
+    const timeout2 = setTimeout(forceColors, 500);   // After 500ms  
+    const timeout3 = setTimeout(forceColors, 1000);  // After 1 second
+    const timeout4 = setTimeout(forceColors, 2000);  // After 2 seconds
     
-    return () => clearTimeout(timeout);
+    // Also run on scroll and resize to catch any lazy-loaded content
+    const handleEvent = () => forceColors();
+    window.addEventListener('scroll', handleEvent);
+    window.addEventListener('resize', handleEvent);
+    
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
+      clearTimeout(timeout4);
+      window.removeEventListener('scroll', handleEvent);
+      window.removeEventListener('resize', handleEvent);
+    };
   }, [stats]);
 
   return (
