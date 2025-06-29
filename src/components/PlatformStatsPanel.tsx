@@ -166,9 +166,36 @@ export function PlatformStatsPanel() {
         'Avg. Review Completion Time': '#6b7280' // Gray
       };
 
-      // Target all stat boxes
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach((el) => {
+             // Target all stat boxes + Mantine Text components
+       const allElements = document.querySelectorAll('*');
+       
+       // NUCLEAR: Also specifically target Mantine Text components
+       const mantineTexts = document.querySelectorAll('[class*="mantine-Text"], [class*="Text-root"]');
+       console.log(`🔥 Found ${mantineTexts.length} Mantine Text components`);
+       
+       mantineTexts.forEach((el) => {
+         if (el instanceof HTMLElement && el.textContent) {
+           const text = el.textContent.trim();
+           console.log(`🔥 NUCLEAR: Mantine Text component: "${text}"`);
+           
+           // If it's not a number, force it to be bright white
+           if (!(/^\d+$/.test(text)) && text.length > 3) {
+             console.log(`🔥 NUCLEAR: Forcing Mantine Text to bright white: "${text}"`);
+             el.style.color = '#ffffff';
+             el.style.setProperty('color', '#ffffff', 'important');
+             (el.style as any).webkitTextFillColor = '#ffffff';
+             el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+             el.style.fontWeight = '600';
+             el.style.setProperty('font-weight', '600', 'important');
+             el.style.opacity = '1';
+             el.style.setProperty('opacity', '1', 'important');
+             el.style.textShadow = '0 0 2px rgba(255,255,255,0.9)';
+             el.style.setProperty('text-shadow', '0 0 2px rgba(255,255,255,0.9)', 'important');
+           }
+         }
+       });
+       
+       allElements.forEach((el) => {
         if (el instanceof HTMLElement && el.textContent) {
           const text = el.textContent.trim();
           
@@ -210,20 +237,53 @@ export function PlatformStatsPanel() {
             el.style.setProperty('font-size', '2.2rem', 'important');
           }
           
-          // Force bright white for stat labels
-          Object.keys(statColors).forEach(statLabel => {
-            if (text.includes(statLabel)) {
-              console.log(`🔥 FORCING WHITE for stat label: "${statLabel}"`);
-              el.style.color = '#ffffff';
-              el.style.setProperty('color', '#ffffff', 'important');
-              (el.style as any).webkitTextFillColor = '#ffffff';
-              el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
-              el.style.fontWeight = '500';
-              el.style.setProperty('font-weight', '500', 'important');
-              el.style.opacity = '1';
-              el.style.setProperty('opacity', '1', 'important');
-            }
-          });
+                     // Force bright white for stat labels - SUPER AGGRESSIVE
+           const labelTexts = [
+             'Total Users', 'Free Tier Users', 'Review Fast Track Users', 
+             'Extensions in Libraries', 'Extensions in Queue', 'Reviews Assigned',
+             'Reviews Completed', 'Reviews In Progress', 'Credits Earned',
+             'Active Reviewers (30d)', 'Reviews Completed (7d)', 'Avg. Review Completion Time'
+           ];
+           
+           labelTexts.forEach(labelText => {
+             if (text.includes(labelText) || text === labelText) {
+               console.log(`🔥 NUCLEAR: FORCING BRIGHT WHITE for label: "${labelText}"`);
+               el.style.color = '#ffffff';
+               el.style.setProperty('color', '#ffffff', 'important');
+               (el.style as any).webkitTextFillColor = '#ffffff';
+               el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+               el.style.fontWeight = '600';
+               el.style.setProperty('font-weight', '600', 'important');
+               el.style.opacity = '1';
+               el.style.setProperty('opacity', '1', 'important');
+               el.style.fontSize = '14px';
+               el.style.setProperty('font-size', '14px', 'important');
+               
+               // Extra nuclear overrides
+               el.style.textShadow = '0 0 1px rgba(255,255,255,0.8)';
+               el.style.setProperty('text-shadow', '0 0 1px rgba(255,255,255,0.8)', 'important');
+             }
+           });
+           
+           // NUCLEAR: Target any small text that might be labels
+           if (el.tagName && (el.tagName.toLowerCase() === 'span' || el.tagName.toLowerCase() === 'div')) {
+             const fontSize = window.getComputedStyle(el).fontSize;
+             const isSmallText = fontSize && (parseInt(fontSize) < 20);
+             
+             if (isSmallText && text.length > 5 && !(/^\d+$/.test(text))) {
+               console.log(`🔥 NUCLEAR: Small text detected, forcing white: "${text}"`);
+               el.style.color = '#ffffff';
+               el.style.setProperty('color', '#ffffff', 'important');
+               (el.style as any).webkitTextFillColor = '#ffffff';
+               el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+               el.style.fontWeight = '600';
+               el.style.setProperty('font-weight', '600', 'important');
+               el.style.opacity = '1';
+               el.style.setProperty('opacity', '1', 'important');
+               el.style.textShadow = '0 0 1px rgba(255,255,255,0.8)';
+               el.style.setProperty('text-shadow', '0 0 1px rgba(255,255,255,0.8)', 'important');
+             }
+           }
           
           // Force specific time format colors for completion time
           if (text.includes('hours') || text.includes('minutes') || /^\d+\.\d+h$/.test(text)) {
