@@ -559,6 +559,76 @@ export function DashboardPage() {
     navigate("/upgrade");
   };
 
+  // FORCE DASHBOARD CARD COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceDashboardColors = () => {
+      console.log('🎨 FORCING DASHBOARD COLORS - JavaScript is running!');
+      
+      // Force Extensions Card to Cyan
+      const extensionsCards = document.querySelectorAll('.extensions-card');
+      console.log('Found Extensions cards:', extensionsCards.length);
+      extensionsCards.forEach(card => {
+        const numberDiv = card.querySelector('.stats-number') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          console.log('Setting CYAN color for Extensions');
+          numberDiv.style.color = '#06b6d4';
+          numberDiv.style.setProperty('color', '#06b6d4', 'important');
+          (numberDiv.style as any).webkitTextFillColor = '#06b6d4';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#06b6d4';
+          icon.style.setProperty('color', '#06b6d4', 'important');
+        }
+      });
+
+      // Force Pending Reviews Card to Red
+      const pendingReviewsCards = document.querySelectorAll('.pending-reviews-card');
+      console.log('Found Pending Reviews cards:', pendingReviewsCards.length);
+      pendingReviewsCards.forEach(card => {
+        const numberDiv = card.querySelector('.stats-number') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          console.log('Setting RED color for Pending Reviews');
+          numberDiv.style.color = '#ef4444';
+          numberDiv.style.setProperty('color', '#ef4444', 'important');
+          (numberDiv.style as any).webkitTextFillColor = '#ef4444';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#ef4444', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#ef4444';
+          icon.style.setProperty('color', '#ef4444', 'important');
+        }
+      });
+
+      // Force Credits Balance Card to Green
+      const creditsBalanceCards = document.querySelectorAll('.credits-balance-card');
+      console.log('Found Credits Balance cards:', creditsBalanceCards.length);
+      creditsBalanceCards.forEach(card => {
+        const numberDiv = card.querySelector('.stats-number') as HTMLElement;
+        const icon = card.querySelector('svg') as SVGElement;
+        if (numberDiv) {
+          console.log('Setting GREEN color for Credits Balance');
+          numberDiv.style.color = '#059669';
+          numberDiv.style.setProperty('color', '#059669', 'important');
+          (numberDiv.style as any).webkitTextFillColor = '#059669';
+          numberDiv.style.setProperty('-webkit-text-fill-color', '#059669', 'important');
+        }
+        if (icon) {
+          icon.style.color = '#059669';
+          icon.style.setProperty('color', '#059669', 'important');
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceDashboardColors();
+    const timeout = setTimeout(forceDashboardColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [extensions, assignments, profile]);
+
   // Show loading if initial auth is loading, profile is refreshing, or dashboard data is loading
   if (isInitialAuthLoading || isProfileRefreshing || loading) {
     return (

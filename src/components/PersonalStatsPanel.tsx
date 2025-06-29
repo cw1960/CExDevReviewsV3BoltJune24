@@ -273,6 +273,55 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           icon.style.setProperty('color', '#06b6d4', 'important');
         }
       });
+
+      // LIFETIME PERFORMANCE SECTION - Force vibrant colors
+      const lifetimeNumbers = document.querySelectorAll('[value="lifetime"] div[style*="font-size: 36px"]');
+      console.log('Found Lifetime Performance numbers:', lifetimeNumbers.length);
+      lifetimeNumbers.forEach((numberDiv, index) => {
+        const colors = ['#3b82f6', '#10b981', '#f59e0b']; // Blue, Green, Orange
+        const brightColors = ['#2563eb', '#059669', '#ea580c']; // Brighter versions
+        if (numberDiv instanceof HTMLElement) {
+          numberDiv.style.color = brightColors[index] || brightColors[0];
+          numberDiv.style.setProperty('color', brightColors[index] || brightColors[0], 'important');
+          console.log(`Set Lifetime Performance ${index} to ${brightColors[index]}`);
+        }
+      });
+
+      // REVIEW TRENDS SECTION - Force vibrant colors
+      const trendsNumbers = document.querySelectorAll('[value="trends"] .mantine-Text-root[style*="color: #3b82f6"], [value="trends"] .mantine-Text-root[style*="color: #10b981"]');
+      console.log('Found Review Trends numbers:', trendsNumbers.length);
+      trendsNumbers.forEach((numberDiv) => {
+        if (numberDiv instanceof HTMLElement) {
+          if (numberDiv.style.color.includes('#3b82f6') || numberDiv.style.color.includes('59, 130, 246')) {
+            numberDiv.style.color = '#2563eb';
+            numberDiv.style.setProperty('color', '#2563eb', 'important');
+          } else if (numberDiv.style.color.includes('#10b981') || numberDiv.style.color.includes('16, 185, 129')) {
+            numberDiv.style.color = '#059669'; 
+            numberDiv.style.setProperty('color', '#059669', 'important');
+          }
+        }
+      });
+
+      // PLATFORM COMPARISON SECTION - Force vibrant colors  
+      const comparisonNumbers = document.querySelectorAll('[value="comparison"] .mantine-Text-root[style*="font-weight: 700"]');
+      console.log('Found Platform Comparison numbers:', comparisonNumbers.length);
+      comparisonNumbers.forEach((numberDiv, index) => {
+        if (numberDiv instanceof HTMLElement) {
+          const colors = ['#2563eb', '#059669', '#fbbf24']; // Blue, Green, Yellow
+          numberDiv.style.color = colors[index] || colors[0];
+          numberDiv.style.setProperty('color', colors[index] || colors[0], 'important');
+        }
+      });
+
+      // PLATFORM COMPARISON STATUS - Force "Fast Track" to be more vibrant
+      const fastTrackElements = document.querySelectorAll('[value="comparison"] .mantine-Text-root');
+      fastTrackElements.forEach((element) => {
+        if (element instanceof HTMLElement && element.textContent?.includes('Fast Track')) {
+          element.style.color = '#fbbf24';
+          element.style.setProperty('color', '#fbbf24', 'important');
+          element.style.fontWeight = 'bold';
+        }
+      });
     };
 
     // Run immediately and also with a small delay to ensure DOM is ready
