@@ -260,6 +260,67 @@ export function ExtensionLibraryPage() {
     }
   }
 
+  // FORCE EXTENSION LIBRARY COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceExtensionLibraryColors = () => {
+      console.log('🎨 FORCING EXTENSION LIBRARY COLORS - JavaScript is running!');
+      
+      // Force status badges to be more vibrant
+      const statusBadges = document.querySelectorAll('.mantine-Badge-root');
+      console.log('Found Extension Library badges:', statusBadges.length);
+      
+      statusBadges.forEach((badge) => {
+        if (badge instanceof HTMLElement) {
+          const text = badge.textContent?.trim();
+          
+          switch (text) {
+            case 'In my Library':
+              console.log('Setting BRIGHT GREEN for In my Library');
+              badge.style.backgroundColor = '#059669';
+              badge.style.color = '#ffffff';
+              badge.style.setProperty('background-color', '#059669', 'important');
+              badge.style.setProperty('color', '#ffffff', 'important');
+              break;
+            case 'In Review Queue':
+              console.log('Setting BRIGHT BLUE for In Review Queue');
+              badge.style.backgroundColor = '#2563eb';
+              badge.style.color = '#ffffff';
+              badge.style.setProperty('background-color', '#2563eb', 'important');
+              badge.style.setProperty('color', '#ffffff', 'important');
+              break;
+            case 'Selected for Review':
+              console.log('Setting BRIGHT PURPLE for Selected for Review');
+              badge.style.backgroundColor = '#7c3aed';
+              badge.style.color = '#ffffff';
+              badge.style.setProperty('background-color', '#7c3aed', 'important');
+              badge.style.setProperty('color', '#ffffff', 'important');
+              break;
+            case 'Review Submitted':
+              console.log('Setting BRIGHT ORANGE for Review Submitted');
+              badge.style.backgroundColor = '#ea580c';
+              badge.style.color = '#ffffff';
+              badge.style.setProperty('background-color', '#ea580c', 'important');
+              badge.style.setProperty('color', '#ffffff', 'important');
+              break;
+            case 'Rejected':
+              console.log('Setting BRIGHT RED for Rejected');
+              badge.style.backgroundColor = '#dc2626';
+              badge.style.color = '#ffffff';
+              badge.style.setProperty('background-color', '#dc2626', 'important');
+              badge.style.setProperty('color', '#ffffff', 'important');
+              break;
+          }
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceExtensionLibraryColors();
+    const timeout = setTimeout(forceExtensionLibraryColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [extensions]);
+
   const handleMoveToLibrary = async (extension: Extension) => {
     try {
       // Use Edge Function to update extension status to avoid RLS issues

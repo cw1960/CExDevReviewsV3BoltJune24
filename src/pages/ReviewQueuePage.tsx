@@ -541,6 +541,87 @@ export function ReviewQueuePage() {
     setReviewDetailsModalOpen(true);
   };
 
+  // FORCE REVIEW QUEUE COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceReviewQueueColors = () => {
+      console.log('🎨 FORCING REVIEW QUEUE COLORS - JavaScript is running!');
+      
+      // Force header badges to be more vibrant
+      const badges = document.querySelectorAll('.mantine-Badge-root');
+      console.log('Found Review Queue badges:', badges.length);
+      
+      badges.forEach((badge) => {
+        if (badge instanceof HTMLElement) {
+          const text = badge.textContent?.trim();
+          
+          if (text?.includes('Active')) {
+            console.log('Setting BRIGHT BLUE for Active badge');
+            badge.style.backgroundColor = '#2563eb';
+            badge.style.color = '#ffffff';
+            badge.style.setProperty('background-color', '#2563eb', 'important');
+            badge.style.setProperty('color', '#ffffff', 'important');
+          } else if (text?.includes('Pending')) {
+            console.log('Setting BRIGHT ORANGE for Pending badge');
+            badge.style.backgroundColor = '#ea580c';
+            badge.style.color = '#ffffff';
+            badge.style.setProperty('background-color', '#ea580c', 'important');
+            badge.style.setProperty('color', '#ffffff', 'important');
+          } else if (text?.includes('Credits Earned')) {
+            console.log('Setting BRIGHT GREEN for Credits Earned badge');
+            badge.style.backgroundColor = '#059669';
+            badge.style.color = '#ffffff';
+            badge.style.setProperty('background-color', '#059669', 'important');
+            badge.style.setProperty('color', '#ffffff', 'important');
+          } else if (text?.includes('Pending Approval')) {
+            console.log('Setting BRIGHT ORANGE for Pending Approval badge');
+            badge.style.backgroundColor = '#f59e0b';
+            badge.style.color = '#ffffff';
+            badge.style.setProperty('background-color', '#f59e0b', 'important');
+            badge.style.setProperty('color', '#ffffff', 'important');
+          }
+        }
+      });
+
+      // Force assignment status badges to be more vibrant
+      const statusBadges = document.querySelectorAll('[data-assignment-status]');
+      statusBadges.forEach((badge) => {
+        if (badge instanceof HTMLElement) {
+          const status = badge.getAttribute('data-assignment-status');
+          switch (status) {
+            case 'assigned':
+              badge.style.backgroundColor = '#8b5cf6';
+              badge.style.setProperty('background-color', '#8b5cf6', 'important');
+              break;
+            case 'submitted':
+              badge.style.backgroundColor = '#f59e0b';
+              badge.style.setProperty('background-color', '#f59e0b', 'important');
+              break;
+            case 'approved':
+              badge.style.backgroundColor = '#10b981';
+              badge.style.setProperty('background-color', '#10b981', 'important');
+              break;
+          }
+        }
+      });
+
+      // Force star ratings to be more vibrant
+      const stars = document.querySelectorAll('svg[fill="#ffd43b"]');
+      stars.forEach((star) => {
+        if (star instanceof SVGElement) {
+          star.style.fill = '#fbbf24';
+          star.style.color = '#fbbf24';
+          star.style.setProperty('fill', '#fbbf24', 'important');
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceReviewQueueColors();
+    const timeout = setTimeout(forceReviewQueueColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [assignments]);
+
   if (loading) {
     return (
       <Container size="lg">

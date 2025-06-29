@@ -224,6 +224,94 @@ export function AdminUserProfilePage() {
     }
   }
 
+  // FORCE ADMIN USER PROFILE COLORS WITH JAVASCRIPT
+  useEffect(() => {
+    const forceAdminUserProfileColors = () => {
+      console.log('🎨 FORCING ADMIN USER PROFILE COLORS - JavaScript is running!');
+      
+      // Force main stats cards to be more vibrant
+      const statsCards = document.querySelectorAll('.mantine-Card-root');
+      console.log('Found Admin User Profile cards:', statsCards.length);
+      
+      statsCards.forEach((card) => {
+        if (card instanceof HTMLElement) {
+          const titleElement = card.querySelector('div[class*="c-dimmed"]') as HTMLElement;
+          const numberElement = card.querySelector('div[class*="xl"][class*="fw-700"]') as HTMLElement;
+          const iconElement = card.querySelector('svg') as SVGElement;
+          
+          if (titleElement && numberElement) {
+            const title = titleElement.textContent?.trim();
+            console.log('Processing admin user profile card:', title);
+            
+            switch (title) {
+              case 'Extensions':
+                console.log('Setting CYAN color for Extensions');
+                numberElement.style.color = '#06b6d4';
+                numberElement.style.setProperty('color', '#06b6d4', 'important');
+                if (iconElement) iconElement.style.color = '#06b6d4';
+                break;
+              case 'Reviews Completed':
+                console.log('Setting PURPLE color for Reviews Completed');
+                numberElement.style.color = '#8b5cf6';
+                numberElement.style.setProperty('color', '#8b5cf6', 'important');
+                if (iconElement) iconElement.style.color = '#8b5cf6';
+                break;
+              case 'Active Reviews':
+                console.log('Setting BRIGHT BLUE color for Active Reviews');
+                numberElement.style.color = '#2563eb';
+                numberElement.style.setProperty('color', '#2563eb', 'important');
+                if (iconElement) iconElement.style.color = '#2563eb';
+                break;
+              case 'Credits Earned':
+                console.log('Setting BRIGHT GREEN color for Credits Earned');
+                numberElement.style.color = '#059669';
+                numberElement.style.setProperty('color', '#059669', 'important');
+                if (iconElement) iconElement.style.color = '#059669';
+                break;
+              case 'Credits Spent':
+                console.log('Setting BRIGHT ORANGE color for Credits Spent');
+                numberElement.style.color = '#ea580c';
+                numberElement.style.setProperty('color', '#ea580c', 'important');
+                if (iconElement) iconElement.style.color = '#ea580c';
+                break;
+              case 'Current Balance':
+                console.log('Setting BRIGHT BLUE color for Current Balance');
+                numberElement.style.color = '#2563eb';
+                numberElement.style.setProperty('color', '#2563eb', 'important');
+                if (iconElement) iconElement.style.color = '#2563eb';
+                break;
+            }
+          }
+        }
+      });
+
+      // Force user badges to be more vibrant
+      const badges = document.querySelectorAll('.mantine-Badge-root');
+      badges.forEach((badge) => {
+        if (badge instanceof HTMLElement) {
+          const text = badge.textContent?.trim();
+          
+          if (text === 'admin') {
+            badge.style.backgroundColor = '#dc2626';
+            badge.style.setProperty('background-color', '#dc2626', 'important');
+          } else if (text === 'Qualified') {
+            badge.style.backgroundColor = '#059669';
+            badge.style.setProperty('background-color', '#059669', 'important');
+          } else if (text === 'Premium') {
+            badge.style.backgroundColor = '#7c3aed';
+            badge.style.setProperty('background-color', '#7c3aed', 'important');
+          }
+        }
+      });
+    };
+
+    // Run immediately and also with a small delay to ensure DOM is ready
+    forceAdminUserProfileColors();
+    const timeout = setTimeout(forceAdminUserProfileColors, 100);
+    
+    return () => clearTimeout(timeout);
+  }, [userData]);
+
   if (profile?.role !== 'admin') {
     return (
       <Container size="md">
