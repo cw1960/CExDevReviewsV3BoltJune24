@@ -145,175 +145,113 @@ export function PlatformStatsPanel() {
     fetchStats();
   }, []);
 
-  // NUCLEAR COLOR FORCING for Platform Stats
+  // COPY EXACT SUCCESSFUL LOGIC FROM PersonalStatsPanel!
   useEffect(() => {
     const forcePlatformStatsColors = () => {
-      console.log('🔥 NUCLEAR: Force coloring Platform Stats');
+      console.log('🔥🔥🔥 PLATFORM STATS NUCLEAR TARGETING - EXACT PersonalStatsPanel approach');
       
-      // Define vibrant colors for each stat type
-      const statColors = {
-        'Total Users': '#6366f1',           // Indigo
-        'Free Tier Users': '#3b82f6',       // Blue
-        'Review Fast Track Users': '#14b8a6', // Teal
-        'Extensions in Libraries': '#8b5cf6', // Violet
-        'Extensions in Queue': '#06b6d4',   // Cyan
-        'Reviews Assigned': '#f59e0b',      // Yellow
-        'Reviews Completed': '#f97316',     // Orange
-        'Reviews In Progress': '#ec4899',   // Pink
-        'Credits Earned': '#10b981',        // Green
-        'Active Reviewers (30d)': '#84cc16', // Lime
-        'Reviews Completed (7d)': '#9333ea', // Grape
-        'Avg. Review Completion Time': '#6b7280' // Gray
-      };
+      // Get ALL elements (exactly like PersonalStatsPanel)
+      const allElements = document.querySelectorAll('*');
+      console.log(`🔥 Scanning ${allElements.length} elements for Platform Stats`);
 
-             // Target all stat boxes + Mantine Text components
-       const allElements = document.querySelectorAll('*');
-       
-       // NUCLEAR: Also specifically target Mantine Text components
-       const mantineTexts = document.querySelectorAll('[class*="mantine-Text"], [class*="Text-root"]');
-       console.log(`🔥 Found ${mantineTexts.length} Mantine Text components`);
-       
-       mantineTexts.forEach((el) => {
-         if (el instanceof HTMLElement && el.textContent) {
-           const text = el.textContent.trim();
-           console.log(`🔥 NUCLEAR: Mantine Text component: "${text}"`);
-           
-           // If it's not a number, force it to be bright white
-           if (!(/^\d+$/.test(text)) && text.length > 3) {
-             console.log(`🔥 NUCLEAR: Forcing Mantine Text to bright white: "${text}"`);
-             el.style.color = '#ffffff';
-             el.style.setProperty('color', '#ffffff', 'important');
-             (el.style as any).webkitTextFillColor = '#ffffff';
-             el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
-             el.style.fontWeight = '600';
-             el.style.setProperty('font-weight', '600', 'important');
-             el.style.opacity = '1';
-             el.style.setProperty('opacity', '1', 'important');
-             el.style.textShadow = '0 0 2px rgba(255,255,255,0.9)';
-             el.style.setProperty('text-shadow', '0 0 2px rgba(255,255,255,0.9)', 'important');
-           }
-         }
-       });
-       
-       allElements.forEach((el) => {
-        if (el instanceof HTMLElement && el.textContent) {
-          const text = el.textContent.trim();
+      allElements.forEach((element, index) => {
+        if (!(element instanceof HTMLElement)) return;
+        
+        const text = element.textContent?.trim() || '';
+        if (!text) return;
+        
+        // NUCLEAR TARGETING: Platform Stats labels (exactly like PersonalStatsPanel does it)
+        if (text === 'Total Users' || text === 'Free Tier Users' || text === 'Review Fast Track Users' ||
+            text === 'Extensions in Libraries' || text === 'Extensions in Queue' || text === 'Reviews Assigned' ||
+            text === 'Reviews Completed' || text === 'Reviews In Progress' || text === 'Credits Earned' ||
+            text.includes('Active Reviewers') || text.includes('Reviews Completed (7d)') ||
+            text.includes('Avg. Review Completion')) {
           
-          // Force bright colors for large numbers (the main stat values)
-          if (/^\d+$/.test(text) && text.length >= 1) {
-            console.log(`🔥 FORCING BRIGHT COLOR for stat number: "${text}"`);
-            
-            // Find the parent container to determine which stat this is
-            let parent = el.parentElement;
-            let statType = '';
-            
-            // Look for the label in siblings or parent elements
-            while (parent && !statType) {
-              const siblings = parent.querySelectorAll('*');
-              siblings.forEach(sibling => {
-                if (sibling instanceof HTMLElement) {
-                  const siblingText = sibling.textContent || '';
-                  Object.keys(statColors).forEach(key => {
-                    if (siblingText.includes(key)) {
-                      statType = key;
-                    }
-                  });
-                }
-              });
-              parent = parent.parentElement;
-            }
-            
-            const color = statColors[statType] || '#ffffff';
-            console.log(`🔥 Using color ${color} for stat: ${statType}`);
-            
-            // Apply nuclear color forcing
-            el.style.color = color;
-            el.style.setProperty('color', color, 'important');
-            (el.style as any).webkitTextFillColor = color;
-            el.style.setProperty('-webkit-text-fill-color', color, 'important');
-            el.style.fontWeight = '800';
-            el.style.setProperty('font-weight', '800', 'important');
-            el.style.fontSize = '2.2rem';
-            el.style.setProperty('font-size', '2.2rem', 'important');
-          }
+          console.log(`🔥🔥🔥 FOUND PLATFORM LABEL: "${text}"`);
           
-                     // Force bright white for stat labels - SUPER AGGRESSIVE
-           const labelTexts = [
-             'Total Users', 'Free Tier Users', 'Review Fast Track Users', 
-             'Extensions in Libraries', 'Extensions in Queue', 'Reviews Assigned',
-             'Reviews Completed', 'Reviews In Progress', 'Credits Earned',
-             'Active Reviewers (30d)', 'Reviews Completed (7d)', 'Avg. Review Completion Time'
-           ];
-           
-           labelTexts.forEach(labelText => {
-             if (text.includes(labelText) || text === labelText) {
-               console.log(`🔥 NUCLEAR: FORCING BRIGHT WHITE for label: "${labelText}"`);
-               el.style.color = '#ffffff';
-               el.style.setProperty('color', '#ffffff', 'important');
-               (el.style as any).webkitTextFillColor = '#ffffff';
-               el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
-               el.style.fontWeight = '600';
-               el.style.setProperty('font-weight', '600', 'important');
-               el.style.opacity = '1';
-               el.style.setProperty('opacity', '1', 'important');
-               el.style.fontSize = '14px';
-               el.style.setProperty('font-size', '14px', 'important');
-               
-               // Extra nuclear overrides
-               el.style.textShadow = '0 0 1px rgba(255,255,255,0.8)';
-               el.style.setProperty('text-shadow', '0 0 1px rgba(255,255,255,0.8)', 'important');
-             }
-           });
-           
-           // NUCLEAR: Target any small text that might be labels
-           if (el.tagName && (el.tagName.toLowerCase() === 'span' || el.tagName.toLowerCase() === 'div')) {
-             const fontSize = window.getComputedStyle(el).fontSize;
-             const isSmallText = fontSize && (parseInt(fontSize) < 20);
-             
-             if (isSmallText && text.length > 5 && !(/^\d+$/.test(text))) {
-               console.log(`🔥 NUCLEAR: Small text detected, forcing white: "${text}"`);
-               el.style.color = '#ffffff';
-               el.style.setProperty('color', '#ffffff', 'important');
-               (el.style as any).webkitTextFillColor = '#ffffff';
-               el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
-               el.style.fontWeight = '600';
-               el.style.setProperty('font-weight', '600', 'important');
-               el.style.opacity = '1';
-               el.style.setProperty('opacity', '1', 'important');
-               el.style.textShadow = '0 0 1px rgba(255,255,255,0.8)';
-               el.style.setProperty('text-shadow', '0 0 1px rgba(255,255,255,0.8)', 'important');
-             }
-           }
+          // EXACT SAME STYLING AS PersonalStatsPanel
+          element.style.color = '#ffffff';
+          element.style.setProperty('color', '#ffffff', 'important');
+          (element.style as any).webkitTextFillColor = '#ffffff';
+          element.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+          element.style.fontWeight = '600';
+          element.style.setProperty('font-weight', '600', 'important');
+          element.style.fontSize = '14px';
+          element.style.setProperty('font-size', '14px', 'important');
+          element.style.opacity = '1';
+          element.style.setProperty('opacity', '1', 'important');
+          element.style.visibility = 'visible';
+          element.style.setProperty('visibility', 'visible', 'important');
+          element.style.textShadow = '0 0 3px rgba(255,255,255,1)';
+          element.style.setProperty('text-shadow', '0 0 3px rgba(255,255,255,1)', 'important');
+          element.style.zIndex = '1000';
+          element.style.setProperty('z-index', '1000', 'important');
+          element.style.position = 'relative';
+          element.style.setProperty('position', 'relative', 'important');
           
-          // Force specific time format colors for completion time
-          if (text.includes('hours') || text.includes('minutes') || /^\d+\.\d+h$/.test(text)) {
-            console.log(`🔥 FORCING CYAN for time value: "${text}"`);
-            el.style.color = '#06b6d4';
-            el.style.setProperty('color', '#06b6d4', 'important');
-            (el.style as any).webkitTextFillColor = '#06b6d4';
-            el.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
-            el.style.fontWeight = '800';
-            el.style.setProperty('font-weight', '800', 'important');
+          console.log(`🔥✅ APPLIED BRIGHT WHITE TO PLATFORM LABEL: "${text}"`);
+        }
+        
+        // Force stat numbers with vibrant colors (like PersonalStatsPanel)
+        if (/^\d+$/.test(text) && text.length >= 1 && parseInt(text) > 0) {
+          const colors = ['#6366f1', '#3b82f6', '#14b8a6', '#8b5cf6', '#06b6d4', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#84cc16', '#9333ea', '#6b7280'];
+          const color = colors[index % colors.length];
+          
+          console.log(`🔥🔥🔥 PLATFORM STAT NUMBER: "${text}" -> ${color}`);
+          
+          element.style.color = color;
+          element.style.setProperty('color', color, 'important');
+          (element.style as any).webkitTextFillColor = color;
+          element.style.setProperty('-webkit-text-fill-color', color, 'important');
+          element.style.fontWeight = '800';
+          element.style.setProperty('font-weight', '800', 'important');
+          element.style.fontSize = '2.2rem';
+          element.style.setProperty('font-size', '2.2rem', 'important');
+          element.style.opacity = '1';
+          element.style.setProperty('opacity', '1', 'important');
+        }
+        
+        // Catch any other small text that could be labels
+        if (text.length > 3 && text.length < 40 && !(/^\d+$/.test(text)) && !text.includes('Platform Stats')) {
+          const computedStyle = window.getComputedStyle(element);
+          const fontSize = parseInt(computedStyle.fontSize || '16');
+          
+          if (fontSize <= 16) {
+            console.log(`🔥 SMALL TEXT: "${text}" (${fontSize}px) - forcing white`);
+            
+            element.style.color = '#ffffff';
+            element.style.setProperty('color', '#ffffff', 'important');
+            (element.style as any).webkitTextFillColor = '#ffffff';
+            element.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+            element.style.fontWeight = '600';
+            element.style.setProperty('font-weight', '600', 'important');
+            element.style.opacity = '1';
+            element.style.setProperty('opacity', '1', 'important');
+            element.style.visibility = 'visible';
+            element.style.setProperty('visibility', 'visible', 'important');
+            element.style.textShadow = '0 0 3px rgba(255,255,255,1)';
+            element.style.setProperty('text-shadow', '0 0 3px rgba(255,255,255,1)', 'important');
           }
         }
       });
     };
 
-    // Run color forcing with multiple timing intervals
-    const timeouts = [0, 100, 500, 1000, 2000, 3000];
-    timeouts.forEach(delay => {
+    // EXACT timing intervals as PersonalStatsPanel
+    const intervals = [0, 50, 100, 200, 500, 1000, 2000, 3000];
+    intervals.forEach(delay => {
       setTimeout(forcePlatformStatsColors, delay);
     });
 
-    // Add event listeners for dynamic content
-    window.addEventListener('scroll', forcePlatformStatsColors);
-    window.addEventListener('resize', forcePlatformStatsColors);
+    // Event listeners (like PersonalStatsPanel)
+    const handleEvents = () => setTimeout(forcePlatformStatsColors, 100);
+    window.addEventListener('scroll', handleEvents);
+    window.addEventListener('resize', handleEvents);
 
     return () => {
-      window.removeEventListener('scroll', forcePlatformStatsColors);
-      window.removeEventListener('resize', forcePlatformStatsColors);
+      window.removeEventListener('scroll', handleEvents);
+      window.removeEventListener('resize', handleEvents);
     };
-  }, [stats]); // Re-run when stats change
+  }, [stats]);
 
   if (loading) return <Center my="xl"><Loader /></Center>;
   if (error) return <Center my="xl"><Text c="red">{error}</Text></Center>;
