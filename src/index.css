@@ -1173,4 +1173,73 @@ h6 {
   .avg-turnaround-card .mantine-Text-root[data-size="xs"] {
     color: rgba(255, 255, 255, 0.85) !important;
   }
+
+  /* ========================================
+     NUCLEAR PLATFORM STATS LABEL FORCING
+     ======================================== */
+  
+  /* NUCLEAR: Target any div with Platform Stats styling characteristics */
+  div[style*="textAlign: 'center'"],
+  div[style*="text-align: center"],
+  div[style*="marginTop: '8px'"],
+  div[style*="margin-top: 8px"],
+  div[style*="fontSize: '14px'"],
+  div[style*="font-size: 14px"],
+  div[style*="fontWeight: '600'"],
+  div[style*="font-weight: 600"] {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  /* BRUTE FORCE: All small text in grid layouts that could be Platform Stats */
+  .mantine-Grid-root div[style*="fontSize: '14px'"],
+  .mantine-Grid-col div[style*="fontSize: '14px'"],
+  .mantine-Box-root div[style*="fontSize: '14px'"],
+  .mantine-Container-root div[style*="fontSize: '14px'"] {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  /* ULTIMATE NUCLEAR: Target all divs with inline styles indicating labels */
+  div[style*="color: #ffffff"]:not([style*="fontSize: '2.2rem'"]):not([style*="font-size: 2.2rem"]) {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    font-weight: 600 !important;
+  }
+
+  /* BRUTAL FORCE: Any text element with white color styling */
+  *[style*="color: '#ffffff'"],
+  *[style*="color:#ffffff"],
+  *[style*="color: rgb(255, 255, 255)"],
+  *[style*="WebkitTextFillColor: '#ffffff'"] {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    font-weight: 600 !important;
+  }
+
+  /* SPECIFIC PLATFORM STATS TARGETING */
+  .mantine-Container-root .mantine-Grid-root .mantine-Box-root div:not([style*="fontSize: '2.2rem'"]),
+  .mantine-Card-root .mantine-Grid-root .mantine-Box-root div:not([style*="fontSize: '2.2rem'"]) {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 2px rgba(255,255,255,0.9) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
 }
