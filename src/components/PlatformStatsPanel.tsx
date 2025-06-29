@@ -145,81 +145,57 @@ export function PlatformStatsPanel() {
     fetchStats();
   }, []);
 
-  // TARGETED APPROACH - Only target Platform Stats container, not entire page
+  // SIMPLE APPROACH: Just force bright orange text on labels
   useEffect(() => {
     const forcePlatformStatsColors = () => {
-      console.log('🔥 TARGETED: Platform Stats color forcing (safe approach)');
+      console.log('🔥 SIMPLE: Making Platform Stats labels bright orange');
       
-      // Only target Platform Stats containers, NOT the entire page
-      const platformContainers = document.querySelectorAll('[class*="platform"], .mantine-Container-root, .mantine-Card-root');
+      // Find all text elements and make labels bright orange
+      const allTextElements = document.querySelectorAll('*');
       
-      platformContainers.forEach(container => {
-        // Only look within actual Platform Stats containers
-        const containerText = container.textContent || '';
-        if (!containerText.includes('Platform Stats') && !containerText.includes('Total Users')) {
-          return; // Skip containers that aren't Platform Stats
+      allTextElements.forEach((element, index) => {
+        if (!(element instanceof HTMLElement)) return;
+        
+        const text = element.textContent?.trim() || '';
+        if (!text) return;
+        
+        // Make ALL labels bright orange - high contrast!
+        if (text === 'Total Users' || text === 'Free Tier Users' || text === 'Review Fast Track Users' ||
+            text === 'Extensions in Libraries' || text === 'Extensions in Queue' || text === 'Reviews Assigned' ||
+            text === 'Reviews Completed' || text === 'Reviews In Progress' || text === 'Credits Earned' ||
+            text.includes('Active Reviewers') || text.includes('Avg. Review Completion')) {
+          
+          console.log(`🔥 LABEL: "${text}" -> BRIGHT ORANGE`);
+          
+          // BRIGHT ORANGE - guaranteed visible!
+          element.style.color = '#ff6b35';
+          element.style.setProperty('color', '#ff6b35', 'important');
+          element.style.fontWeight = 'bold';
+          element.style.setProperty('font-weight', 'bold', 'important');
+          element.style.fontSize = '14px';
+          element.style.setProperty('font-size', '14px', 'important');
         }
         
-        console.log('🔥 Found Platform Stats container');
-        
-        // Target only elements within this Platform Stats container
-        const elements = container.querySelectorAll('*');
-        
-        elements.forEach((element, index) => {
-          if (!(element instanceof HTMLElement)) return;
+        // Keep colorful numbers
+        if (/^\d+$/.test(text) && text.length >= 1 && parseInt(text) > 0) {
+          const colors = ['#6366f1', '#3b82f6', '#14b8a6', '#8b5cf6', '#06b6d4', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#84cc16', '#9333ea', '#6b7280'];
+          const color = colors[index % colors.length];
           
-          const text = element.textContent?.trim() || '';
-          if (!text) return;
-          
-          // Target specific Platform Stats labels only
-          if (text === 'Total Users' || text === 'Free Tier Users' || text === 'Review Fast Track Users' ||
-              text === 'Extensions in Libraries' || text === 'Extensions in Queue' || text === 'Reviews Assigned' ||
-              text === 'Reviews Completed' || text === 'Reviews In Progress' || text === 'Credits Earned' ||
-              text.includes('Active Reviewers') || text.includes('Avg. Review Completion')) {
-            
-            console.log(`🔥 FOUND PLATFORM LABEL: "${text}"`);
-            
-            // Safe styling without breaking modals
-            element.style.color = '#ffffff';
-            element.style.setProperty('color', '#ffffff', 'important');
-            (element.style as any).webkitTextFillColor = '#ffffff';
-            element.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
-            element.style.fontWeight = '600';
-            element.style.setProperty('font-weight', '600', 'important');
-            element.style.fontSize = '14px';
-            element.style.setProperty('font-size', '14px', 'important');
-            element.style.textShadow = '0 0 2px rgba(255,255,255,0.9)';
-            element.style.setProperty('text-shadow', '0 0 2px rgba(255,255,255,0.9)', 'important');
-            
-            console.log(`🔥✅ APPLIED WHITE TO: "${text}"`);
-          }
-          
-          // Force stat numbers with colors (within Platform Stats only)
-          if (/^\d+$/.test(text) && text.length >= 1 && parseInt(text) > 0) {
-            const colors = ['#6366f1', '#3b82f6', '#14b8a6', '#8b5cf6', '#06b6d4', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#84cc16', '#9333ea', '#6b7280'];
-            const color = colors[index % colors.length];
-            
-            console.log(`🔥 PLATFORM NUMBER: "${text}" -> ${color}`);
-            
-            element.style.color = color;
-            element.style.setProperty('color', color, 'important');
-            (element.style as any).webkitTextFillColor = color;
-            element.style.setProperty('-webkit-text-fill-color', color, 'important');
-            element.style.fontWeight = '800';
-            element.style.setProperty('font-weight', '800', 'important');
-            element.style.fontSize = '2.2rem';
-            element.style.setProperty('font-size', '2.2rem', 'important');
-          }
-        });
+          element.style.color = color;
+          element.style.setProperty('color', color, 'important');
+          element.style.fontWeight = '800';
+          element.style.setProperty('font-weight', '800', 'important');
+          element.style.fontSize = '2.2rem';
+          element.style.setProperty('font-size', '2.2rem', 'important');
+        }
       });
     };
 
-    // Less aggressive timing - only when stats load
+    // Simple timing
     if (stats) {
-      const timeouts = [100, 500, 1000];
-      timeouts.forEach(delay => {
-        setTimeout(forcePlatformStatsColors, delay);
-      });
+      setTimeout(forcePlatformStatsColors, 100);
+      setTimeout(forcePlatformStatsColors, 500);
+      setTimeout(forcePlatformStatsColors, 1000);
     }
   }, [stats]);
 
