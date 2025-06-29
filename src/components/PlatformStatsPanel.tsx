@@ -420,8 +420,10 @@ function StatItem({
         {value}
       </Text>
       <div
+        className="platform-stats-label-nuclear"
+        data-label={label}
         style={{ 
-          color: '#ffffff !important',
+          color: '#ffffff',
           fontWeight: '600',
           fontSize: '14px',
           textAlign: 'center',
