@@ -124,18 +124,36 @@ export function QualificationPage() {
         }
       });
 
-      // Force Alert to be more vibrant
+      // Force Alert to be BEAUTIFUL BLUE
       const alerts = document.querySelectorAll(".mantine-Alert-root");
       alerts.forEach((alert) => {
         if (
           alert instanceof HTMLElement &&
           alert.textContent?.includes("Important Notice")
         ) {
-          console.log("Setting BRIGHT ORANGE for Important Notice alert");
-          alert.style.backgroundColor = "#fed7aa";
-          alert.style.borderColor = "#ea580c";
-          alert.style.setProperty("background-color", "#fed7aa", "important");
-          alert.style.setProperty("border-color", "#ea580c", "important");
+          console.log("Setting BEAUTIFUL BLUE for Important Notice alert");
+          alert.style.background =
+            "linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.15))";
+          alert.style.borderColor = "#3b82f6";
+          alert.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.15)";
+          alert.style.setProperty(
+            "background",
+            "linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.15))",
+            "important",
+          );
+          alert.style.setProperty("border-color", "#3b82f6", "important");
+          alert.style.setProperty(
+            "box-shadow",
+            "0 4px 12px rgba(59, 130, 246, 0.15)",
+            "important",
+          );
+
+          // Make the icon blue too
+          const alertIcon = alert.querySelector(".mantine-Alert-icon");
+          if (alertIcon instanceof HTMLElement) {
+            alertIcon.style.color = "#60a5fa";
+            alertIcon.style.setProperty("color", "#60a5fa", "important");
+          }
         }
       });
 
@@ -455,7 +473,7 @@ export function QualificationPage() {
             <Alert
               icon={<AlertTriangle size={16} />}
               title="Important Notice"
-              color="orange"
+              color="blue"
               mb="lg"
             >
               Violating these guidelines may result in suspension from the
