@@ -164,7 +164,7 @@ export function PlatformStatsPanel() {
           <Title order={2} size="2.2rem" ta="center" fw={800} c="indigo.8">
             Platform Stats
           </Title>
-          <Text size="lg" c="dimmed" ta="center" mt={4} mb="md">
+          <Text size="lg" ta="center" mt={4} mb="md" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
             Real-time growth and engagement across the ChromeExDev network
           </Text>
         </Stack>
@@ -226,7 +226,7 @@ function StatItem({
       <Text fw={800} size="2.2rem" c={textColor} lh={1}>
         {value}
       </Text>
-      <Text c="dimmed" size="sm" ta="center" mt={2}>
+      <Text size="sm" ta="center" mt={2} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
         {label}
       </Text>
     </Box>

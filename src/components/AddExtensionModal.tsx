@@ -409,7 +409,7 @@ export function AddExtensionModal({
                 />
               )}
             </Group>
-            <Text size="xs" c="dimmed" mt="sm">
+            <Text size="xs" mt="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
               Maximum file size: 5MB. Supported formats: PNG, JPG, JPEG, SVG
             </Text>
           </div>

@@ -87,7 +87,7 @@ export function WelcomeModal({ opened, onClose, profile, extensions }: WelcomeMo
                 🎉 Welcome to Your Dashboard, {profile?.name}!
               </Title>
               
-              <Text size="lg" ta="center" c="dimmed" lh={1.6}>
+              <Text size="lg" ta="center" lh={1.6} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                 You're all set up and ready to start getting authentic reviews for your Chrome extensions!
               </Text>
             </Stack>
@@ -103,7 +103,7 @@ export function WelcomeModal({ opened, onClose, profile, extensions }: WelcomeMo
                   </ThemeIcon>
                   <Stack gap={4} flex={1}>
                     <Text fw={600} size="md">You Have 1 Welcome Credit!</Text>
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                       Your credit balance shows <Badge color="blue" size="sm">{profile?.credit_balance || 1} Credit</Badge> ready to use
                     </Text>
                   </Stack>
@@ -118,7 +118,7 @@ export function WelcomeModal({ opened, onClose, profile, extensions }: WelcomeMo
                     </ThemeIcon>
                     <Stack gap={4} flex={1}>
                       <Text fw={600} size="md">Your Extension is Ready!</Text>
-                      <Text size="sm" c="dimmed">
+                      <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                         Join Review Fast Track to add all your extensions and get 3x faster reviews!
                       </Text>
                     </Stack>
@@ -133,7 +133,7 @@ export function WelcomeModal({ opened, onClose, profile, extensions }: WelcomeMo
                   </ThemeIcon>
                   <Stack gap={4} flex={1}>
                     <Text fw={600} size="md">Get Your First Reviews</Text>
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                       Click "Submit to Queue" to spend 1 credit and get your extension assigned to a reviewer
                     </Text>
                   </Stack>
@@ -147,7 +147,7 @@ export function WelcomeModal({ opened, onClose, profile, extensions }: WelcomeMo
                   </ThemeIcon>
                   <Stack gap={4} flex={1}>
                     <Text fw={600} size="md">Want More Reviews?</Text>
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                       Upgrade to premium to add all your extensions, and earn credits by reviewing other developers' extensions!
                     </Text>
                   </Stack>

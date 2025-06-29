@@ -63,7 +63,7 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
                 Cookie Preferences
               </Title>
               
-              <Text size="md" ta="center" c="dimmed" lh={1.6}>
+              <Text size="md" ta="center" lh={1.6} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                 We use cookies to enhance your experience and improve our service. 
                 Please choose your preference below.
               </Text>
@@ -117,7 +117,7 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
                 </ThemeIcon>
                 <Stack gap="xs" flex={1}>
                   <Text fw={600} size="sm">Your Privacy Matters</Text>
-                  <Text size="xs" c="dimmed" lh={1.4}>
+                  <Text size="xs" lh={1.4} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     We respect your privacy and are committed to protecting your personal data. 
                     You can change your cookie preferences at any time in your account settings.
                   </Text>
@@ -133,7 +133,7 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
                 </ThemeIcon>
                 <Stack gap="xs" flex={1}>
                   <Text fw={600} size="sm">Important Note</Text>
-                  <Text size="xs" c="dimmed" lh={1.4}>
+                  <Text size="xs" lh={1.4} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Declining cookies may limit some features of our service. Essential cookies 
                     will still be used for basic functionality and security.
                   </Text>
@@ -142,7 +142,7 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
             </Card>
 
             {/* Privacy Policy Link */}
-            <Text size="xs" c="dimmed" ta="center">
+            <Text size="xs" ta="center" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
               For more information about how we handle your data, please read our{' '}
               <Text 
                 component="a" 
@@ -195,7 +195,7 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
               </Button>
             </Group>
 
-            <Text size="xs" c="dimmed" ta="center" style={{ fontStyle: 'italic' }}>
+            <Text size="xs" ta="center" style={{ fontStyle: 'italic', color: "rgba(255, 255, 255, 0.9)" }}>
               You can update your cookie preferences anytime in your account settings
             </Text>
           </Stack>
