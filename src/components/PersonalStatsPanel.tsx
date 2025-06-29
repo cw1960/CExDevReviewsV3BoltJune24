@@ -102,15 +102,15 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
             </Accordion.Control>
             <Accordion.Panel>
               <Stack gap="md">
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                   Cycle: {new Date(freeStats.cycleStart).toLocaleDateString()} –{" "}
                   {new Date(freeStats.cycleEnd).toLocaleDateString()}
                   <br />
-                  <b>{freeStats.daysLeftInCycle}</b> days left in this cycle
+                  <b style={{ color: 'rgba(255, 255, 255, 1)' }}>{freeStats.daysLeftInCycle}</b> days left in this cycle
                 </Text>
                 <Group justify="space-between">
-                  <Text>Reviews Submitted</Text>
-                  <Text>{freeStats.reviewsSubmittedThisCycle} / 4</Text>
+                  <Text style={{ color: 'rgba(255, 255, 255, 0.95)' }}>Reviews Submitted</Text>
+                  <Text style={{ color: 'rgba(255, 255, 255, 0.95)' }}>{freeStats.reviewsSubmittedThisCycle} / 4</Text>
                 </Group>
                 <Progress
                   value={reviewSubmitPct}
@@ -119,8 +119,8 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   size="md"
                 />
                 <Group justify="space-between">
-                  <Text>Reviews Received</Text>
-                  <Text>{freeStats.reviewsReceivedThisCycle} / 4</Text>
+                  <Text style={{ color: 'rgba(255, 255, 255, 0.95)' }}>Reviews Received</Text>
+                  <Text style={{ color: 'rgba(255, 255, 255, 0.95)' }}>{freeStats.reviewsReceivedThisCycle} / 4</Text>
                 </Group>
                 <Progress
                   value={reviewReceivePct}
@@ -128,9 +128,9 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   radius="xl"
                   size="md"
                 />
-                <Text size="sm" c="dimmed">
-                  You can submit <b>{freeStats.reviewsLeftToSubmit}</b> more and
-                  receive <b>{freeStats.reviewsLeftToReceive}</b> more reviews this
+                <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                  You can submit <b style={{ color: 'rgba(255, 255, 255, 1)' }}>{freeStats.reviewsLeftToSubmit}</b> more and
+                  receive <b style={{ color: 'rgba(255, 255, 255, 1)' }}>{freeStats.reviewsLeftToReceive}</b> more reviews this
                   cycle.
                 </Text>
               </Stack>
@@ -207,11 +207,11 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
           </Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
-              <Text size="sm" c="dimmed">
+              <Text size="sm" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                 Cycle: {new Date(premiumStats.cycleStart).toLocaleDateString()} –{" "}
                 {new Date(premiumStats.cycleEnd).toLocaleDateString()}
                 <br />
-                <b>{premiumStats.daysLeftInCycle}</b> days left in this cycle
+                <b style={{ color: 'rgba(255, 255, 255, 1)' }}>{premiumStats.daysLeftInCycle}</b> days left in this cycle
               </Text>
 
               {/* Main Stats Grid */}
@@ -231,7 +231,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       Unlimited
                     </Text>
                   </Group>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Submitted
                   </Text>
                 </Card>
@@ -246,7 +246,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="xl" fw={700} style={{ color: '#8b5cf6' }}>
                     {premiumStats.reviewsReceivedThisCycle}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     This cycle
                   </Text>
                 </Card>
@@ -261,7 +261,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="xl" fw={700} style={{ color: '#f59e0b' }}>
                     #{premiumStats.queuePosition}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Priority queue
                   </Text>
                 </Card>
@@ -276,7 +276,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="xl" fw={700} style={{ color: '#06b6d4' }}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your reviews
                   </Text>
                 </Card>
@@ -295,7 +295,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                 <Text size="2xl" fw={700} style={{ color: '#3b82f6' }}>
                   {premiumStats.totalReviewsSubmitted}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Total Submitted
                 </Text>
               </Stack>
@@ -303,7 +303,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                 <Text size="2xl" fw={700} style={{ color: '#10b981' }}>
                   {premiumStats.totalReviewsReceived}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Total Received
                 </Text>
               </Stack>
@@ -311,7 +311,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                 <Text size="2xl" fw={700} style={{ color: '#f59e0b' }}>
                   {premiumStats.nextReviewETA}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Next Review ETA
                 </Text>
               </Stack>
@@ -329,7 +329,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
               <SimpleGrid cols={6} spacing="xs">
                 {premiumStats.reviewTrends.map((trend, index) => (
                   <Stack key={index} align="center" gap={4}>
-                    <Text size="xs" c="dimmed">
+                    <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                       {trend.month}
                     </Text>
                     <Stack align="center" gap={2}>
@@ -353,7 +353,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       borderRadius: "50%",
                     }}
                   />
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Submitted
                   </Text>
                 </Group>
@@ -366,7 +366,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       borderRadius: "50%",
                     }}
                   />
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Received
                   </Text>
                 </Group>
@@ -408,7 +408,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="lg" fw={700}>
                     {premiumStats.totalReviewsSubmitted}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your Reviews
                   </Text>
                   <Text size="xs" c="blue">
@@ -419,7 +419,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="lg" fw={700}>
                     {premiumStats.avgReviewTurnaroundTime || "N/A"}
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your Speed
                   </Text>
                   <Text size="xs" c="blue">
@@ -430,7 +430,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                   <Text size="lg" fw={700} c="yellow">
                     Fast Track
                   </Text>
-                  <Text size="xs" c="dimmed">
+                  <Text size="xs" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                     Your Status
                   </Text>
                                     <Text size="xs" c="green">
