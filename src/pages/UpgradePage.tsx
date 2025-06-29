@@ -386,12 +386,12 @@ export function UpgradePage() {
                       color={feature.color}
                       size={40}
                       radius="xl"
-                      variant="light"
+                      variant="filled"
                     >
                       <feature.icon size={20} />
                     </ThemeIcon>
                     <Stack gap={4} flex={1}>
-                      <Text fw={600} size="md" c={feature.color}>
+                      <Text fw={700} size="md" c={feature.color}>
                         {feature.title}
                       </Text>
                       <Text size="sm" c="dimmed" lh={1.4}>
