@@ -145,6 +145,116 @@ export function PlatformStatsPanel() {
     fetchStats();
   }, []);
 
+  // NUCLEAR COLOR FORCING for Platform Stats
+  useEffect(() => {
+    const forcePlatformStatsColors = () => {
+      console.log('🔥 NUCLEAR: Force coloring Platform Stats');
+      
+      // Define vibrant colors for each stat type
+      const statColors = {
+        'Total Users': '#6366f1',           // Indigo
+        'Free Tier Users': '#3b82f6',       // Blue
+        'Review Fast Track Users': '#14b8a6', // Teal
+        'Extensions in Libraries': '#8b5cf6', // Violet
+        'Extensions in Queue': '#06b6d4',   // Cyan
+        'Reviews Assigned': '#f59e0b',      // Yellow
+        'Reviews Completed': '#f97316',     // Orange
+        'Reviews In Progress': '#ec4899',   // Pink
+        'Credits Earned': '#10b981',        // Green
+        'Active Reviewers (30d)': '#84cc16', // Lime
+        'Reviews Completed (7d)': '#9333ea', // Grape
+        'Avg. Review Completion Time': '#6b7280' // Gray
+      };
+
+      // Target all stat boxes
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach((el) => {
+        if (el instanceof HTMLElement && el.textContent) {
+          const text = el.textContent.trim();
+          
+          // Force bright colors for large numbers (the main stat values)
+          if (/^\d+$/.test(text) && text.length >= 1) {
+            console.log(`🔥 FORCING BRIGHT COLOR for stat number: "${text}"`);
+            
+            // Find the parent container to determine which stat this is
+            let parent = el.parentElement;
+            let statType = '';
+            
+            // Look for the label in siblings or parent elements
+            while (parent && !statType) {
+              const siblings = parent.querySelectorAll('*');
+              siblings.forEach(sibling => {
+                if (sibling instanceof HTMLElement) {
+                  const siblingText = sibling.textContent || '';
+                  Object.keys(statColors).forEach(key => {
+                    if (siblingText.includes(key)) {
+                      statType = key;
+                    }
+                  });
+                }
+              });
+              parent = parent.parentElement;
+            }
+            
+            const color = statColors[statType] || '#ffffff';
+            console.log(`🔥 Using color ${color} for stat: ${statType}`);
+            
+            // Apply nuclear color forcing
+            el.style.color = color;
+            el.style.setProperty('color', color, 'important');
+            (el.style as any).webkitTextFillColor = color;
+            el.style.setProperty('-webkit-text-fill-color', color, 'important');
+            el.style.fontWeight = '800';
+            el.style.setProperty('font-weight', '800', 'important');
+            el.style.fontSize = '2.2rem';
+            el.style.setProperty('font-size', '2.2rem', 'important');
+          }
+          
+          // Force bright white for stat labels
+          Object.keys(statColors).forEach(statLabel => {
+            if (text.includes(statLabel)) {
+              console.log(`🔥 FORCING WHITE for stat label: "${statLabel}"`);
+              el.style.color = '#ffffff';
+              el.style.setProperty('color', '#ffffff', 'important');
+              (el.style as any).webkitTextFillColor = '#ffffff';
+              el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+              el.style.fontWeight = '500';
+              el.style.setProperty('font-weight', '500', 'important');
+              el.style.opacity = '1';
+              el.style.setProperty('opacity', '1', 'important');
+            }
+          });
+          
+          // Force specific time format colors for completion time
+          if (text.includes('hours') || text.includes('minutes') || /^\d+\.\d+h$/.test(text)) {
+            console.log(`🔥 FORCING CYAN for time value: "${text}"`);
+            el.style.color = '#06b6d4';
+            el.style.setProperty('color', '#06b6d4', 'important');
+            (el.style as any).webkitTextFillColor = '#06b6d4';
+            el.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
+            el.style.fontWeight = '800';
+            el.style.setProperty('font-weight', '800', 'important');
+          }
+        }
+      });
+    };
+
+    // Run color forcing with multiple timing intervals
+    const timeouts = [0, 100, 500, 1000, 2000, 3000];
+    timeouts.forEach(delay => {
+      setTimeout(forcePlatformStatsColors, delay);
+    });
+
+    // Add event listeners for dynamic content
+    window.addEventListener('scroll', forcePlatformStatsColors);
+    window.addEventListener('resize', forcePlatformStatsColors);
+
+    return () => {
+      window.removeEventListener('scroll', forcePlatformStatsColors);
+      window.removeEventListener('resize', forcePlatformStatsColors);
+    };
+  }, [stats]); // Re-run when stats change
+
   if (loading) return <Center my="xl"><Loader /></Center>;
   if (error) return <Center my="xl"><Text c="red">{error}</Text></Center>;
   if (!stats) return null;
@@ -199,11 +309,24 @@ function StatItem({
   color: string;
   theme: any;
 }) {
-  // Use light theme colors
-  const bgColor = (theme.colors[color] && theme.colors[color][0]) || '#f3f4f6';
+  // Define vibrant colors for each stat type
+  const statColors: { [key: string]: string } = {
+    'indigo': '#6366f1',
+    'blue': '#3b82f6', 
+    'teal': '#14b8a6',
+    'violet': '#8b5cf6',
+    'cyan': '#06b6d4',
+    'yellow': '#f59e0b',
+    'orange': '#f97316',
+    'pink': '#ec4899',
+    'green': '#10b981',
+    'lime': '#84cc16',
+    'grape': '#9333ea',
+    'gray': '#6b7280'
+  };
 
-  const textColor =
-    (theme.colors[color] && theme.colors[color][7]) || theme.colors.dark[0];
+  const vibrantColor = statColors[color] || '#ffffff';
+  const bgColor = (theme.colors[color] && theme.colors[color][0]) || '#f3f4f6';
 
   return (
     <Box
@@ -221,12 +344,32 @@ function StatItem({
       }}
     >
       <Group mb={8} justify="center">
-        <Icon size={32} color={textColor} />
+        <Icon size={32} color={vibrantColor} />
       </Group>
-      <Text fw={800} size="2.2rem" c={textColor} lh={1}>
+      <Text 
+        fw={800} 
+        size="2.2rem" 
+        lh={1}
+        style={{ 
+          color: vibrantColor,
+          fontWeight: '800',
+          fontSize: '2.2rem',
+          WebkitTextFillColor: vibrantColor
+        }}
+      >
         {value}
       </Text>
-      <Text size="sm" ta="center" mt={2} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+      <Text 
+        size="sm" 
+        ta="center" 
+        mt={2} 
+        style={{ 
+          color: '#ffffff',
+          fontWeight: '500',
+          opacity: 1,
+          WebkitTextFillColor: '#ffffff'
+        }}
+      >
         {label}
       </Text>
     </Box>
