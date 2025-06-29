@@ -394,22 +394,13 @@ export function OnboardingPage() {
                   </Button>
 
                   <Group gap="xl">
-                    <Text
-                      size="sm"
-                      style={{ color: "#10b981", fontWeight: 600 }}
-                    >
+                    <Text size="sm" className="onboarding-checkmark-green">
                       ✓ Free to Start
                     </Text>
-                    <Text
-                      size="sm"
-                      style={{ color: "#f59e0b", fontWeight: 600 }}
-                    >
+                    <Text size="sm" className="onboarding-checkmark-orange">
                       ✓ 1 Welcome Credit
                     </Text>
-                    <Text
-                      size="sm"
-                      style={{ color: "#3b82f6", fontWeight: 600 }}
-                    >
+                    <Text size="sm" className="onboarding-checkmark-blue">
                       ✓ Quick Qualification
                     </Text>
                   </Group>

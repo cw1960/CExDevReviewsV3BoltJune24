@@ -1369,6 +1369,25 @@ h6 {
   color: #666666 !important;
 }
 
+/* ONBOARDING CHECKMARK COLORS */
+.onboarding-checkmark-green {
+  color: #10b981 !important;
+  -webkit-text-fill-color: #10b981 !important;
+  font-weight: 600 !important;
+}
+
+.onboarding-checkmark-orange {
+  color: #f59e0b !important;
+  -webkit-text-fill-color: #f59e0b !important;
+  font-weight: 600 !important;
+}
+
+.onboarding-checkmark-blue {
+  color: #3b82f6 !important;
+  -webkit-text-fill-color: #3b82f6 !important;
+  font-weight: 600 !important;
+}
+
 /* SIDEBAR CONDITIONAL COLORS - MAXIMUM SPECIFICITY */
 .mantine-AppShell-navbar .mantine-Text-root[style*="color: rgb(239, 68, 68)"],
 .mantine-AppShell-navbar .mantine-Text-root[style*="color: #ef4444"],
