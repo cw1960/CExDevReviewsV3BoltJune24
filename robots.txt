@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+Allow: /auth
+Allow: /terms
+Allow: /privacy
+Allow: /upgrade
+
+# Block private/protected pages from search engines
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /profile
+Disallow: /onboarding
+Disallow: /qualification
+Disallow: /extensions
+Disallow: /reviews
+Disallow: /success
+
+# Block sensitive directories
+Disallow: /src/
+Disallow: /_next/
+Disallow: /api/
+Disallow: /node_modules/
+
+# Reference to sitemap
+Sitemap: https://chromeexdev.reviews/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1 
