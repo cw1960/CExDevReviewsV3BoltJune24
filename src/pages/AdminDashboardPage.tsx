@@ -232,161 +232,256 @@ export function AdminDashboardPage() {
     }
   };
 
-  // NUCLEAR ADMIN DASHBOARD COLOR FORCING 
+  // Helper function to find the reviewer for an extension
+  const getExtensionReviewer = (extensionId: string) => {
+    const assignment = assignments.find(
+      (assignment) =>
+        assignment.extension.id === extensionId &&
+        assignment.status === "assigned",
+    );
+    return assignment?.reviewer;
+  };
+
+  // NUCLEAR ADMIN DASHBOARD COLOR FORCING
   useEffect(() => {
     const forceAdminColors = () => {
-      console.log('🎨 NUCLEAR ADMIN DASHBOARD COLOR FORCING - JavaScript is running!');
-      
+      console.log(
+        "🎨 NUCLEAR ADMIN DASHBOARD COLOR FORCING - JavaScript is running!",
+      );
+
       // APPROACH 1: Target all cards by content
-      const allCards = document.querySelectorAll('.mantine-Card-root, .mantine-Paper-root');
-      console.log('Found all admin cards:', allCards.length);
-      
+      const allCards = document.querySelectorAll(
+        ".mantine-Card-root, .mantine-Paper-root",
+      );
+      console.log("Found all admin cards:", allCards.length);
+
       allCards.forEach((card, index) => {
         if (card instanceof HTMLElement) {
-          const cardText = card.textContent || '';
+          const cardText = card.textContent || "";
           console.log(`Admin card ${index} text:`, cardText.substring(0, 80));
-          
+
           // Find all potential number displays - be very aggressive
           const numberElements = card.querySelectorAll(
-            'div[class*="xl"], div[class*="fw-700"], .mantine-Text-root, h1, h2, h3, h4, h5, h6, span, div'
+            'div[class*="xl"], div[class*="fw-700"], .mantine-Text-root, h1, h2, h3, h4, h5, h6, span, div',
           );
-          const iconElements = card.querySelectorAll('svg');
-          
+          const iconElements = card.querySelectorAll("svg");
+
           // Force colors based on card content
-          if (cardText.includes('Total Users') || cardText.includes('Registered developers')) {
-            console.log('🔵 NUCLEAR: FORCING BLUE for Total Users');
-            numberElements.forEach(el => {
-              if (el instanceof HTMLElement && /^\d+$/.test(el.textContent?.trim() || '')) {
-                el.style.color = '#2563eb';
-                el.style.setProperty('color', '#2563eb', 'important');
-                (el.style as any).webkitTextFillColor = '#2563eb';
-                el.style.setProperty('-webkit-text-fill-color', '#2563eb', 'important');
-                el.style.fontSize = el.style.fontSize || '2rem';
+          if (
+            cardText.includes("Total Users") ||
+            cardText.includes("Registered developers")
+          ) {
+            console.log("🔵 NUCLEAR: FORCING BLUE for Total Users");
+            numberElements.forEach((el) => {
+              if (
+                el instanceof HTMLElement &&
+                /^\d+$/.test(el.textContent?.trim() || "")
+              ) {
+                el.style.color = "#2563eb";
+                el.style.setProperty("color", "#2563eb", "important");
+                (el.style as any).webkitTextFillColor = "#2563eb";
+                el.style.setProperty(
+                  "-webkit-text-fill-color",
+                  "#2563eb",
+                  "important",
+                );
+                el.style.fontSize = el.style.fontSize || "2rem";
                 console.log(`FORCED ${el.textContent} to BLUE`);
               }
             });
-            iconElements.forEach(el => {
+            iconElements.forEach((el) => {
               if (el instanceof SVGElement) {
-                el.style.color = '#2563eb';
-                el.style.setProperty('color', '#2563eb', 'important');
+                el.style.color = "#2563eb";
+                el.style.setProperty("color", "#2563eb", "important");
               }
             });
           }
-          
-          if (cardText.includes('Total Extensions') || cardText.includes('In the system')) {
-            console.log('🟢 NUCLEAR: FORCING GREEN for Total Extensions');
-            numberElements.forEach(el => {
-              if (el instanceof HTMLElement && /^\d+$/.test(el.textContent?.trim() || '')) {
-                el.style.color = '#059669';
-                el.style.setProperty('color', '#059669', 'important');
-                (el.style as any).webkitTextFillColor = '#059669';
-                el.style.setProperty('-webkit-text-fill-color', '#059669', 'important');
+
+          if (
+            cardText.includes("Total Extensions") ||
+            cardText.includes("In the system")
+          ) {
+            console.log("🟢 NUCLEAR: FORCING GREEN for Total Extensions");
+            numberElements.forEach((el) => {
+              if (
+                el instanceof HTMLElement &&
+                /^\d+$/.test(el.textContent?.trim() || "")
+              ) {
+                el.style.color = "#059669";
+                el.style.setProperty("color", "#059669", "important");
+                (el.style as any).webkitTextFillColor = "#059669";
+                el.style.setProperty(
+                  "-webkit-text-fill-color",
+                  "#059669",
+                  "important",
+                );
                 console.log(`FORCED ${el.textContent} to GREEN`);
               }
             });
-            iconElements.forEach(el => {
+            iconElements.forEach((el) => {
               if (el instanceof SVGElement) {
-                el.style.color = '#059669';
-                el.style.setProperty('color', '#059669', 'important');
+                el.style.color = "#059669";
+                el.style.setProperty("color", "#059669", "important");
               }
             });
           }
-          
-          if (cardText.includes('Extensions in Queue') || cardText.includes('Queued for review')) {
-            console.log('🟠 NUCLEAR: FORCING ORANGE for Extensions in Queue');
-            numberElements.forEach(el => {
-              if (el instanceof HTMLElement && /^\d+$/.test(el.textContent?.trim() || '')) {
-                el.style.color = '#ea580c';
-                el.style.setProperty('color', '#ea580c', 'important');
-                (el.style as any).webkitTextFillColor = '#ea580c';
-                el.style.setProperty('-webkit-text-fill-color', '#ea580c', 'important');
+
+          if (
+            cardText.includes("Extensions in Queue") ||
+            cardText.includes("Queued for review")
+          ) {
+            console.log("🟠 NUCLEAR: FORCING ORANGE for Extensions in Queue");
+            numberElements.forEach((el) => {
+              if (
+                el instanceof HTMLElement &&
+                /^\d+$/.test(el.textContent?.trim() || "")
+              ) {
+                el.style.color = "#ea580c";
+                el.style.setProperty("color", "#ea580c", "important");
+                (el.style as any).webkitTextFillColor = "#ea580c";
+                el.style.setProperty(
+                  "-webkit-text-fill-color",
+                  "#ea580c",
+                  "important",
+                );
                 console.log(`FORCED ${el.textContent} to ORANGE`);
               }
             });
-            iconElements.forEach(el => {
+            iconElements.forEach((el) => {
               if (el instanceof SVGElement) {
-                el.style.color = '#ea580c';
-                el.style.setProperty('color', '#ea580c', 'important');
+                el.style.color = "#ea580c";
+                el.style.setProperty("color", "#ea580c", "important");
               }
             });
           }
-          
-          if (cardText.includes('Active Reviews') || cardText.includes('In progress')) {
-            console.log('🟣 NUCLEAR: FORCING PURPLE for Active Reviews');
-            numberElements.forEach(el => {
-              if (el instanceof HTMLElement && /^\d+$/.test(el.textContent?.trim() || '')) {
-                el.style.color = '#8b5cf6';
-                el.style.setProperty('color', '#8b5cf6', 'important');
-                (el.style as any).webkitTextFillColor = '#8b5cf6';
-                el.style.setProperty('-webkit-text-fill-color', '#8b5cf6', 'important');
+
+          if (
+            cardText.includes("Active Reviews") ||
+            cardText.includes("In progress")
+          ) {
+            console.log("🟣 NUCLEAR: FORCING PURPLE for Active Reviews");
+            numberElements.forEach((el) => {
+              if (
+                el instanceof HTMLElement &&
+                /^\d+$/.test(el.textContent?.trim() || "")
+              ) {
+                el.style.color = "#8b5cf6";
+                el.style.setProperty("color", "#8b5cf6", "important");
+                (el.style as any).webkitTextFillColor = "#8b5cf6";
+                el.style.setProperty(
+                  "-webkit-text-fill-color",
+                  "#8b5cf6",
+                  "important",
+                );
                 console.log(`FORCED ${el.textContent} to PURPLE`);
               }
             });
-            iconElements.forEach(el => {
+            iconElements.forEach((el) => {
               if (el instanceof SVGElement) {
-                el.style.color = '#8b5cf6';
-                el.style.setProperty('color', '#8b5cf6', 'important');
+                el.style.color = "#8b5cf6";
+                el.style.setProperty("color", "#8b5cf6", "important");
               }
             });
           }
-          
-          if (cardText.includes('Credits Issued') || cardText.includes('Total earned by users')) {
-            console.log('🟡 NUCLEAR: FORCING YELLOW for Credits Issued');
-            numberElements.forEach(el => {
-              if (el instanceof HTMLElement && /^\d+$/.test(el.textContent?.trim() || '')) {
-                el.style.color = '#fbbf24';
-                el.style.setProperty('color', '#fbbf24', 'important');
-                (el.style as any).webkitTextFillColor = '#fbbf24';
-                el.style.setProperty('-webkit-text-fill-color', '#fbbf24', 'important');
+
+          if (
+            cardText.includes("Credits Issued") ||
+            cardText.includes("Total earned by users")
+          ) {
+            console.log("🟡 NUCLEAR: FORCING YELLOW for Credits Issued");
+            numberElements.forEach((el) => {
+              if (
+                el instanceof HTMLElement &&
+                /^\d+$/.test(el.textContent?.trim() || "")
+              ) {
+                el.style.color = "#fbbf24";
+                el.style.setProperty("color", "#fbbf24", "important");
+                (el.style as any).webkitTextFillColor = "#fbbf24";
+                el.style.setProperty(
+                  "-webkit-text-fill-color",
+                  "#fbbf24",
+                  "important",
+                );
                 console.log(`FORCED ${el.textContent} to YELLOW`);
               }
             });
-            iconElements.forEach(el => {
+            iconElements.forEach((el) => {
               if (el instanceof SVGElement) {
-                el.style.color = '#fbbf24';
-                el.style.setProperty('color', '#fbbf24', 'important');
+                el.style.color = "#fbbf24";
+                el.style.setProperty("color", "#fbbf24", "important");
               }
             });
           }
-          
-          if (cardText.includes('Avg Queue Time') || cardText.includes('From submission to assignment')) {
-            console.log('🔵 NUCLEAR: FORCING CYAN for Avg Queue Time');
-            numberElements.forEach(el => {
-              if (el instanceof HTMLElement && (el.textContent?.includes('days') || el.textContent?.includes('0.3'))) {
-                el.style.color = '#06b6d4';
-                el.style.setProperty('color', '#06b6d4', 'important');
-                (el.style as any).webkitTextFillColor = '#06b6d4';
-                el.style.setProperty('-webkit-text-fill-color', '#06b6d4', 'important');
+
+          if (
+            cardText.includes("Avg Queue Time") ||
+            cardText.includes("From submission to assignment")
+          ) {
+            console.log("🔵 NUCLEAR: FORCING CYAN for Avg Queue Time");
+            numberElements.forEach((el) => {
+              if (
+                el instanceof HTMLElement &&
+                (el.textContent?.includes("days") ||
+                  el.textContent?.includes("0.3"))
+              ) {
+                el.style.color = "#06b6d4";
+                el.style.setProperty("color", "#06b6d4", "important");
+                (el.style as any).webkitTextFillColor = "#06b6d4";
+                el.style.setProperty(
+                  "-webkit-text-fill-color",
+                  "#06b6d4",
+                  "important",
+                );
                 console.log(`FORCED ${el.textContent} to CYAN`);
               }
             });
-            iconElements.forEach(el => {
+            iconElements.forEach((el) => {
               if (el instanceof SVGElement) {
-                el.style.color = '#06b6d4';
-                el.style.setProperty('color', '#06b6d4', 'important');
+                el.style.color = "#06b6d4";
+                el.style.setProperty("color", "#06b6d4", "important");
               }
             });
           }
         }
       });
-      
+
       // APPROACH 2: BRUTE FORCE ALL LARGE NUMBERS IN ADMIN DASHBOARD
-      const bigNumbers = document.querySelectorAll('div[class*="xl"], div[class*="fw-700"], .mantine-Text-root[class*="xl"]');
-      console.log('BRUTE FORCE: Found potential big numbers:', bigNumbers.length);
-      
+      const bigNumbers = document.querySelectorAll(
+        'div[class*="xl"], div[class*="fw-700"], .mantine-Text-root[class*="xl"]',
+      );
+      console.log(
+        "BRUTE FORCE: Found potential big numbers:",
+        bigNumbers.length,
+      );
+
       bigNumbers.forEach((el, index) => {
-        if (el instanceof HTMLElement && /^\d+(\.\d+)?/.test(el.textContent?.trim() || '')) {
+        if (
+          el instanceof HTMLElement &&
+          /^\d+(\.\d+)?/.test(el.textContent?.trim() || "")
+        ) {
           // Only color if it doesn't already have a vibrant color
           const currentColor = window.getComputedStyle(el).color;
-          if (currentColor.includes('255, 255, 255') || currentColor.includes('rgb(255, 255, 255)')) {
-            const colors = ['#2563eb', '#059669', '#ea580c', '#8b5cf6', '#fbbf24', '#06b6d4'];
+          if (
+            currentColor.includes("255, 255, 255") ||
+            currentColor.includes("rgb(255, 255, 255)")
+          ) {
+            const colors = [
+              "#2563eb",
+              "#059669",
+              "#ea580c",
+              "#8b5cf6",
+              "#fbbf24",
+              "#06b6d4",
+            ];
             const color = colors[index % colors.length];
-            console.log(`BRUTE FORCE: Setting ${color} for number ${el.textContent} (index ${index})`);
-            
+            console.log(
+              `BRUTE FORCE: Setting ${color} for number ${el.textContent} (index ${index})`,
+            );
+
             el.style.color = color;
-            el.style.setProperty('color', color, 'important');
+            el.style.setProperty("color", color, "important");
             (el.style as any).webkitTextFillColor = color;
-            el.style.setProperty('-webkit-text-fill-color', color, 'important');
+            el.style.setProperty("-webkit-text-fill-color", color, "important");
           }
         }
       });
@@ -399,7 +494,7 @@ export function AdminDashboardPage() {
     const timeout3 = setTimeout(forceAdminColors, 1000);
     const timeout4 = setTimeout(forceAdminColors, 2000);
     const timeout5 = setTimeout(forceAdminColors, 3000);
-    
+
     return () => {
       clearTimeout(timeout1);
       clearTimeout(timeout2);
@@ -603,6 +698,7 @@ export function AdminDashboardPage() {
                   <Table.Th>Extension</Table.Th>
                   <Table.Th>Owner</Table.Th>
                   <Table.Th>Status</Table.Th>
+                  <Table.Th>Reviewer</Table.Th>
                   <Table.Th>Plan</Table.Th>
                   <Table.Th>Submitted</Table.Th>
                   <Table.Th>Actions</Table.Th>
@@ -655,6 +751,38 @@ export function AdminDashboardPage() {
                       <Badge color={getStatusColor(extension.status)} size="sm">
                         {getStatusLabel(extension.status)}
                       </Badge>
+                    </Table.Td>
+                    <Table.Td>
+                      {extension.status === "assigned" ? (
+                        (() => {
+                          const reviewer = getExtensionReviewer(extension.id);
+                          return reviewer ? (
+                            <Text
+                              size="sm"
+                              component="button"
+                              onClick={() => navigateToUserProfile(reviewer.id)}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "var(--mantine-color-blue-6)",
+                                textDecoration: "none",
+                              }}
+                              className="hover:underline"
+                            >
+                              {reviewer.email}
+                            </Text>
+                          ) : (
+                            <Text size="sm" c="dimmed">
+                              No reviewer
+                            </Text>
+                          );
+                        })()
+                      ) : (
+                        <Text size="sm" c="dimmed">
+                          —
+                        </Text>
+                      )}
                     </Table.Td>
                     <Table.Td>
                       <Badge
