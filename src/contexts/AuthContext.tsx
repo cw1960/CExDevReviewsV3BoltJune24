@@ -20,6 +20,7 @@ interface AuthContextType {
   isProfileRefreshing: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -301,7 +302,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           if (session?.user) {
           console.log("👤 User authenticated, fetching profile...");
-          await fetchProfile(session.user.id);
+          
+          // Check if this is a Google OAuth user without a profile
+          if (event === 'SIGNED_IN' && session.user.app_metadata?.provider === 'google') {
+            console.log("🔍 Google OAuth user detected, checking for profile...");
+            
+            // Try to fetch profile first
+            await fetchProfile(session.user.id);
+            
+            // If profile is still null after fetch, create one for Google OAuth user
+            if (!profile) {
+              console.log("🔄 Creating profile for Google OAuth user...");
+              try {
+                const { data: profileData, error: profileError } = await supabase.functions.invoke("create-user-profile", {
+                  body: {
+                    user_id: session.user.id,
+                    email: session.user.email,
+                    name: session.user.user_metadata?.name || session.user.user_metadata?.full_name || 'Google User',
+                  },
+                });
+                
+                if (profileError) {
+                  console.error("❌ Error creating Google OAuth profile:", profileError);
+                } else if (profileData?.success) {
+                  console.log("✅ Google OAuth profile created successfully");
+                  // Fetch the newly created profile
+                  await fetchProfile(session.user.id);
+                }
+              } catch (createError) {
+                console.error("❌ Failed to create Google OAuth profile:", createError);
+              }
+            }
+          } else {
+            // Regular flow for email/password users
+            await fetchProfile(session.user.id);
+          }
           } else {
           console.log("👤 User signed out, clearing data...");
             // Only clear profile when user is actually signed out
@@ -449,6 +484,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInWithGoogle = async () => {
+    console.log("🚀 Starting Google OAuth sign-in...");
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth`, // Redirect back to auth page to handle the session
+      },
+    });
+    
+    if (error) {
+      console.error("Google OAuth error:", error);
+      throw error;
+    }
+    
+    console.log("✅ Google OAuth initiated successfully");
+    // The user will be redirected to Google and then back to our app
+    // The session will be handled by the auth state listener
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -509,6 +563,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isProfileRefreshing,
         signIn,
         signUp,
+        signInWithGoogle,
         signOut,
         updateProfile,
         refreshProfile,
