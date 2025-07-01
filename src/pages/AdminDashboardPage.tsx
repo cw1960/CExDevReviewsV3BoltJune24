@@ -40,6 +40,7 @@ import {
   Mail,
   Settings,
   Edit,
+  Bug,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -52,6 +53,7 @@ type ReviewAssignment =
   Database["public"]["Tables"]["review_assignments"]["Row"];
 type CreditTransaction =
   Database["public"]["Tables"]["credit_transactions"]["Row"];
+type EmailLog = Database["public"]["Tables"]["email_logs"]["Row"];
 
 interface ExtensionWithOwner extends Extension {
   owner: User;
@@ -91,10 +93,12 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [assignments, setAssignments] = useState<AssignmentWithDetails[]>([]);
   const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
+  const [problemReports, setProblemReports] = useState<EmailLog[]>([]);
 
   useEffect(() => {
     if (profile?.role === "admin") {
       fetchAdminData();
+      fetchProblemReports();
     }
   }, [profile?.role]);
 
@@ -138,6 +142,32 @@ export function AdminDashboardPage() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchProblemReports = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "fetch-problem-reports",
+      );
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw error;
+      }
+
+      if (!data?.success) {
+        throw new Error(data?.error || "Failed to fetch problem reports");
+      }
+
+      setProblemReports(data.data);
+    } catch (error) {
+      console.error("Error fetching problem reports:", error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to load problem reports. Please try again.",
+        color: "red",
+      });
     }
   };
 
@@ -585,6 +615,9 @@ export function AdminDashboardPage() {
           </Tabs.Tab>
           <Tabs.Tab value="credits" leftSection={<CreditCard size={16} />}>
             Credits
+          </Tabs.Tab>
+          <Tabs.Tab value="problems" leftSection={<Bug size={16} />}>
+            Problem Reports
           </Tabs.Tab>
         </Tabs.List>
 
@@ -1087,6 +1120,79 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+          </Card>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="problems" pt="md">
+          <Card withBorder>
+            <Group justify="space-between" mb="md">
+              <Text fw={600}>Problem Reports</Text>
+              <Text size="sm" c="dimmed">
+                {problemReports.length} total reports
+              </Text>
+            </Group>
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Date</Table.Th>
+                  <Table.Th>Status</Table.Th>
+                  <Table.Th>Subject</Table.Th>
+                  <Table.Th>Body Preview</Table.Th>
+                  <Table.Th>Error</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {problemReports.slice(0, 50).map((report) => (
+                  <Table.Tr key={report.id}>
+                    <Table.Td>
+                      <Text size="sm">
+                        {new Date(report.created_at).toLocaleString()}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Badge
+                        color={
+                          report.status === "sent" 
+                            ? "green" 
+                            : report.status === "pending" 
+                            ? "blue" 
+                            : "red"
+                        }
+                        size="sm"
+                      >
+                        {report.status}
+                      </Badge>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="sm" fw={500} maw={300} truncate>
+                        {report.subject}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="sm" c="dimmed" maw={400} truncate>
+                        {report.body.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      {report.error_message ? (
+                        <Text size="sm" c="red" maw={200} truncate>
+                          {report.error_message}
+                        </Text>
+                      ) : (
+                        <Text size="sm" c="dimmed">
+                          —
+                        </Text>
+                      )}
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+            {problemReports.length === 0 && (
+              <Text ta="center" c="dimmed" py="xl">
+                No problem reports found
+              </Text>
+            )}
           </Card>
         </Tabs.Panel>
       </Tabs>
