@@ -180,60 +180,40 @@ export function AdminDashboardPage() {
   };
 
   const parseReportBody = (body: string) => {
-    // Extract key information from the HTML email body
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(body, 'text/html');
-    
-    // Try to extract structured information
-    const text = doc.body?.textContent || body;
-    
-    // Look for key patterns in the email content
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    
-    const result: any = {
-      extensionName: '',
-      issueType: '',
-      description: '',
-      assignmentId: '',
-      assignmentCancelled: false,
-      rawContent: text
-    };
-
-    // Extract information from the lines
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+    try {
+      // The body is stored as JSON string with structured problem report data
+      const reportData = JSON.parse(body);
       
-      if (line.includes('Extension:')) {
-        result.extensionName = line.replace('Extension:', '').trim();
-      }
-      
-      if (line.includes('Issue Type:')) {
-        result.issueType = line.replace('Issue Type:', '').trim();
-      }
-      
-      if (line.includes('Assignment ID:')) {
-        result.assignmentId = line.replace('Assignment ID:', '').trim();
-      }
-      
-      if (line.includes('Description:')) {
-        // Get the next few lines as description
-        const descLines = [];
-        for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
-          if (!lines[j].includes(':') || lines[j].length > 50) {
-            descLines.push(lines[j]);
-          } else {
-            break;
-          }
-        }
-        result.description = descLines.join(' ').trim();
-      }
-      
-      if (line.toLowerCase().includes('cancelled') || line.toLowerCase().includes('cancel')) {
-        result.assignmentCancelled = true;
-      }
+      return {
+        assignmentId: reportData.assignment_id || '',
+        extensionId: reportData.extension_id || '',
+        extensionName: reportData.extension_name || '',
+        reporterId: reportData.reporter_id || '',
+        reporterEmail: reportData.reporter_email || '',
+        issueType: reportData.issue_type || '',
+        description: reportData.description || '',
+        assignmentCancelled: reportData.cancel_assignment || false,
+        timestamp: reportData.timestamp || '',
+        severity: reportData.severity || 'medium',
+        rawData: reportData
+      };
+    } catch (error) {
+      console.error('Error parsing report body:', error);
+      // Fallback for non-JSON content
+      return {
+        assignmentId: '',
+        extensionId: '',
+        extensionName: '',
+        reporterId: '',
+        reporterEmail: '',
+        issueType: '',
+        description: body.substring(0, 200) + '...',
+        assignmentCancelled: false,
+        timestamp: '',
+        severity: 'unknown',
+        rawData: body
+      };
     }
-    
-    return result;
   };
 
   const navigateToUserProfile = (userId: string) => {
@@ -1338,70 +1318,140 @@ export function AdminDashboardPage() {
               </Stack>
             </Card>
 
-            {/* Parsed Problem Details */}
-            {(() => {
-              const parsed = parseReportBody(selectedReport.body);
-              return (
-                <Card withBorder p="md">
-                  <Stack gap="sm">
-                    <Text fw={600} size="lg">Problem Details</Text>
-                    
-                    {parsed.extensionName && (
-                      <div>
-                        <Text size="sm" c="dimmed" fw={600}>Extension:</Text>
-                        <Text size="sm">{parsed.extensionName}</Text>
-                      </div>
-                    )}
-                    
-                    {parsed.issueType && (
-                      <div>
-                        <Text size="sm" c="dimmed" fw={600}>Issue Type:</Text>
-                        <Badge color="orange" size="sm">{parsed.issueType}</Badge>
-                      </div>
-                    )}
-                    
-                    {parsed.assignmentId && (
-                      <div>
-                        <Text size="sm" c="dimmed" fw={600}>Assignment ID:</Text>
-                        <Text size="sm" ff="monospace">{parsed.assignmentId}</Text>
-                      </div>
-                    )}
-                    
-                    {parsed.description && (
-                      <div>
-                        <Text size="sm" c="dimmed" fw={600}>Description:</Text>
-                        <Text size="sm">{parsed.description}</Text>
-                      </div>
-                    )}
-                    
-                    {parsed.assignmentCancelled && (
-                      <div>
-                        <Badge color="red" size="md">Assignment Was Cancelled</Badge>
-                      </div>
-                    )}
-                  </Stack>
-                </Card>
-              );
-            })()}
+                         {/* Problem Details */}
+             {(() => {
+               const parsed = parseReportBody(selectedReport.body);
+               return (
+                 <Card withBorder p="md">
+                   <Stack gap="md">
+                     <Group justify="space-between">
+                       <Text fw={600} size="lg">Problem Report Details</Text>
+                       {parsed.assignmentCancelled && (
+                         <Badge color="red" size="lg">Assignment Cancelled</Badge>
+                       )}
+                     </Group>
+                     
+                     <Grid>
+                       <Grid.Col span={{ base: 12, md: 6 }}>
+                         <Stack gap="sm">
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Extension Name:</Text>
+                             <Text size="md" fw={500}>{parsed.extensionName || 'Not specified'}</Text>
+                           </div>
+                           
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Assignment ID:</Text>
+                             <Text size="sm" ff="monospace" bg="gray.1" p="xs" style={{ borderRadius: '4px' }}>
+                               {parsed.assignmentId || 'Not specified'}
+                             </Text>
+                           </div>
+                           
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Reporter Email:</Text>
+                             <Text size="sm">{parsed.reporterEmail || 'Not specified'}</Text>
+                           </div>
+                         </Stack>
+                       </Grid.Col>
+                       
+                       <Grid.Col span={{ base: 12, md: 6 }}>
+                         <Stack gap="sm">
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Issue Type:</Text>
+                             <Badge 
+                               color={
+                                 parsed.issueType.toLowerCase().includes('removed') ? 'red' :
+                                 parsed.issueType.toLowerCase().includes('access') ? 'orange' :
+                                 'blue'
+                               } 
+                               size="md"
+                             >
+                               {parsed.issueType || 'Not specified'}
+                             </Badge>
+                           </div>
+                           
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Severity:</Text>
+                             <Badge 
+                               color={parsed.severity === 'high' ? 'red' : parsed.severity === 'medium' ? 'orange' : 'gray'}
+                               size="sm"
+                             >
+                               {parsed.severity?.toUpperCase() || 'UNKNOWN'}
+                             </Badge>
+                           </div>
+                           
+                           {parsed.timestamp && (
+                             <div>
+                               <Text size="sm" c="dimmed" fw={600}>Reported At:</Text>
+                               <Text size="sm">{new Date(parsed.timestamp).toLocaleString()}</Text>
+                             </div>
+                           )}
+                         </Stack>
+                       </Grid.Col>
+                     </Grid>
+                     
+                     {parsed.description && (
+                       <div>
+                         <Text size="sm" c="dimmed" fw={600} mb="xs">Reviewer Description:</Text>
+                         <Card bg="blue.0" p="md">
+                           <Text size="sm" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                             {parsed.description}
+                           </Text>
+                         </Card>
+                       </div>
+                     )}
+                   </Stack>
+                 </Card>
+               );
+             })()}
 
-            {/* Raw Email Content */}
-            <Card withBorder p="md">
-              <Stack gap="sm">
-                <Text fw={600} size="lg">Full Email Content</Text>
-                <div style={{ 
-                  maxHeight: '300px', 
-                  overflowY: 'auto', 
-                  border: '1px solid #e9ecef', 
-                  borderRadius: '4px', 
-                  padding: '12px',
-                  backgroundColor: '#f8f9fa',
-                  fontSize: '12px',
-                  fontFamily: 'monospace'
-                }}>
-                  <div dangerouslySetInnerHTML={{ __html: selectedReport.body }} />
-                </div>
-              </Stack>
-            </Card>
+                         {/* Technical Details */}
+             <Card withBorder p="md">
+               <Stack gap="sm">
+                 <Text fw={600} size="lg">Technical Details</Text>
+                 {(() => {
+                   const parsed = parseReportBody(selectedReport.body);
+                   return (
+                     <Grid>
+                       <Grid.Col span={{ base: 12, md: 6 }}>
+                         <Stack gap="xs">
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Extension ID:</Text>
+                             <Text size="xs" ff="monospace" bg="gray.1" p="xs" style={{ borderRadius: '4px' }}>
+                               {parsed.extensionId || 'Not available'}
+                             </Text>
+                           </div>
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Reporter ID:</Text>
+                             <Text size="xs" ff="monospace" bg="gray.1" p="xs" style={{ borderRadius: '4px' }}>
+                               {parsed.reporterId || 'Not available'}
+                             </Text>
+                           </div>
+                         </Stack>
+                       </Grid.Col>
+                       <Grid.Col span={{ base: 12, md: 6 }}>
+                         <Stack gap="xs">
+                           <div>
+                             <Text size="sm" c="dimmed" fw={600}>Report Status:</Text>
+                             <Badge 
+                               color={selectedReport.status === 'sent' ? 'green' : selectedReport.status === 'pending' ? 'blue' : 'red'}
+                               size="sm"
+                             >
+                               {selectedReport.status.toUpperCase()}
+                             </Badge>
+                           </div>
+                           {selectedReport.error_message && (
+                             <div>
+                               <Text size="sm" c="red" fw={600}>Processing Error:</Text>
+                               <Text size="xs" c="red">{selectedReport.error_message}</Text>
+                             </div>
+                           )}
+                         </Stack>
+                       </Grid.Col>
+                     </Grid>
+                   );
+                 })()}
+               </Stack>
+             </Card>
 
             {/* Action Buttons */}
             <Group justify="flex-end">
