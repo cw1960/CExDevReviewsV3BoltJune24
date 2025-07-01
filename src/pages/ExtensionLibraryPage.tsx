@@ -103,7 +103,7 @@ export function ExtensionLibraryPage() {
       console.error('Error fetching extensions:', error)
       notifications.show({
         title: 'Error',
-        message: error?.message || 'Failed to load extensions',
+        message: (error as Error)?.message || 'Failed to load extensions',
         color: 'red'
       })
     } finally {
@@ -238,11 +238,12 @@ export function ExtensionLibraryPage() {
 
   const getStatusColor = (status: Extension['status']) => {
     switch (status) {
-      case 'verified': return 'green'
-      case 'pending_verification': 
+      case 'verified':
+      case 'library': return 'green'
       case 'queued': return 'blue'
       case 'assigned': return 'purple'
-      case 'reviewed': return 'orange'
+      case 'reviewed': 
+      case 'completed': return 'orange'
       case 'rejected': return 'red'
       default: return 'gray'
     }
@@ -255,6 +256,7 @@ export function ExtensionLibraryPage() {
       case 'queued': return 'In Review Queue'
       case 'assigned': return 'Selected for Review'
       case 'reviewed': return 'Review Submitted'
+      case 'completed': return 'Completed'
       case 'rejected': return 'Rejected'
       default: return status.replace('_', ' ')
     }
@@ -501,7 +503,7 @@ export function ExtensionLibraryPage() {
                     >
                       <Trash2 size={16} />
                     </ActionIcon>
-                    {(extension.status === 'verified' || extension.status === 'library') && profile?.credit_balance > 0 && (
+                    {(extension.status === 'verified' || extension.status === 'library') && (profile?.credit_balance ?? 0) > 0 && (
                       <Button
                         size="xs"
                         radius="md"
@@ -514,7 +516,7 @@ export function ExtensionLibraryPage() {
                         }
                       </Button>
                     )}
-                    {(extension.status === 'rejected') && profile?.credit_balance > 0 && (
+                    {(extension.status === 'rejected') && (profile?.credit_balance ?? 0) > 0 && (
                       <Button
                         size="xs"
                         color="orange"

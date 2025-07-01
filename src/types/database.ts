@@ -153,7 +153,7 @@ export interface Database {
           assignment_number: number
           assigned_at: string
           due_at: string
-          status: 'assigned' | 'submitted' | 'approved'
+          status: 'assigned' | 'submitted' | 'approved' | 'cancelled'
           installed_at: string | null
           earliest_review_time: string | null
           review_text: string | null
@@ -170,7 +170,7 @@ export interface Database {
           assignment_number: number
           assigned_at?: string
           due_at: string
-          status?: 'assigned' | 'submitted' | 'approved'
+          status?: 'assigned' | 'submitted' | 'approved' | 'cancelled'
           installed_at?: string | null
           earliest_review_time?: string | null
           review_text?: string | null
@@ -187,7 +187,7 @@ export interface Database {
           assignment_number?: number
           assigned_at?: string
           due_at?: string
-          status?: 'assigned' | 'submitted' | 'approved'
+          status?: 'assigned' | 'submitted' | 'approved' | 'cancelled'
           installed_at?: string | null
           earliest_review_time?: string | null
           review_text?: string | null

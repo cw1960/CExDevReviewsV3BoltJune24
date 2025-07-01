@@ -23,6 +23,7 @@ import {
   Box,
   Checkbox,
   ThemeIcon,
+  Select,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -45,6 +46,8 @@ import {
   Crown,
   Bell,
   Info,
+  AlertCircle,
+  Flag,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -93,6 +96,11 @@ export function ReviewQueuePage() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [noExtensionsModalOpen, setNoExtensionsModalOpen] = useState(false);
 
+  // Report Problem Modal State
+  const [reportProblemModalOpen, setReportProblemModalOpen] = useState(false);
+  const [selectedProblemAssignment, setSelectedProblemAssignment] = useState<AssignmentWithExtension | null>(null);
+  const [reportingProblem, setReportingProblem] = useState(false);
+
   const submissionForm = useForm({
     initialValues: {
       submitted_date: new Date(),
@@ -109,6 +117,20 @@ export function ReviewQueuePage() {
         !value
           ? "You must confirm that the review was submitted to the Chrome Web Store"
           : null,
+    },
+  });
+
+  const reportProblemForm = useForm({
+    initialValues: {
+      issue_type: "",
+      description: "",
+      cancel_assignment: false,
+    },
+    validate: {
+      issue_type: (value) =>
+        !value ? "Please select the type of issue" : null,
+      description: (value) =>
+        value.length < 10 ? "Please provide at least 10 characters describing the issue" : null,
     },
   });
 
@@ -456,6 +478,7 @@ export function ReviewQueuePage() {
   const getStatusColor = (assignment: AssignmentWithExtension) => {
     if (assignment.status === "submitted") return "orange";
     if (assignment.status === "approved") return "green";
+    if (assignment.status === "cancelled") return "red";
     if (!assignment.installed_at) return "blue";
     if (
       assignment.earliest_review_time &&
@@ -468,6 +491,7 @@ export function ReviewQueuePage() {
   const getStatusLabel = (assignment: AssignmentWithExtension) => {
     if (assignment.status === "submitted") return "Review Submitted";
     if (assignment.status === "approved") return "Review Approved";
+    if (assignment.status === "cancelled") return "Cancelled";
     if (!assignment.installed_at) return "Install Required";
     if (
       assignment.earliest_review_time &&
@@ -539,6 +563,63 @@ export function ReviewQueuePage() {
   const openReviewDetailsModal = (assignment: AssignmentWithExtension) => {
     setSelectedReviewAssignment(assignment);
     setReviewDetailsModalOpen(true);
+  };
+
+  // Report Problem Handlers
+  const openReportProblemModal = (assignment: AssignmentWithExtension) => {
+    setSelectedProblemAssignment(assignment);
+    reportProblemForm.reset();
+    setReportProblemModalOpen(true);
+  };
+
+  const handleReportProblem = async (values: typeof reportProblemForm.values) => {
+    if (!selectedProblemAssignment || !profile?.id) return;
+
+    setReportingProblem(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("report-assignment-problem", {
+        body: {
+          assignment_id: selectedProblemAssignment.id,
+          extension_id: selectedProblemAssignment.extension_id,
+          reporter_id: profile.id,
+          issue_type: values.issue_type,
+          description: values.description,
+          cancel_assignment: values.cancel_assignment,
+          extension_name: selectedProblemAssignment.extension?.name || "Unknown Extension",
+          reporter_email: profile.email || "Unknown Email",
+        },
+      });
+
+      if (error) throw error;
+
+      if (!data?.success) {
+        throw new Error(data?.error || "Failed to report problem");
+      }
+
+      notifications.show({
+        title: "Problem Reported",
+        message: values.cancel_assignment 
+          ? "The assignment has been cancelled and the issue has been reported to our team."
+          : "The issue has been reported to our team. Thank you for your feedback.",
+        color: "green",
+        icon: <CheckCircle size={16} />,
+      });
+
+      setReportProblemModalOpen(false);
+      setSelectedProblemAssignment(null);
+      
+      // Refresh assignments to show updated status
+      fetchAssignments();
+    } catch (error: any) {
+      console.error("Error reporting problem:", error);
+      notifications.show({
+        title: "Error",
+        message: error.message || "Failed to report the problem. Please try again.",
+        color: "red",
+      });
+    } finally {
+      setReportingProblem(false);
+    }
   };
 
   // FORCE REVIEW QUEUE COLORS WITH JAVASCRIPT
@@ -810,39 +891,52 @@ export function ReviewQueuePage() {
                             View Extension
                           </Button>
 
-                          {!assignment.installed_at ? (
-                            <Button
-                              size="md"
-                              radius="md"
-                              onClick={() => handleMarkInstalled(assignment)}
-                            >
-                              Mark as Installed
-                            </Button>
-                          ) : (
-                            <Tooltip
-                              label={
-                                !canSubmitReview(assignment)
-                                  ? `Complete ${getTimeUntilReviewable(assignment)} waiting period before reviewing`
-                                  : ""
-                              }
-                            >
+                          <Group gap="xs">
+                            {!assignment.installed_at ? (
                               <Button
                                 size="md"
                                 radius="md"
-                                color={
-                                  canSubmitReview(assignment) ? "green" : ""
-                                }
-                                leftSection={<MessageSquare size={16} />}
-                                onClick={() =>
-                                  canSubmitReview(assignment) &&
-                                  openSubmissionModal(assignment)
-                                }
-                                disabled={!canSubmitReview(assignment)}
+                                onClick={() => handleMarkInstalled(assignment)}
                               >
-                                Submit Review
+                                Mark as Installed
                               </Button>
-                            </Tooltip>
-                          )}
+                            ) : (
+                              <Tooltip
+                                label={
+                                  !canSubmitReview(assignment)
+                                    ? `Complete ${getTimeUntilReviewable(assignment)} waiting period before reviewing`
+                                    : ""
+                                }
+                              >
+                                <Button
+                                  size="md"
+                                  radius="md"
+                                  color={
+                                    canSubmitReview(assignment) ? "green" : ""
+                                  }
+                                  leftSection={<MessageSquare size={16} />}
+                                  onClick={() =>
+                                    canSubmitReview(assignment) &&
+                                    openSubmissionModal(assignment)
+                                  }
+                                  disabled={!canSubmitReview(assignment)}
+                                >
+                                  Submit Review
+                                </Button>
+                              </Tooltip>
+                            )}
+                            
+                            <Button
+                              variant="light"
+                              size="md"
+                              radius="md"
+                              color="orange"
+                              leftSection={<Flag size={16} />}
+                              onClick={() => openReportProblemModal(assignment)}
+                            >
+                              Report Problem
+                            </Button>
+                          </Group>
                         </Group>
 
                         {new Date(assignment.due_at).getTime() - Date.now() <=
@@ -1276,6 +1370,110 @@ export function ReviewQueuePage() {
             </Button>
           </Group>
         </Stack>
+      </Modal>
+
+      {/* Report Problem Modal */}
+      <Modal
+        opened={reportProblemModalOpen}
+        onClose={() => setReportProblemModalOpen(false)}
+        title="Report a Problem"
+        size="md"
+        radius="lg"
+        shadow="xl"
+        centered
+      >
+        {selectedProblemAssignment && (
+          <form onSubmit={reportProblemForm.onSubmit(handleReportProblem)}>
+            <Stack gap="lg">
+              <Card withBorder p="md" radius="md" bg="gray.0">
+                <Group>
+                  <Avatar
+                    src={selectedProblemAssignment.extension?.logo_url}
+                    size="sm"
+                    radius="md"
+                  />
+                  <div>
+                    <Text fw={600} size="sm">
+                      {selectedProblemAssignment.extension?.name || "Unknown Extension"}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Assignment ID: {selectedProblemAssignment.id.slice(0, 8)}...
+                    </Text>
+                  </div>
+                </Group>
+              </Card>
+
+              <Select
+                label="What type of issue are you experiencing?"
+                placeholder="Select the issue type"
+                required
+                data={[
+                  { value: "extension_removed", label: "Extension removed from Chrome Web Store" },
+                  { value: "extension_unavailable", label: "Extension is not available/accessible" },
+                  { value: "invalid_url", label: "Chrome Web Store URL is invalid or broken" },
+                  { value: "permission_issue", label: "Cannot install due to permission restrictions" },
+                  { value: "technical_error", label: "Technical error or bug" },
+                  { value: "other", label: "Other issue" },
+                ]}
+                {...reportProblemForm.getInputProps("issue_type")}
+              />
+
+              <Textarea
+                label="Description"
+                placeholder="Please provide details about the issue you're experiencing..."
+                required
+                minRows={4}
+                maxRows={8}
+                {...reportProblemForm.getInputProps("description")}
+              />
+
+              <Checkbox
+                label="Cancel this assignment"
+                description="Check this if you want to cancel this assignment due to this issue. This will remove it from your queue."
+                {...reportProblemForm.getInputProps("cancel_assignment", { type: "checkbox" })}
+              />
+
+              <Alert 
+                icon={<AlertCircle size={16} />} 
+                color="blue" 
+                radius="md"
+              >
+                <Text fw={500} mb="xs">
+                  What happens next?
+                </Text>
+                <Text size="sm">
+                  Your report will be sent to our admin team for review. If you choose to cancel the assignment, 
+                  it will be immediately removed from your queue and you won't be penalized.
+                </Text>
+              </Alert>
+
+              <Group justify="flex-end" gap="md" pt="md">
+                <Button
+                  variant="light"
+                  onClick={() => setReportProblemModalOpen(false)}
+                  disabled={reportingProblem}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="orange"
+                  leftSection={
+                    reportingProblem ? (
+                      <Loader size={16} />
+                    ) : (
+                      <Flag size={16} />
+                    )
+                  }
+                  loading={reportingProblem}
+                  disabled={reportingProblem}
+                >
+                  {reportingProblem ? "Reporting..." : "Report Problem"}
+                </Button>
+              </Group>
+            </Stack>
+          </form>
+        )}
       </Modal>
     </Container>
   );
