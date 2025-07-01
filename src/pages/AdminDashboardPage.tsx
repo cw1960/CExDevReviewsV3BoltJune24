@@ -1399,7 +1399,7 @@ export function AdminDashboardPage() {
                            
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Assignment ID:</Text>
-                             <Text size="sm" ff="monospace" bg="gray.1" c="dark.8" p="xs" style={{ borderRadius: '4px' }}>
+                             <Text size="sm" ff="monospace" bg="gray.8" c="white" p="xs" style={{ borderRadius: '4px' }}>
                                {parsed.assignmentId || 'Not specified'}
                              </Text>
                            </div>
@@ -1474,13 +1474,13 @@ export function AdminDashboardPage() {
                          <Stack gap="xs">
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Extension ID:</Text>
-                             <Text size="xs" ff="monospace" bg="gray.1" c="dark.8" p="xs" style={{ borderRadius: '4px' }}>
+                             <Text size="xs" ff="monospace" bg="gray.8" c="white" p="xs" style={{ borderRadius: '4px' }}>
                                {parsed.extensionId || 'Not available'}
                              </Text>
                            </div>
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Reporter ID:</Text>
-                             <Text size="xs" ff="monospace" bg="gray.1" c="dark.8" p="xs" style={{ borderRadius: '4px' }}>
+                             <Text size="xs" ff="monospace" bg="gray.8" c="white" p="xs" style={{ borderRadius: '4px' }}>
                                {parsed.reporterId || 'Not available'}
                              </Text>
                            </div>
