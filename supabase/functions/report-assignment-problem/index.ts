@@ -276,8 +276,44 @@ serve(async (req) => {
 
     console.log('✅ Problem report logged successfully')
 
-    // 3. Optionally send immediate email notification to admins
-    // This could be implemented later with actual email service
+    // 3. Send immediate email notification to admins
+    console.log('📧 Sending email notification to admin...')
+    try {
+      const adminEmailHtml = `
+        <h2>🚨 Assignment Problem Report</h2>
+        <p><strong>Extension:</strong> ${extension_name}</p>
+        <p><strong>Assignment ID:</strong> ${assignment_id}</p>
+        <p><strong>Reporter:</strong> ${reporter_email}</p>
+        <p><strong>Issue Type:</strong> ${issue_type}</p>
+        <p><strong>Description:</strong> ${description}</p>
+        <p><strong>Assignment Cancelled:</strong> ${cancel_assignment ? 'Yes' : 'No'}</p>
+        <p><strong>Severity:</strong> ${cancel_assignment ? 'High' : 'Medium'}</p>
+        <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+        
+        ${cancel_assignment ? '<p><strong>⚠️ URGENT:</strong> Assignment has been cancelled and extension has been returned to queue.</p>' : ''}
+        
+        <p>Please review this issue and take appropriate action.</p>
+      `;
+
+      const { error: emailError } = await supabaseService.functions.invoke('send-email', {
+        body: {
+          to: 'admin@chromeexdev.com',
+          subject: `🚨 ${cancel_assignment ? 'URGENT' : ''} Assignment Problem: ${extension_name}`,
+          html: adminEmailHtml,
+          type: 'assignment_problem_report'
+        }
+      });
+
+      if (emailError) {
+        console.error('❌ Failed to send admin email:', emailError);
+        // Don't fail the whole operation if email fails
+      } else {
+        console.log('✅ Admin email notification sent successfully');
+      }
+    } catch (emailError) {
+      console.error('❌ Error sending admin email:', emailError);
+      // Don't fail the whole operation if email fails
+    }
     
     const responseMessage = cancel_assignment 
       ? 'Assignment cancelled successfully and problem reported to admin team.'
