@@ -81,6 +81,7 @@ export function AdminDashboardPage() {
   const [statsDrawerOpened, setStatsDrawerOpened] = useState(false);
   const [reportModalOpened, setReportModalOpened] = useState(false);
   const [selectedReport, setSelectedReport] = useState<EmailLog | null>(null);
+  const [updatingReportStatus, setUpdatingReportStatus] = useState(false);
 
   // Data states
   const [stats, setStats] = useState({
@@ -177,6 +178,56 @@ export function AdminDashboardPage() {
   const handleReportClick = (report: EmailLog) => {
     setSelectedReport(report);
     setReportModalOpened(true);
+  };
+
+  const updateReportStatus = async (reportId: string, newStatus: 'pending' | 'resolved') => {
+    try {
+      setUpdatingReportStatus(true);
+
+      const { data, error } = await supabase.functions.invoke(
+        "update-problem-report-status",
+        {
+          body: { report_id: reportId, status: newStatus }
+        }
+      );
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw error;
+      }
+
+      if (!data?.success) {
+        throw new Error(data?.error || "Failed to update report status");
+      }
+
+      // Update the selected report status locally
+      if (selectedReport && selectedReport.id === reportId) {
+        setSelectedReport({ ...selectedReport, status: newStatus });
+      }
+
+      // Update the report in the main list
+      setProblemReports(prev => 
+        prev.map(report => 
+          report.id === reportId ? { ...report, status: newStatus } : report
+        )
+      );
+
+      notifications.show({
+        title: "Status Updated",
+        message: `Problem report marked as ${newStatus}`,
+        color: "green",
+      });
+
+    } catch (error) {
+      console.error("Error updating report status:", error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to update report status. Please try again.",
+        color: "red",
+      });
+    } finally {
+      setUpdatingReportStatus(false);
+    }
   };
 
   const parseReportBody = (body: string) => {
@@ -663,11 +714,14 @@ export function AdminDashboardPage() {
           </Tabs.Tab>
           <Tabs.Tab value="problems" leftSection={<Bug size={16} />}>
             Problem Reports
-            {problemReports.length > 0 && (
-              <Badge size="xs" color="red" ml="xs">
-                {problemReports.length}
-              </Badge>
-            )}
+            {(() => {
+              const pendingCount = problemReports.filter(report => report.status === 'pending').length;
+              return pendingCount > 0 && (
+                <Badge size="xs" color="red" ml="xs">
+                  {pendingCount}
+                </Badge>
+              );
+            })()}
           </Tabs.Tab>
         </Tabs.List>
 
@@ -1187,7 +1241,7 @@ export function AdminDashboardPage() {
                   Refresh
                 </Button>
                 <Text size="sm" c="dimmed">
-                  {problemReports.length} total reports • Click any row for details
+                  {problemReports.length} total reports ({problemReports.filter(r => r.status === 'pending').length} pending, {problemReports.filter(r => r.status === 'resolved').length} resolved) • Click any row for details
                 </Text>
               </Group>
             </Group>
@@ -1223,15 +1277,17 @@ export function AdminDashboardPage() {
                     <Table.Td>
                       <Badge
                         color={
-                          report.status === "sent" 
+                          report.status === "resolved" 
                             ? "green" 
                             : report.status === "pending" 
-                            ? "blue" 
+                            ? "orange" 
+                            : report.status === "sent"
+                            ? "blue"
                             : "red"
                         }
                         size="sm"
                       >
-                        {report.status}
+                        {report.status === "resolved" ? "RESOLVED" : report.status.toUpperCase()}
                       </Badge>
                     </Table.Td>
                     <Table.Td>
@@ -1288,18 +1344,20 @@ export function AdminDashboardPage() {
               <Stack gap="sm">
                 <Group justify="space-between">
                   <Text fw={600} size="lg">Report Information</Text>
-                  <Badge
-                    color={
-                      selectedReport.status === "sent" 
-                        ? "green" 
-                        : selectedReport.status === "pending" 
-                        ? "blue" 
-                        : "red"
-                    }
-                    size="lg"
-                  >
-                    {selectedReport.status.toUpperCase()}
-                  </Badge>
+                                     <Badge
+                     color={
+                       selectedReport.status === "resolved" 
+                         ? "green" 
+                         : selectedReport.status === "pending" 
+                         ? "orange" 
+                         : selectedReport.status === "sent"
+                         ? "blue"
+                         : "red"
+                     }
+                     size="lg"
+                   >
+                     {selectedReport.status === "resolved" ? "RESOLVED" : selectedReport.status.toUpperCase()}
+                   </Badge>
                 </Group>
                 <Group>
                   <Text size="sm" c="dimmed">Date:</Text>
@@ -1341,7 +1399,7 @@ export function AdminDashboardPage() {
                            
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Assignment ID:</Text>
-                             <Text size="sm" ff="monospace" bg="gray.1" p="xs" style={{ borderRadius: '4px' }}>
+                             <Text size="sm" ff="monospace" bg="gray.1" c="dark.8" p="xs" style={{ borderRadius: '4px' }}>
                                {parsed.assignmentId || 'Not specified'}
                              </Text>
                            </div>
@@ -1416,13 +1474,13 @@ export function AdminDashboardPage() {
                          <Stack gap="xs">
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Extension ID:</Text>
-                             <Text size="xs" ff="monospace" bg="gray.1" p="xs" style={{ borderRadius: '4px' }}>
+                             <Text size="xs" ff="monospace" bg="gray.1" c="dark.8" p="xs" style={{ borderRadius: '4px' }}>
                                {parsed.extensionId || 'Not available'}
                              </Text>
                            </div>
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Reporter ID:</Text>
-                             <Text size="xs" ff="monospace" bg="gray.1" p="xs" style={{ borderRadius: '4px' }}>
+                             <Text size="xs" ff="monospace" bg="gray.1" c="dark.8" p="xs" style={{ borderRadius: '4px' }}>
                                {parsed.reporterId || 'Not available'}
                              </Text>
                            </div>
@@ -1433,10 +1491,14 @@ export function AdminDashboardPage() {
                            <div>
                              <Text size="sm" c="dimmed" fw={600}>Report Status:</Text>
                              <Badge 
-                               color={selectedReport.status === 'sent' ? 'green' : selectedReport.status === 'pending' ? 'blue' : 'red'}
+                               color={
+                                 selectedReport.status === 'resolved' ? 'green' : 
+                                 selectedReport.status === 'pending' ? 'orange' : 
+                                 selectedReport.status === 'sent' ? 'blue' : 'red'
+                               }
                                size="sm"
                              >
-                               {selectedReport.status.toUpperCase()}
+                               {selectedReport.status === 'resolved' ? 'RESOLVED' : selectedReport.status.toUpperCase()}
                              </Badge>
                            </div>
                            {selectedReport.error_message && (
@@ -1453,15 +1515,36 @@ export function AdminDashboardPage() {
                </Stack>
              </Card>
 
-            {/* Action Buttons */}
-            <Group justify="flex-end">
-              <Button 
-                variant="outline" 
-                onClick={() => setReportModalOpened(false)}
-              >
-                Close
-              </Button>
-            </Group>
+                         {/* Action Buttons */}
+             <Group justify="space-between">
+               <Group>
+                 {selectedReport.status === 'pending' ? (
+                   <Button 
+                     color="green"
+                     loading={updatingReportStatus}
+                     onClick={() => updateReportStatus(selectedReport.id, 'resolved')}
+                     leftSection={<CheckCircle size={16} />}
+                   >
+                     Mark as Resolved
+                   </Button>
+                 ) : (
+                   <Button 
+                     color="orange"
+                     loading={updatingReportStatus}
+                     onClick={() => updateReportStatus(selectedReport.id, 'pending')}
+                     leftSection={<Clock size={16} />}
+                   >
+                     Reopen as Pending
+                   </Button>
+                 )}
+               </Group>
+               <Button 
+                 variant="outline" 
+                 onClick={() => setReportModalOpened(false)}
+               >
+                 Close
+               </Button>
+             </Group>
           </Stack>
         )}
       </Modal>
