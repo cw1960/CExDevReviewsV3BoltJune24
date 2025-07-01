@@ -246,7 +246,7 @@ serve(async (req) => {
     console.log('📝 Logging problem report...')
     
     const problemReportLog = {
-      to_email: 'admin@chromeexdev.com', // Could be from env variable
+      to_email: 'cristo@cristolopez', // Could be from env variable
       type: 'assignment_problem_report',
       status: 'pending',
       subject: `Assignment Problem Report: ${extension_name}`,
@@ -297,7 +297,7 @@ serve(async (req) => {
 
       const { error: emailError } = await supabaseService.functions.invoke('send-email', {
         body: {
-          to: 'admin@chromeexdev.com',
+          to: 'cristo@cristolopez',
           subject: `🚨 ${cancel_assignment ? 'URGENT' : ''} Assignment Problem: ${extension_name}`,
           html: adminEmailHtml,
           type: 'assignment_problem_report'
