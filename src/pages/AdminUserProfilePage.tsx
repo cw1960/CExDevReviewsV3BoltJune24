@@ -21,7 +21,9 @@ import {
   ActionIcon,
   Tooltip,
   Box,
-  Tabs
+  Tabs,
+  Textarea,
+  Checkbox
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
@@ -40,7 +42,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Mail,
-  Shield
+  Shield,
+  Send
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -88,6 +91,8 @@ export function AdminUserProfilePage() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserProfileData | null>(null)
   const [editModalOpen, setEditModalOpen] = useState(false)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [sendingMessage, setSendingMessage] = useState(false)
   const [activeTab, setActiveTab] = useState<string | null>('overview')
 
   const editForm = useForm({
@@ -95,6 +100,19 @@ export function AdminUserProfilePage() {
       credit_balance: 0,
       role: 'user' as 'admin' | 'moderator' | 'user',
       has_completed_qualification: false
+    }
+  })
+
+  const messageForm = useForm({
+    initialValues: {
+      subject: '',
+      message: '',
+      priority: 'normal' as 'normal' | 'high' | 'urgent',
+      popup_on_login: false
+    },
+    validate: {
+      subject: (value) => (value.trim() ? null : 'Subject is required'),
+      message: (value) => (value.trim() ? null : 'Message is required')
     }
   })
 
@@ -148,6 +166,53 @@ export function AdminUserProfilePage() {
     setEditModalOpen(true)
   }
 
+  const handleSendMessage = () => {
+    messageForm.reset()
+    setMessageModalOpen(true)
+  }
+
+  const handleSubmitMessage = async (values: typeof messageForm.values) => {
+    if (!userData?.user) return
+
+    try {
+      setSendingMessage(true)
+      console.log('Sending message via Edge Function...')
+      
+      const { data, error } = await supabase.functions.invoke('send-user-message', {
+        body: {
+          recipient_id: userData.user.id,
+          subject: values.subject.trim(),
+          message: values.message.trim(),
+          priority: values.priority,
+          popup_on_login: values.popup_on_login
+        }
+      })
+
+      if (error) throw error
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to send message')
+      }
+
+      notifications.show({
+        title: 'Message Sent',
+        message: `Message sent successfully to ${userData.user.name || userData.user.email}`,
+        color: 'green'
+      })
+
+      setMessageModalOpen(false)
+      messageForm.reset()
+    } catch (error: any) {
+      notifications.show({
+        title: 'Error',
+        message: error.message || 'Failed to send message',
+        color: 'red'
+      })
+    } finally {
+      setSendingMessage(false)
+    }
+  }
+
   const handleUpdateUser = async (values: typeof editForm.values) => {
     if (!userData?.user) return
 
@@ -193,12 +258,12 @@ export function AdminUserProfilePage() {
   const getStatusColor = (status: Extension['status']) => {
     switch (status) {
       case 'verified': return 'green'
-      case 'pending_verification': 
+      case 'library': return 'green'
       case 'queued': return 'blue'
       case 'assigned': return 'purple'
       case 'reviewed': return 'orange'
+      case 'completed': return 'green'
       case 'rejected': return 'red'
-      case 'library': return 'gray'
       default: return 'gray'
     }
   }
@@ -207,10 +272,10 @@ export function AdminUserProfilePage() {
     switch (status) {
       case 'verified': 
       case 'library': return 'In Library'
-      case 'pending_verification': return 'In Review Queue'
       case 'queued': return 'In Review Queue'
       case 'assigned': return 'Selected for Review'
       case 'reviewed': return 'Review Submitted'
+      case 'completed': return 'Completed'
       case 'rejected': return 'Rejected'
       default: return 'Unknown'
     }
@@ -366,12 +431,21 @@ export function AdminUserProfilePage() {
             </Text>
           </div>
         </Group>
-        <Button
-          leftSection={<Edit size={16} />}
-          onClick={handleEditUser}
-        >
-          Edit User
-        </Button>
+        <Group>
+          <Button
+            variant="light"
+            leftSection={<Send size={16} />}
+            onClick={handleSendMessage}
+          >
+            Send Message
+          </Button>
+          <Button
+            leftSection={<Edit size={16} />}
+            onClick={handleEditUser}
+          >
+            Edit User
+          </Button>
+        </Group>
       </Group>
 
       {/* User Header Card */}
@@ -817,6 +891,73 @@ export function AdminUserProfilePage() {
           </Stack>
         </form>
       </Modal>
+
+      {/* Send Message Modal */}
+      <Modal
+        opened={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        title={`Send Message to ${userData.user.name || userData.user.email}`}
+        size="lg"
+      >
+        <form onSubmit={messageForm.onSubmit(handleSubmitMessage)}>
+          <Stack>
+            <Card withBorder p="md" bg="blue.0">
+              <Group gap="xs">
+                <Mail size={16} />
+                <Text size="sm" fw={500}>
+                  Sending to: {userData.user.name || userData.user.email}
+                </Text>
+              </Group>
+            </Card>
+            
+            <Textarea
+              label="Subject"
+              placeholder="Enter message subject..."
+              {...messageForm.getInputProps('subject')}
+              required
+            />
+            
+            <Textarea
+              label="Message"
+              placeholder="Type your message here..."
+              minRows={6}
+              {...messageForm.getInputProps('message')}
+              required
+            />
+            
+            <Select
+              label="Priority"
+              data={[
+                { value: 'normal', label: 'Normal' },
+                { value: 'high', label: 'High' },
+                { value: 'urgent', label: 'Urgent (Red notification)' }
+              ]}
+              {...messageForm.getInputProps('priority')}
+            />
+            
+            <Checkbox
+              label="Show as popup on next login"
+              description="Message will appear as a popup when the user logs in"
+              {...messageForm.getInputProps('popup_on_login', { type: 'checkbox' })}
+            />
+            
+            <Group justify="flex-end">
+              <Button variant="light" onClick={() => setMessageModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                loading={sendingMessage}
+                leftSection={<Send size={16} />}
+              >
+                Send Message
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      
     </Container>
   )
 }

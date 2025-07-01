@@ -8,6 +8,9 @@ import {
   Button,
   Stack,
   Alert,
+  ActionIcon,
+  Indicator,
+  Badge
 } from "@mantine/core";
 import {
   Home,
@@ -18,11 +21,17 @@ import {
   LogOut,
   Shield,
   AlertCircle,
+  MessageSquare
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useSubscription } from "../../hooks/useSubscription";
 
-export function SideNav() {
+interface SideNavProps {
+  unreadMessageCount?: number
+  onMessagesClick?: () => void
+}
+
+export function SideNav({ unreadMessageCount = 0, onMessagesClick }: SideNavProps) {
   const { profile, signOut } = useAuth();
   const { isPremium } = useSubscription();
   const navigate = useNavigate();
@@ -76,6 +85,24 @@ export function SideNav() {
               })}
             />
           ))}
+
+          {/* Messages Section */}
+          <MantineNavLink
+            label="Messages"
+            leftSection={
+              unreadMessageCount > 0 ? (
+                <Indicator color="red" size={16} label={unreadMessageCount}>
+                  <MessageSquare size={16} />
+                </Indicator>
+              ) : (
+                <MessageSquare size={16} />
+              )
+            }
+            onClick={onMessagesClick}
+            style={{
+              borderRadius: "var(--mantine-radius-sm)",
+            }}
+          />
 
           {profile?.role === "admin" && (
             <>
