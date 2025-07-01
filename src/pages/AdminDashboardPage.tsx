@@ -79,6 +79,8 @@ export function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<string | null>("overview");
   const [assignmentsLoading, setAssignmentsLoading] = useState(false);
   const [statsDrawerOpened, setStatsDrawerOpened] = useState(false);
+  const [reportModalOpened, setReportModalOpened] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<EmailLog | null>(null);
 
   // Data states
   const [stats, setStats] = useState({
@@ -170,6 +172,68 @@ export function AdminDashboardPage() {
         color: "red",
       });
     }
+  };
+
+  const handleReportClick = (report: EmailLog) => {
+    setSelectedReport(report);
+    setReportModalOpened(true);
+  };
+
+  const parseReportBody = (body: string) => {
+    // Extract key information from the HTML email body
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(body, 'text/html');
+    
+    // Try to extract structured information
+    const text = doc.body?.textContent || body;
+    
+    // Look for key patterns in the email content
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    
+    const result: any = {
+      extensionName: '',
+      issueType: '',
+      description: '',
+      assignmentId: '',
+      assignmentCancelled: false,
+      rawContent: text
+    };
+
+    // Extract information from the lines
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      if (line.includes('Extension:')) {
+        result.extensionName = line.replace('Extension:', '').trim();
+      }
+      
+      if (line.includes('Issue Type:')) {
+        result.issueType = line.replace('Issue Type:', '').trim();
+      }
+      
+      if (line.includes('Assignment ID:')) {
+        result.assignmentId = line.replace('Assignment ID:', '').trim();
+      }
+      
+      if (line.includes('Description:')) {
+        // Get the next few lines as description
+        const descLines = [];
+        for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
+          if (!lines[j].includes(':') || lines[j].length > 50) {
+            descLines.push(lines[j]);
+          } else {
+            break;
+          }
+        }
+        result.description = descLines.join(' ').trim();
+      }
+      
+      if (line.toLowerCase().includes('cancelled') || line.toLowerCase().includes('cancel')) {
+        result.assignmentCancelled = true;
+      }
+    }
+    
+    return result;
   };
 
   const navigateToUserProfile = (userId: string) => {
@@ -1143,7 +1207,7 @@ export function AdminDashboardPage() {
                   Refresh
                 </Button>
                 <Text size="sm" c="dimmed">
-                  {problemReports.length} total reports
+                  {problemReports.length} total reports • Click any row for details
                 </Text>
               </Group>
             </Group>
@@ -1155,11 +1219,22 @@ export function AdminDashboardPage() {
                   <Table.Th>Subject</Table.Th>
                   <Table.Th>Body Preview</Table.Th>
                   <Table.Th>Error</Table.Th>
+                  <Table.Th>
+                    <Group gap="xs">
+                      <Eye size={14} />
+                      <Text size="sm">Details</Text>
+                    </Group>
+                  </Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {problemReports.slice(0, 50).map((report) => (
-                  <Table.Tr key={report.id}>
+                  <Table.Tr 
+                    key={report.id}
+                    onClick={() => handleReportClick(report)}
+                    style={{ cursor: 'pointer' }}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
                     <Table.Td>
                       <Text size="sm">
                         {new Date(report.created_at).toLocaleString()}
@@ -1200,6 +1275,12 @@ export function AdminDashboardPage() {
                         </Text>
                       )}
                     </Table.Td>
+                    <Table.Td>
+                      <Group gap="xs">
+                        <Eye size={14} />
+                        <Text size="sm" c="blue">View</Text>
+                      </Group>
+                    </Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>
@@ -1212,6 +1293,128 @@ export function AdminDashboardPage() {
           </Card>
         </Tabs.Panel>
       </Tabs>
+
+      {/* Problem Report Detail Modal */}
+      <Modal
+        opened={reportModalOpened}
+        onClose={() => setReportModalOpened(false)}
+        title="Problem Report Details"
+        size="lg"
+      >
+        {selectedReport && (
+          <Stack gap="md">
+            {/* Report Metadata */}
+            <Card withBorder p="md">
+              <Stack gap="sm">
+                <Group justify="space-between">
+                  <Text fw={600} size="lg">Report Information</Text>
+                  <Badge
+                    color={
+                      selectedReport.status === "sent" 
+                        ? "green" 
+                        : selectedReport.status === "pending" 
+                        ? "blue" 
+                        : "red"
+                    }
+                    size="lg"
+                  >
+                    {selectedReport.status.toUpperCase()}
+                  </Badge>
+                </Group>
+                <Group>
+                  <Text size="sm" c="dimmed">Date:</Text>
+                  <Text size="sm">{new Date(selectedReport.created_at).toLocaleString()}</Text>
+                </Group>
+                <Group>
+                  <Text size="sm" c="dimmed">Email To:</Text>
+                  <Text size="sm">{selectedReport.to_email}</Text>
+                </Group>
+                {selectedReport.error_message && (
+                  <div>
+                    <Text size="sm" c="red" fw={600}>Error Message:</Text>
+                    <Text size="sm" c="red">{selectedReport.error_message}</Text>
+                  </div>
+                )}
+              </Stack>
+            </Card>
+
+            {/* Parsed Problem Details */}
+            {(() => {
+              const parsed = parseReportBody(selectedReport.body);
+              return (
+                <Card withBorder p="md">
+                  <Stack gap="sm">
+                    <Text fw={600} size="lg">Problem Details</Text>
+                    
+                    {parsed.extensionName && (
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Extension:</Text>
+                        <Text size="sm">{parsed.extensionName}</Text>
+                      </div>
+                    )}
+                    
+                    {parsed.issueType && (
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Issue Type:</Text>
+                        <Badge color="orange" size="sm">{parsed.issueType}</Badge>
+                      </div>
+                    )}
+                    
+                    {parsed.assignmentId && (
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Assignment ID:</Text>
+                        <Text size="sm" ff="monospace">{parsed.assignmentId}</Text>
+                      </div>
+                    )}
+                    
+                    {parsed.description && (
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Description:</Text>
+                        <Text size="sm">{parsed.description}</Text>
+                      </div>
+                    )}
+                    
+                    {parsed.assignmentCancelled && (
+                      <div>
+                        <Badge color="red" size="md">Assignment Was Cancelled</Badge>
+                      </div>
+                    )}
+                  </Stack>
+                </Card>
+              );
+            })()}
+
+            {/* Raw Email Content */}
+            <Card withBorder p="md">
+              <Stack gap="sm">
+                <Text fw={600} size="lg">Full Email Content</Text>
+                <div style={{ 
+                  maxHeight: '300px', 
+                  overflowY: 'auto', 
+                  border: '1px solid #e9ecef', 
+                  borderRadius: '4px', 
+                  padding: '12px',
+                  backgroundColor: '#f8f9fa',
+                  fontSize: '12px',
+                  fontFamily: 'monospace'
+                }}>
+                  <div dangerouslySetInnerHTML={{ __html: selectedReport.body }} />
+                </div>
+              </Stack>
+            </Card>
+
+            {/* Action Buttons */}
+            <Group justify="flex-end">
+              <Button 
+                variant="outline" 
+                onClick={() => setReportModalOpened(false)}
+              >
+                Close
+              </Button>
+            </Group>
+          </Stack>
+        )}
+      </Modal>
 
       <Drawer
         opened={statsDrawerOpened}
