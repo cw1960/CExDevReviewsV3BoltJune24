@@ -41,6 +41,7 @@ import {
   Settings,
   Edit,
   Bug,
+  RefreshCcw,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -618,6 +619,11 @@ export function AdminDashboardPage() {
           </Tabs.Tab>
           <Tabs.Tab value="problems" leftSection={<Bug size={16} />}>
             Problem Reports
+            {problemReports.length > 0 && (
+              <Badge size="xs" color="red" ml="xs">
+                {problemReports.length}
+              </Badge>
+            )}
           </Tabs.Tab>
         </Tabs.List>
 
@@ -1127,9 +1133,19 @@ export function AdminDashboardPage() {
           <Card withBorder>
             <Group justify="space-between" mb="md">
               <Text fw={600}>Problem Reports</Text>
-              <Text size="sm" c="dimmed">
-                {problemReports.length} total reports
-              </Text>
+              <Group>
+                <Button
+                  size="xs"
+                  variant="light"
+                  onClick={fetchProblemReports}
+                  leftSection={<RefreshCcw size={14} />}
+                >
+                  Refresh
+                </Button>
+                <Text size="sm" c="dimmed">
+                  {problemReports.length} total reports
+                </Text>
+              </Group>
             </Group>
             <Table>
               <Table.Thead>
