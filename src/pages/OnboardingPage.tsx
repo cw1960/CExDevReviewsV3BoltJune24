@@ -33,7 +33,7 @@ import type { Database } from "../types/database";
 type Extension = Database["public"]["Tables"]["extensions"]["Row"];
 
 export function OnboardingPage() {
-  const { profile, updateProfile } = useAuth();
+  const { profile, updateProfileQuick } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState<"welcome" | "add-extension">(
@@ -55,13 +55,8 @@ export function OnboardingPage() {
     try {
       console.log("🔄 Starting profile update...");
       
-      // Add timeout to prevent hanging
-      const updatePromise = updateProfile({ onboarding_complete: true });
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Profile update timed out")), 10000)
-      );
-      
-      await Promise.race([updatePromise, timeoutPromise]);
+      // Use quick update to avoid timeout issues
+      await updateProfileQuick({ onboarding_complete: true });
       console.log("✅ Profile update completed successfully");
       
       notifications.show({
@@ -99,7 +94,7 @@ export function OnboardingPage() {
 
     // Complete onboarding
     try {
-      await updateProfile({ onboarding_complete: true });
+      await updateProfileQuick({ onboarding_complete: true });
       
       notifications.show({
         title: "Extension Added Successfully!",

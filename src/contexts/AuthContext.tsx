@@ -23,6 +23,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  updateProfileQuick: (updates: Partial<UserProfile>) => Promise<void>;
   refreshProfile: () => Promise<void>;
   updateCookiePreferences: (
     preference: "accepted" | "declined",
@@ -534,6 +535,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await refreshProfile();
   };
 
+  const updateProfileQuick = async (updates: Partial<UserProfile>) => {
+    console.log("⚡ updateProfileQuick called with updates:", updates);
+    if (!user) throw new Error("No user logged in");
+    
+    console.log("⚡ Attempting direct Supabase update for user ID:", user.id);
+    const { error } = await supabase
+      .from("users")
+      .update(updates)
+      .eq("id", user.id);
+    
+    if (error) {
+      console.error("⚡ Supabase update error in updateProfileQuick:", error);
+      throw error;
+    }
+    
+    console.log("⚡ Direct database update successful, updating local state...");
+    
+    // Update local profile state immediately without complex refresh
+    if (profile) {
+      const updatedProfile = { ...profile, ...updates };
+      setProfile(updatedProfile);
+      localStorage.setItem("profile", JSON.stringify(updatedProfile));
+      console.log("⚡ Local profile state updated successfully");
+    }
+  };
+
   const updateCookiePreferences = async (
     preference: "accepted" | "declined",
   ) => {
@@ -566,6 +593,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signOut,
         updateProfile,
+        updateProfileQuick,
         refreshProfile,
         updateCookiePreferences,
       }}
