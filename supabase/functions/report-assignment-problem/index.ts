@@ -18,6 +18,19 @@ interface ReportAssignmentProblemRequest {
   reporter_email: string
 }
 
+// Helper function to add timeout to promises
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operation: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`${operation} timed out after ${timeoutMs}ms`)),
+        timeoutMs,
+      ),
+    ),
+  ]);
+}
+
 serve(async (req) => {
   console.log('🚀 report-assignment-problem function started')
   console.log('📝 Request method:', req.method)
@@ -32,11 +45,13 @@ serve(async (req) => {
     console.log('🔍 Checking environment variables...')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
 
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
       console.error('❌ Missing environment variables:', {
         supabaseUrl: !!supabaseUrl,
-        supabaseServiceKey: !!supabaseServiceKey
+        supabaseServiceKey: !!supabaseServiceKey,
+        supabaseAnonKey: !!supabaseAnonKey
       })
       return new Response(
         JSON.stringify({ 
@@ -51,8 +66,22 @@ serve(async (req) => {
     }
 
     console.log('✅ Environment variables check passed')
-    // Use service role key to bypass RLS
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+    // Extract and validate JWT
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ Missing or invalid Authorization header')
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Missing or invalid Authorization header' 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      )
+    }
+
+    const jwt = authHeader.replace('Bearer ', '')
+    console.log('🔐 JWT token extracted, length:', jwt.length)
 
     console.log('📦 Parsing request body...')
     const requestData: ReportAssignmentProblemRequest = await req.json()
@@ -82,13 +111,97 @@ serve(async (req) => {
       )
     }
 
+    // Create clients
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey)
+    const supabaseService = createClient(supabaseUrl, supabaseServiceKey)
+
+    // Verify JWT
+    console.log('🔐 Verifying JWT token...')
+    let authUser
+    try {
+      const { data: { user: verifiedUser }, error: authError } = await withTimeout(
+        supabaseAuth.auth.getUser(jwt),
+        5000, // 5 seconds
+        'JWT verification'
+      )
+      
+      if (authError) {
+        console.log('❌ JWT verification failed:', authError.message)
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: 'Invalid or expired JWT token',
+            details: authError.message
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+        )
+      }
+
+      if (!verifiedUser) {
+        console.log('❌ No user returned from JWT verification')
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: 'Invalid or expired JWT token' 
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+        )
+      }
+
+      authUser = verifiedUser
+      console.log('✅ JWT verified successfully for user:', authUser.id)
+    } catch (jwtError) {
+      console.error('❌ JWT verification threw error:', jwtError?.message)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'JWT verification failed',
+          details: jwtError?.message || 'Unknown JWT error'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      )
+    }
+
+    // Security check: Ensure the authenticated user matches the reporter_id
+    if (authUser.id !== reporter_id) {
+      console.log('🚫 Security violation: User attempted to report problem for different user')
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Unauthorized: You can only report problems for your own assignments' 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      )
+    }
+
+    // Verify the user owns this assignment
+    console.log('🔍 Verifying assignment ownership...')
+    const { data: assignment, error: assignmentError } = await supabaseService
+      .from('review_assignments')
+      .select('id, reviewer_id, extension_id, status')
+      .eq('id', assignment_id)
+      .eq('reviewer_id', reporter_id)
+      .eq('status', 'assigned')
+      .single()
+
+    if (assignmentError || !assignment) {
+      console.error('❌ Assignment verification failed:', assignmentError?.message)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Assignment not found or you do not have permission to report problems for this assignment'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
+      )
+    }
+
     console.log(`🔄 Processing problem report for assignment ${assignment_id}`)
 
     // 1. If cancelling assignment, update status to cancelled
     if (cancel_assignment) {
       console.log('❌ Cancelling assignment due to reported problem...')
       
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabaseService
         .from('review_assignments')
         .update({ 
           status: 'cancelled',
@@ -104,7 +217,7 @@ serve(async (req) => {
       console.log('✅ Assignment status updated to cancelled')
 
       // Update extension status back to queued if this was the only assignment
-      const { data: otherAssignments, error: checkError } = await supabase
+      const { data: otherAssignments, error: checkError } = await supabaseService
         .from('review_assignments')
         .select('id')
         .eq('extension_id', extension_id)
@@ -115,7 +228,7 @@ serve(async (req) => {
         // Don't throw here, continue with logging
       } else if (!otherAssignments || otherAssignments.length === 0) {
         // No other active assignments, put extension back in queue
-        const { error: extensionUpdateError } = await supabase
+        const { error: extensionUpdateError } = await supabaseService
           .from('extensions')
           .update({ status: 'queued' })
           .eq('id', extension_id)
@@ -152,7 +265,7 @@ serve(async (req) => {
       error_message: null
     }
 
-    const { error: logError } = await supabase
+    const { error: logError } = await supabaseService
       .from('email_logs')
       .insert(problemReportLog)
 
