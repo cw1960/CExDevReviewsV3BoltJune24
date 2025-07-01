@@ -50,12 +50,19 @@ export function OnboardingPage() {
   };
 
   const handleSkipExtension = async () => {
+    console.log("🚀 handleSkipExtension called - setting loading to true");
     setLoading(true);
     try {
-      await updateProfile({ onboarding_complete: true });
+      console.log("🔄 Starting profile update...");
       
-      // Wait a moment for the profile state to update
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Add timeout to prevent hanging
+      const updatePromise = updateProfile({ onboarding_complete: true });
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Profile update timed out")), 10000)
+      );
+      
+      await Promise.race([updatePromise, timeoutPromise]);
+      console.log("✅ Profile update completed successfully");
       
       notifications.show({
         title: "Setup Complete!",
@@ -65,11 +72,19 @@ export function OnboardingPage() {
         icon: <Sparkles size={16} />,
       });
       
-      // Navigate after ensuring profile state is updated
+      // Reset loading immediately since update was successful
+      console.log("🔄 Resetting loading to false");
+      setLoading(false);
+      
+      // Short delay to ensure profile state updates, then navigate
+      console.log("⏰ Setting timeout for navigation...");
       setTimeout(() => {
+        console.log("🔄 Navigating to qualification...");
         navigate("/qualification");
-      }, 200);
+      }, 300);
+      
     } catch (error: any) {
+      console.error("❌ Error in handleSkipExtension:", error);
       notifications.show({
         title: "Error",
         message: error.message || "Failed to complete onboarding",
@@ -77,7 +92,6 @@ export function OnboardingPage() {
       });
       setLoading(false);
     }
-    // Don't set loading to false in finally - let the navigation handle it
   };
 
   const handleExtensionSuccess = async (extension: Extension) => {
@@ -87,9 +101,6 @@ export function OnboardingPage() {
     try {
       await updateProfile({ onboarding_complete: true });
       
-      // Wait a moment for the profile state to update
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
       notifications.show({
         title: "Extension Added Successfully!",
         message:
@@ -98,10 +109,10 @@ export function OnboardingPage() {
         icon: <Package size={16} />,
       });
       
-      // Navigate after ensuring profile state is updated
+      // Short delay to ensure profile state updates, then navigate
       setTimeout(() => {
         navigate("/qualification");
-      }, 200);
+      }, 300);
     } catch (error: any) {
       notifications.show({
         title: "Error",
