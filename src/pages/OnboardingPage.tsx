@@ -53,6 +53,10 @@ export function OnboardingPage() {
     setLoading(true);
     try {
       await updateProfile({ onboarding_complete: true });
+      
+      // Wait a moment for the profile state to update
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       notifications.show({
         title: "Setup Complete!",
         message:
@@ -60,16 +64,20 @@ export function OnboardingPage() {
         color: "green",
         icon: <Sparkles size={16} />,
       });
-      navigate("/qualification");
+      
+      // Navigate after ensuring profile state is updated
+      setTimeout(() => {
+        navigate("/qualification");
+      }, 200);
     } catch (error: any) {
       notifications.show({
         title: "Error",
         message: error.message || "Failed to complete onboarding",
         color: "red",
       });
-    } finally {
       setLoading(false);
     }
+    // Don't set loading to false in finally - let the navigation handle it
   };
 
   const handleExtensionSuccess = async (extension: Extension) => {
@@ -78,6 +86,10 @@ export function OnboardingPage() {
     // Complete onboarding
     try {
       await updateProfile({ onboarding_complete: true });
+      
+      // Wait a moment for the profile state to update
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       notifications.show({
         title: "Extension Added Successfully!",
         message:
@@ -85,7 +97,11 @@ export function OnboardingPage() {
         color: "green",
         icon: <Package size={16} />,
       });
-      navigate("/qualification");
+      
+      // Navigate after ensuring profile state is updated
+      setTimeout(() => {
+        navigate("/qualification");
+      }, 200);
     } catch (error: any) {
       notifications.show({
         title: "Error",
