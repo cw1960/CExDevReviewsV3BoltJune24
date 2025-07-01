@@ -1,77 +1,156 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
-import { corsHeaders } from '../_shared/cors.ts'
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
 
-console.log("Send User Message function up and running!")
+interface SendMessageRequest {
+  recipient_id: string
+  subject: string
+  message: string
+  priority?: 'normal' | 'high' | 'urgent'
+  popup_on_login?: boolean
+}
 
-serve(async (req) => {
+Deno.serve(async (req) => {
+  console.log('🚀 send-user-message function started [v4.0 - Fixed Pattern]')
+  console.log('📝 Request method:', req.method)
+  console.log('🌐 Request URL:', req.url)
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('✅ Handling CORS preflight request')
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
-    )
+    console.log('🔍 Checking environment variables...')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
-    // Get the current user from JWT
-    const {
-      data: { user },
-      error: authError,
-    } = await supabaseClient.auth.getUser()
-
-    if (authError || !user) {
-      console.error('Authentication error:', authError)
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('❌ Missing environment variables:', {
+        supabaseUrl: !!supabaseUrl,
+        supabaseServiceKey: !!supabaseServiceKey
+      })
       return new Response(
-        JSON.stringify({ success: false, error: 'Authentication required' }),
+        JSON.stringify({ 
+          success: false, 
+          error: 'Server configuration error: Missing environment variables'
+        }),
         {
-          status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
         }
       )
     }
 
+    // Get the Authorization header to extract user info
+    const authHeader = req.headers.get('Authorization')
+    console.log('🔑 Authorization header:', authHeader ? 'Present' : 'Missing')
+
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Authorization header required'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
+    }
+
+    // Create supabase client with user JWT to validate auth
+    const { createClient } = await import('npm:@supabase/supabase-js@2')
+    const supabaseUser = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
+      global: { headers: { Authorization: authHeader } }
+    })
+
+    // Verify user authentication
+    const { data: { user }, error: authError } = await supabaseUser.auth.getUser()
+    console.log('👤 User result:', user ? `Found user: ${user.id}` : 'No user found')
+
+    if (authError || !user) {
+      console.error('❌ Authentication failed:', authError)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Authentication required',
+          details: authError?.message
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
+    }
+
+    // Create service role client for database operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
     // Verify user is admin
-    const { data: profile, error: profileError } = await supabaseClient
+    const { data: profile, error: profileError } = await supabase
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single()
 
     if (profileError || !profile || profile.role !== 'admin') {
-      console.error('Authorization error - user is not admin:', profileError)
+      console.error('❌ Authorization failed - user is not admin:', profileError)
       return new Response(
-        JSON.stringify({ success: false, error: 'Admin access required' }),
+        JSON.stringify({ 
+          success: false, 
+          error: 'Admin access required'
+        }),
         {
-          status: 403,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 403,
         }
       )
     }
 
-    // Parse request body
-    const { recipient_id, subject, message, priority = 'normal', popup_on_login = false } = await req.json()
+    console.log('✅ Admin authentication successful for user:', user.id)
 
-    console.log('Send message request:', { recipient_id, subject, priority, popup_on_login })
+    console.log('📦 Parsing request body...')
+    let requestBody
+    try {
+      requestBody = await req.json()
+      console.log('📋 Request body parsed successfully')
+    } catch (parseError) {
+      console.error('❌ Failed to parse request body:', parseError)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Invalid JSON in request body'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      )
+    }
+
+    const { 
+      recipient_id, 
+      subject, 
+      message, 
+      priority = 'normal', 
+      popup_on_login = false 
+    }: SendMessageRequest = requestBody
 
     // Validate required fields
     if (!recipient_id || !subject?.trim() || !message?.trim()) {
+      console.error('❌ Missing required fields')
       return new Response(
         JSON.stringify({ 
           success: false, 
           error: 'Recipient ID, subject, and message are required' 
         }),
         {
-          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
         }
       )
     }
@@ -84,32 +163,37 @@ serve(async (req) => {
           error: 'Priority must be normal, high, or urgent' 
         }),
         {
-          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
         }
       )
     }
 
+    console.log('🔍 Sending message to recipient:', recipient_id)
+
     // Verify recipient exists
-    const { data: recipient, error: recipientError } = await supabaseClient
+    const { data: recipient, error: recipientError } = await supabase
       .from('users')
       .select('id, name, email')
       .eq('id', recipient_id)
       .single()
 
     if (recipientError || !recipient) {
-      console.error('Recipient not found:', recipientError)
+      console.error('❌ Recipient not found:', recipientError)
       return new Response(
-        JSON.stringify({ success: false, error: 'Recipient not found' }),
+        JSON.stringify({ 
+          success: false, 
+          error: 'Recipient not found'
+        }),
         {
-          status: 404,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 404,
         }
       )
     }
 
     // Insert message
-    const { data: messageData, error: insertError } = await supabaseClient
+    const { data: messageData, error: insertError } = await supabase
       .from('user_messages')
       .insert({
         recipient_id,
@@ -123,20 +207,20 @@ serve(async (req) => {
       .single()
 
     if (insertError) {
-      console.error('Error inserting message:', insertError)
+      console.error('❌ Error inserting message:', insertError)
       return new Response(
         JSON.stringify({ 
           success: false, 
           error: 'Failed to send message: ' + insertError.message 
         }),
         {
-          status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
         }
       )
     }
 
-    console.log('Message sent successfully:', messageData.id)
+    console.log('✅ Message sent successfully:', messageData.id)
 
     return new Response(
       JSON.stringify({
@@ -145,21 +229,27 @@ serve(async (req) => {
         data: messageData
       }),
       {
-        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
       }
     )
 
   } catch (error) {
-    console.error('Unexpected error in send-user-message:', error)
+    console.error('💥 Error in send-user-message function:', {
+      message: error?.message || 'Unknown error',
+      name: error?.name || 'Unknown',
+      stack: error?.stack || 'No stack trace available'
+    })
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: 'Internal server error: ' + error.message 
+        error: 'Internal server error occurred while sending message',
+        details: error?.message || 'Unknown error'
       }),
       {
-        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
       }
     )
   }

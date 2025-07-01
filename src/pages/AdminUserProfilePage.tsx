@@ -178,6 +178,12 @@ export function AdminUserProfilePage() {
       setSendingMessage(true)
       console.log('Sending message via Edge Function...')
       
+      // Debug authentication state
+      const session = await supabase.auth.getSession()
+      console.log('Current session:', session.data.session ? 'Session exists' : 'No session')
+      console.log('User ID:', session.data.session?.user?.id)
+      console.log('Access token exists:', !!session.data.session?.access_token)
+      
       const { data, error } = await supabase.functions.invoke('send-user-message', {
         body: {
           recipient_id: userData.user.id,
@@ -188,9 +194,13 @@ export function AdminUserProfilePage() {
         }
       })
 
-      if (error) throw error
+      if (error) {
+        console.log('Edge Function error details:', error)
+        throw error
+      }
 
       if (!data?.success) {
+        console.log('Edge Function response:', data)
         throw new Error(data?.error || 'Failed to send message')
       }
 

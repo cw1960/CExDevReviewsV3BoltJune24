@@ -56,6 +56,23 @@ type CreditTransaction =
   Database["public"]["Tables"]["credit_transactions"]["Row"];
 type EmailLog = Database["public"]["Tables"]["email_logs"]["Row"];
 
+interface UserMessage {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
+  subject: string;
+  message: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface UserMessageWithRecipient extends UserMessage {
+  recipient: User;
+}
+
 interface ExtensionWithOwner extends Extension {
   owner: User;
 }
@@ -82,6 +99,12 @@ export function AdminDashboardPage() {
   const [reportModalOpened, setReportModalOpened] = useState(false);
   const [selectedReport, setSelectedReport] = useState<EmailLog | null>(null);
   const [updatingReportStatus, setUpdatingReportStatus] = useState(false);
+  
+  // Sent messages state
+  const [sentMessages, setSentMessages] = useState<UserMessageWithRecipient[]>([]);
+  const [sentMessagesLoading, setSentMessagesLoading] = useState(false);
+  const [messageModalOpened, setMessageModalOpened] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<UserMessageWithRecipient | null>(null);
 
   // Data states
   const [stats, setStats] = useState({
@@ -103,6 +126,7 @@ export function AdminDashboardPage() {
     if (profile?.role === "admin") {
       fetchAdminData();
       fetchProblemReports();
+      fetchSentMessages();
     }
   }, [profile?.role]);
 
@@ -175,9 +199,44 @@ export function AdminDashboardPage() {
     }
   };
 
+  const fetchSentMessages = async () => {
+    try {
+      setSentMessagesLoading(true);
+
+      const { data, error } = await supabase.functions.invoke(
+        "fetch-admin-sent-messages",
+      );
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw error;
+      }
+
+      if (!data?.success) {
+        throw new Error(data?.error || "Failed to fetch sent messages");
+      }
+
+      setSentMessages(data.data);
+    } catch (error) {
+      console.error("Error fetching sent messages:", error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to load sent messages. Please try again.",
+        color: "red",
+      });
+    } finally {
+      setSentMessagesLoading(false);
+    }
+  };
+
   const handleReportClick = (report: EmailLog) => {
     setSelectedReport(report);
     setReportModalOpened(true);
+  };
+
+  const handleMessageClick = (message: UserMessageWithRecipient) => {
+    setSelectedMessage(message);
+    setMessageModalOpened(true);
   };
 
   const updateReportStatus = async (reportId: string, newStatus: 'pending' | 'resolved') => {
@@ -722,6 +781,14 @@ export function AdminDashboardPage() {
                 </Badge>
               );
             })()}
+          </Tabs.Tab>
+          <Tabs.Tab value="sent-messages" leftSection={<Mail size={16} />}>
+            Sent Messages
+            {sentMessages.length > 0 && (
+              <Badge size="xs" color="blue" ml="xs">
+                {sentMessages.length}
+              </Badge>
+            )}
           </Tabs.Tab>
         </Tabs.List>
 
@@ -1328,6 +1395,122 @@ export function AdminDashboardPage() {
             )}
           </Card>
         </Tabs.Panel>
+
+        <Tabs.Panel value="sent-messages" pt="md">
+          <Card withBorder>
+            <Group justify="space-between" mb="md">
+              <Text fw={600}>Sent Messages</Text>
+              <Group gap="sm">
+                <Button
+                  size="xs"
+                  variant="light"
+                  leftSection={<RefreshCcw size={14} />}
+                  loading={sentMessagesLoading}
+                  onClick={fetchSentMessages}
+                >
+                  Refresh
+                </Button>
+                <Text size="sm" c="dimmed">
+                  {sentMessages.length} total messages
+                </Text>
+              </Group>
+            </Group>
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Date</Table.Th>
+                  <Table.Th>Recipient</Table.Th>
+                  <Table.Th>Subject</Table.Th>
+                  <Table.Th>Priority</Table.Th>
+                  <Table.Th>Status</Table.Th>
+                  <Table.Th>Read At</Table.Th>
+                  <Table.Th>Actions</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {sentMessages.map((message) => (
+                  <Table.Tr 
+                    key={message.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleMessageClick(message)}
+                    className="hover:bg-gray-50"
+                  >
+                    <Table.Td>
+                      <Text size="sm">
+                        {new Date(message.created_at).toLocaleDateString()}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {new Date(message.created_at).toLocaleTimeString()}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <div>
+                        <Text size="sm" fw={500}>
+                          {message.recipient?.name || 'Unknown User'}
+                        </Text>
+                        <Text size="xs" c="dimmed">
+                          {message.recipient?.email}
+                        </Text>
+                      </div>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="sm" maw={200} truncate>
+                        {message.subject}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Badge 
+                        color={
+                          message.priority === 'urgent' ? 'red' :
+                          message.priority === 'high' ? 'orange' :
+                          message.priority === 'medium' ? 'yellow' : 'gray'
+                        }
+                        size="sm"
+                      >
+                        {message.priority.toUpperCase()}
+                      </Badge>
+                    </Table.Td>
+                    <Table.Td>
+                      <Badge 
+                        color={message.is_read ? 'green' : 'blue'}
+                        size="sm"
+                      >
+                        {message.is_read ? 'READ' : 'SENT'}
+                      </Badge>
+                    </Table.Td>
+                    <Table.Td>
+                      {message.read_at ? (
+                        <div>
+                          <Text size="sm">
+                            {new Date(message.read_at).toLocaleDateString()}
+                          </Text>
+                          <Text size="xs" c="dimmed">
+                            {new Date(message.read_at).toLocaleTimeString()}
+                          </Text>
+                        </div>
+                      ) : (
+                        <Text size="sm" c="dimmed">
+                          Not read yet
+                        </Text>
+                      )}
+                    </Table.Td>
+                    <Table.Td>
+                      <Group gap="xs">
+                        <Eye size={14} />
+                        <Text size="sm" c="blue">View</Text>
+                      </Group>
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+            {sentMessages.length === 0 && (
+              <Text ta="center" c="dimmed" py="xl">
+                No messages sent yet
+              </Text>
+            )}
+          </Card>
+        </Tabs.Panel>
       </Tabs>
 
       {/* Problem Report Detail Modal */}
@@ -1545,6 +1728,112 @@ export function AdminDashboardPage() {
                  Close
                </Button>
              </Group>
+          </Stack>
+        )}
+      </Modal>
+
+      {/* Message Detail Modal */}
+      <Modal
+        opened={messageModalOpened}
+        onClose={() => setMessageModalOpened(false)}
+        title="Message Details"
+        size="lg"
+      >
+        {selectedMessage && (
+          <Stack gap="md">
+            {/* Message Metadata */}
+            <Card withBorder p="md">
+              <Stack gap="sm">
+                <Group justify="space-between">
+                  <Text fw={600} size="lg">Message Information</Text>
+                  <Badge
+                    color={selectedMessage.is_read ? 'green' : 'blue'}
+                    size="lg"
+                  >
+                    {selectedMessage.is_read ? 'READ' : 'SENT'}
+                  </Badge>
+                </Group>
+                <Grid>
+                  <Grid.Col span={{ base: 12, md: 6 }}>
+                    <Stack gap="xs">
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Sent Date:</Text>
+                        <Text size="sm">
+                          {new Date(selectedMessage.created_at).toLocaleString()}
+                        </Text>
+                      </div>
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Recipient:</Text>
+                        <Text size="sm" fw={500}>
+                          {selectedMessage.recipient?.name || 'Unknown User'}
+                        </Text>
+                        <Text size="xs" c="dimmed">
+                          {selectedMessage.recipient?.email}
+                        </Text>
+                      </div>
+                    </Stack>
+                  </Grid.Col>
+                  <Grid.Col span={{ base: 12, md: 6 }}>
+                    <Stack gap="xs">
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600}>Priority:</Text>
+                        <Badge 
+                          color={
+                            selectedMessage.priority === 'urgent' ? 'red' :
+                            selectedMessage.priority === 'high' ? 'orange' :
+                            selectedMessage.priority === 'medium' ? 'yellow' : 'gray'
+                          }
+                          size="sm"
+                        >
+                          {selectedMessage.priority.toUpperCase()}
+                        </Badge>
+                      </div>
+                      {selectedMessage.read_at && (
+                        <div>
+                          <Text size="sm" c="dimmed" fw={600}>Read At:</Text>
+                          <Text size="sm">
+                            {new Date(selectedMessage.read_at).toLocaleString()}
+                          </Text>
+                        </div>
+                      )}
+                    </Stack>
+                  </Grid.Col>
+                </Grid>
+              </Stack>
+            </Card>
+
+            {/* Message Content */}
+            <Card withBorder p="md">
+              <Stack gap="md">
+                <div>
+                  <Text fw={600} size="lg" mb="xs">Subject</Text>
+                  <Text size="md" fw={500}>
+                    {selectedMessage.subject}
+                  </Text>
+                </div>
+                
+                <Divider />
+                
+                <div>
+                  <Text fw={600} size="lg" mb="xs">Message</Text>
+                  <Card bg="gray.0" p="md">
+                    <Text size="sm" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+                      {selectedMessage.message}
+                    </Text>
+                  </Card>
+                </div>
+              </Stack>
+            </Card>
+
+            {/* Close Button */}
+            <Group justify="flex-end">
+              <Button 
+                variant="outline" 
+                onClick={() => setMessageModalOpened(false)}
+              >
+                Close
+              </Button>
+            </Group>
           </Stack>
         )}
       </Modal>
