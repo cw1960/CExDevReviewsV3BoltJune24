@@ -334,7 +334,7 @@ export function UpgradePage() {
                     zIndex: 1,
                   }}
                 >
-                  Save 37.5%!
+                  Save 45%!
                 </Badge>
 
                 <Stack align="center" gap="lg" h="100%">

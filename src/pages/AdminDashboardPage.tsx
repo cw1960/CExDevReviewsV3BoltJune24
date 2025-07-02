@@ -202,23 +202,43 @@ export function AdminDashboardPage() {
   const fetchSentMessages = async () => {
     try {
       setSentMessagesLoading(true);
+      console.log("🔄 Starting fetchSentMessages...");
+
+      // Get current session to ensure authentication
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log("📱 Session check:", { hasSession: !!session, userId: session?.user?.id });
+      
+      if (!session) {
+        throw new Error("No authenticated session");
+      }
+
+      console.log("🔐 About to call fetch-admin-sent-messages with session");
 
       const { data, error } = await supabase.functions.invoke(
         "fetch-admin-sent-messages",
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
       );
 
+      console.log("📡 Edge function response:", { data, error });
+
       if (error) {
-        console.error("Edge function error:", error);
+        console.error("❌ Edge function error details:", error);
         throw error;
       }
 
       if (!data?.success) {
+        console.error("❌ Function returned error:", data?.error);
         throw new Error(data?.error || "Failed to fetch sent messages");
       }
 
+      console.log("✅ Successfully fetched sent messages:", data.data);
       setSentMessages(data.data);
     } catch (error) {
-      console.error("Error fetching sent messages:", error);
+      console.error("❌ Error fetching sent messages:", error);
       notifications.show({
         title: "Error",
         message: "Failed to load sent messages. Please try again.",
@@ -427,12 +447,17 @@ export function AdminDashboardPage() {
     return assignment?.reviewer;
   };
 
-  // NUCLEAR ADMIN DASHBOARD COLOR FORCING
+  // CONTROLLED ADMIN DASHBOARD COLOR FORCING - Fixed infinite loop
+  const [colorForceExecuted, setColorForceExecuted] = useState(false);
+  
   useEffect(() => {
+    // Only run once when stats are loaded and not loading
+    if (loading || colorForceExecuted || stats.totalUsers === 0) {
+      return;
+    }
+
     const forceAdminColors = () => {
-      console.log(
-        "🎨 NUCLEAR ADMIN DASHBOARD COLOR FORCING - JavaScript is running!",
-      );
+      console.log("🎨 CONTROLLED COLOR FORCING - Running once");
 
       // APPROACH 1: Target all cards by content
       const allCards = document.querySelectorAll(
@@ -443,7 +468,6 @@ export function AdminDashboardPage() {
       allCards.forEach((card, index) => {
         if (card instanceof HTMLElement) {
           const cardText = card.textContent || "";
-          console.log(`Admin card ${index} text:`, cardText.substring(0, 80));
 
           // Find all potential number displays - be very aggressive
           const numberElements = card.querySelectorAll(
@@ -456,7 +480,6 @@ export function AdminDashboardPage() {
             cardText.includes("Total Users") ||
             cardText.includes("Registered developers")
           ) {
-            console.log("🔵 NUCLEAR: FORCING BLUE for Total Users");
             numberElements.forEach((el) => {
               if (
                 el instanceof HTMLElement &&
@@ -471,7 +494,6 @@ export function AdminDashboardPage() {
                   "important",
                 );
                 el.style.fontSize = el.style.fontSize || "2rem";
-                console.log(`FORCED ${el.textContent} to BLUE`);
               }
             });
             iconElements.forEach((el) => {
@@ -486,7 +508,6 @@ export function AdminDashboardPage() {
             cardText.includes("Total Extensions") ||
             cardText.includes("In the system")
           ) {
-            console.log("🟢 NUCLEAR: FORCING GREEN for Total Extensions");
             numberElements.forEach((el) => {
               if (
                 el instanceof HTMLElement &&
@@ -500,7 +521,6 @@ export function AdminDashboardPage() {
                   "#059669",
                   "important",
                 );
-                console.log(`FORCED ${el.textContent} to GREEN`);
               }
             });
             iconElements.forEach((el) => {
@@ -515,7 +535,6 @@ export function AdminDashboardPage() {
             cardText.includes("Extensions in Queue") ||
             cardText.includes("Queued for review")
           ) {
-            console.log("🟠 NUCLEAR: FORCING ORANGE for Extensions in Queue");
             numberElements.forEach((el) => {
               if (
                 el instanceof HTMLElement &&
@@ -529,7 +548,6 @@ export function AdminDashboardPage() {
                   "#ea580c",
                   "important",
                 );
-                console.log(`FORCED ${el.textContent} to ORANGE`);
               }
             });
             iconElements.forEach((el) => {
@@ -544,7 +562,6 @@ export function AdminDashboardPage() {
             cardText.includes("Active Reviews") ||
             cardText.includes("In progress")
           ) {
-            console.log("🟣 NUCLEAR: FORCING PURPLE for Active Reviews");
             numberElements.forEach((el) => {
               if (
                 el instanceof HTMLElement &&
@@ -558,7 +575,6 @@ export function AdminDashboardPage() {
                   "#8b5cf6",
                   "important",
                 );
-                console.log(`FORCED ${el.textContent} to PURPLE`);
               }
             });
             iconElements.forEach((el) => {
@@ -573,7 +589,6 @@ export function AdminDashboardPage() {
             cardText.includes("Credits Issued") ||
             cardText.includes("Total earned by users")
           ) {
-            console.log("🟡 NUCLEAR: FORCING YELLOW for Credits Issued");
             numberElements.forEach((el) => {
               if (
                 el instanceof HTMLElement &&
@@ -587,7 +602,6 @@ export function AdminDashboardPage() {
                   "#fbbf24",
                   "important",
                 );
-                console.log(`FORCED ${el.textContent} to YELLOW`);
               }
             });
             iconElements.forEach((el) => {
@@ -602,7 +616,6 @@ export function AdminDashboardPage() {
             cardText.includes("Avg Queue Time") ||
             cardText.includes("From submission to assignment")
           ) {
-            console.log("🔵 NUCLEAR: FORCING CYAN for Avg Queue Time");
             numberElements.forEach((el) => {
               if (
                 el instanceof HTMLElement &&
@@ -617,7 +630,6 @@ export function AdminDashboardPage() {
                   "#06b6d4",
                   "important",
                 );
-                console.log(`FORCED ${el.textContent} to CYAN`);
               }
             });
             iconElements.forEach((el) => {
@@ -659,9 +671,6 @@ export function AdminDashboardPage() {
               "#06b6d4",
             ];
             const color = colors[index % colors.length];
-            console.log(
-              `BRUTE FORCE: Setting ${color} for number ${el.textContent} (index ${index})`,
-            );
 
             el.style.color = color;
             el.style.setProperty("color", color, "important");
@@ -672,22 +681,16 @@ export function AdminDashboardPage() {
       });
     };
 
-    // ULTRA AGGRESSIVE TIMING
-    forceAdminColors();
-    const timeout1 = setTimeout(forceAdminColors, 100);
-    const timeout2 = setTimeout(forceAdminColors, 500);
-    const timeout3 = setTimeout(forceAdminColors, 1000);
-    const timeout4 = setTimeout(forceAdminColors, 2000);
-    const timeout5 = setTimeout(forceAdminColors, 3000);
+    // Run once after DOM is ready, then mark as executed
+    const timeout = setTimeout(() => {
+      forceAdminColors();
+      setColorForceExecuted(true);
+    }, 1000);
 
     return () => {
-      clearTimeout(timeout1);
-      clearTimeout(timeout2);
-      clearTimeout(timeout3);
-      clearTimeout(timeout4);
-      clearTimeout(timeout5);
+      clearTimeout(timeout);
     };
-  }, [stats]);
+  }, [loading, stats.totalUsers, colorForceExecuted]);
 
   if (profile?.role !== "admin") {
     console.log("🚫 Access denied - user is not admin");

@@ -405,9 +405,9 @@ export function LandingPage() {
                 </Title>
                 <Text size="lg" c="dimmed" lh={1.6}>
                   Instead of being crushed by million-download giants in your
-                  category...with Review Fast Track you'll get the social proof and momentum needed to
-                  compete, as higher ratings and review velocity signal
-                  freshness to the algorithm.
+                  category...with Review Fast Track you'll get the social proof
+                  and momentum needed to compete, as higher ratings and review
+                  velocity signal freshness to the algorithm.
                 </Text>
                 <Text
                   size="md"
@@ -503,9 +503,9 @@ export function LandingPage() {
                 </Title>
                 <Text size="lg" c="dimmed" lh={1.6}>
                   Instead of watching your extension stagnate after initial
-                  excitement dies down...with Review Fast Track you'll get consistent growth that
-                  compounds - more reviews lead to more visibility, which leads
-                  to more organic installs and reviews.
+                  excitement dies down...with Review Fast Track you'll get
+                  consistent growth that compounds - more reviews lead to more
+                  visibility, which leads to more organic installs and reviews.
                 </Text>
                 <Text
                   size="md"
@@ -886,14 +886,14 @@ export function LandingPage() {
                           fw={800}
                           className="landing-card-number-green"
                         >
-                          $19.99
+                          $14.99
                         </Text>
                         <Text size="lg" c="rgba(255,255,255,0.8)">
                           /month
                         </Text>
                       </Group>
                       <Text size="sm" c="rgba(255,255,255,0.8)" ta="center">
-                        or $149.99/year - save $90
+                        or $97.99/year - save $82
                       </Text>
                     </Stack>
 
@@ -1034,12 +1034,12 @@ export function LandingPage() {
                       <strong>Add your first extension</strong> to the network
                     </List.Item>
                     <List.Item>
-                      <strong>Write 1 quality review</strong> to earn your
-                      first credit
+                      <strong>Write 1 quality review</strong> to earn your first
+                      credit
                     </List.Item>
                     <List.Item>
-                      <strong>Submit for your extension for review</strong> and watch the quality
-                      feedback roll in
+                      <strong>Submit for your extension for review</strong> and
+                      watch the quality feedback roll in
                     </List.Item>
                     <List.Item>
                       <strong>Upgrade to Fast Track</strong> when you're ready
@@ -1272,3 +1272,4 @@ export function LandingPage() {
     </Box>
   );
 }
+e;
