@@ -10,49 +10,36 @@ DROP POLICY IF EXISTS "Admins can view all messages" ON public.user_messages;
 
 -- Create new correct policies that map auth.uid() to profile IDs
 
--- Users can only see their own messages (map auth.uid to profile ID)
+-- Users can only see their own messages (direct auth.uid() match)
 CREATE POLICY "Users can view their own messages" ON public.user_messages
     FOR SELECT
-    USING (
-        recipient_id IN (
-            SELECT id FROM public.users 
-            WHERE auth_user_id = auth.uid()
-        )
-    );
+    USING (recipient_id = auth.uid());
 
--- Users can only mark their own messages as read (map auth.uid to profile ID)
+-- Users can only mark their own messages as read (direct auth.uid() match)
 CREATE POLICY "Users can update their own message read status" ON public.user_messages
     FOR UPDATE
-    USING (
-        recipient_id IN (
-            SELECT id FROM public.users 
-            WHERE auth_user_id = auth.uid()
-        )
-    )
-    WITH CHECK (
-        recipient_id IN (
-            SELECT id FROM public.users 
-            WHERE auth_user_id = auth.uid()
-        )
-    );
+    USING (recipient_id = auth.uid())
+    WITH CHECK (recipient_id = auth.uid());
 
--- Only admins can send messages (check admin role via auth.uid mapping)
+-- Only admins can send messages (check admin role via auth.uid)
 CREATE POLICY "Admins can insert messages" ON public.user_messages
     FOR INSERT
     WITH CHECK (
-        auth.uid() IN (
-            SELECT auth_user_id FROM public.users 
-            WHERE role = 'admin'
+        EXISTS (
+            SELECT 1 FROM public.users 
+            WHERE id = auth.uid() 
+            AND role = 'admin'
         )
     );
 
--- Only admins can view all messages (check admin role via auth.uid mapping)
+-- Only admins can view all messages (check admin role via auth.uid)
 CREATE POLICY "Admins can view all messages" ON public.user_messages
     FOR SELECT
     USING (
-        auth.uid() IN (
-            SELECT auth_user_id FROM public.users 
-            WHERE role = 'admin'
+        EXISTS (
+            SELECT 1 FROM public.users 
+            WHERE id = auth.uid() 
+            AND role = 'admin'
         )
     );
 

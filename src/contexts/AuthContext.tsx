@@ -270,9 +270,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error("💥 CRITICAL ERROR during auth initialization:", {
-          message: error?.message || "Unknown error",
-          name: error?.name || "Unknown",
-          stack: error?.stack || "No stack trace",
+          message: (error as any)?.message || "Unknown error",
+          name: (error as any)?.name || "Unknown",
+          stack: (error as any)?.stack || "No stack trace",
         });
         
         // Ensure loading state is reset even on error
@@ -308,11 +308,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (event === 'SIGNED_IN' && session.user.app_metadata?.provider === 'google') {
             console.log("🔍 Google OAuth user detected, checking for profile...");
             
-            // Try to fetch profile first
+            // Try to fetch profile first and get the actual result
             await fetchProfile(session.user.id);
             
-            // If profile is still null after fetch, create one for Google OAuth user
-            if (!profile) {
+            // Check the localStorage for the latest profile data to avoid state timing issues
+            const latestProfileStr = localStorage.getItem("profile");
+            let latestProfile = null;
+            try {
+              latestProfile = latestProfileStr ? JSON.parse(latestProfileStr) : null;
+            } catch (e) {
+              console.error("Error parsing latest profile from localStorage:", e);
+            }
+            
+            // If no profile exists after fetch, create one for Google OAuth user
+            if (!latestProfile) {
               console.log("🔄 Creating profile for Google OAuth user...");
               try {
                 const { data: profileData, error: profileError } = await supabase.functions.invoke("create-user-profile", {
@@ -325,14 +334,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 
                 if (profileError) {
                   console.error("❌ Error creating Google OAuth profile:", profileError);
+                  // Don't retry - profile creation failed, user needs to try again
                 } else if (profileData?.success) {
                   console.log("✅ Google OAuth profile created successfully");
-                  // Fetch the newly created profile
+                  // Fetch the newly created profile once
                   await fetchProfile(session.user.id);
+                } else {
+                  console.error("❌ Profile creation returned unsuccessful result:", profileData);
                 }
               } catch (createError) {
                 console.error("❌ Failed to create Google OAuth profile:", createError);
+                // Don't retry - profile creation failed, user needs to try again
               }
+            } else {
+              console.log("✅ Google OAuth user profile already exists");
             }
           } else {
             // Regular flow for email/password users
@@ -348,8 +363,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
         console.error("💥 ERROR in auth state change handler:", {
-          message: error?.message || "Unknown error",
-          name: error?.name || "Unknown",
+          message: (error as any)?.message || "Unknown error",
+          name: (error as any)?.name || "Unknown",
         });
           
           // Ensure loading state is reset on error

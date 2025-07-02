@@ -197,31 +197,67 @@ serve(async (req) => {
 
     console.log('✅ User profile created successfully:', newUser.id)
 
-    // Trigger MailerLite event for new user signup
-    try {
-      console.log('📧 Triggering MailerLite signup event...')
-      const { error: mailerLiteError } = await supabase.functions.invoke('mailerlite-integration', {
-        body: {
-          user_email: email,
-          event_type: 'user_signed_up',
-          custom_data: {
-            user_name: userName,
-            signup_date: new Date().toISOString(),
-            welcome_credits: 1
-          }
+    // Send automated welcome message (NON-BLOCKING - don't fail user creation if this fails)
+    setTimeout(async () => {
+      try {
+        console.log('📨 Sending automated welcome message...')
+        const welcomeSubject = 'Welcome to ChromeExDev.Reviews! 🎉'
+        const welcomeMessage = `Chris here - I'm the developer of this application. Just wanted to personally thank you for joining the community. I hope you add an extension soon - and request to review one as well...let's get the reviews flowing! Let me know via the contact us form in the Profile page if you have any questions. I'm here to help! Reminder: Once you add your extension, go to your "Extension Library" and click on the blue "Submit to Queue" button to put it in line for a review!`
+        
+        // Get system admin ID (fixed UUID for the system admin)
+        const systemAdminId = '00000000-0000-0000-0000-000000000001'
+        
+        const { error: messageError } = await supabase
+          .from('user_messages')
+          .insert({
+            recipient_id: newUser.id,
+            sender_id: systemAdminId,
+            subject: welcomeSubject,
+            message: welcomeMessage,
+            priority: 'medium',
+            popup_on_login: true,
+            is_read: false
+          })
+        
+        if (messageError) {
+          console.error('❌ Welcome message error:', messageError)
+        } else {
+          console.log('✅ Welcome message sent successfully')
         }
-      })
-      
-      if (mailerLiteError) {
-        console.error('❌ MailerLite error:', mailerLiteError)
-      } else {
-        console.log('✅ MailerLite signup event triggered')
+      } catch (messageError) {
+        console.error('❌ Failed to send welcome message:', messageError)
+        // This is now non-blocking - user creation has already succeeded
       }
-    } catch (mailerLiteError) {
-      console.error('❌ Failed to trigger MailerLite signup event:', mailerLiteError)
-      // Don't fail the user creation process if MailerLite fails
-    }
+    }, 0)
 
+    // Trigger MailerLite event for new user signup (NON-BLOCKING)
+    setTimeout(async () => {
+      try {
+        console.log('📧 Triggering MailerLite signup event...')
+        const { error: mailerLiteError } = await supabase.functions.invoke('mailerlite-integration', {
+          body: {
+            user_email: email,
+            event_type: 'user_signed_up',
+            custom_data: {
+              user_name: userName,
+              signup_date: new Date().toISOString(),
+              welcome_credits: 1
+            }
+          }
+        })
+        
+        if (mailerLiteError) {
+          console.error('❌ MailerLite error:', mailerLiteError)
+        } else {
+          console.log('✅ MailerLite signup event triggered')
+        }
+      } catch (mailerLiteError) {
+        console.error('❌ Failed to trigger MailerLite signup event:', mailerLiteError)
+                 // This is now non-blocking - user creation has already succeeded
+       }
+     }, 0)
+
+    // CRITICAL: Return immediately after user creation, don't wait for messages/integrations
     return new Response(
       JSON.stringify({ 
         success: true,
