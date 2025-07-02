@@ -922,10 +922,6 @@ export function LandingPage() {
                           hours)
                         </List.Item>
                         <List.Item>
-                          <strong>Skip the credit system</strong> (no need to
-                          review first)
-                        </List.Item>
-                        <List.Item>
                           <strong>Premium support</strong> (direct email access)
                         </List.Item>
                       </List>
