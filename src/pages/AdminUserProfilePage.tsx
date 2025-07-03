@@ -179,7 +179,7 @@ export function AdminUserProfilePage() {
       console.log('📤 Sending admin message with admin key authentication...')
       
       // Use admin key authentication - no JWT needed
-      const { data, error } = await supabase.functions.invoke('send-user-message', {
+      const { data, error } = await supabase.functions.invoke('admin-send-message', {
         body: {
           recipient_id: userData.user.id,
           subject: values.subject.trim(),
