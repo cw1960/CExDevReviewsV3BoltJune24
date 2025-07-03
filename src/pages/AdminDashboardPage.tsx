@@ -272,39 +272,34 @@ export function AdminDashboardPage() {
     }
 
     try {
-      const response = await fetch('/api/supabase/functions/admin-remove-from-queue', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('admin-remove-from-queue', {
+        body: {
           extension_id: extensionId,
           admin_key: 'chrome_ex_dev_admin_2025'
-        })
+        }
       });
 
-      const result = await response.json();
-
-      if (result.success) {
-        notifications.show({
-          title: 'Success',
-          message: `Extension "${extensionName}" removed from queue successfully`,
-          color: 'green'
-        });
-        // Refresh the data
-        fetchAdminData();
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: result.error || 'Failed to remove extension from queue',
-          color: 'red'
-        });
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
       }
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to remove extension from queue');
+      }
+
+      notifications.show({
+        title: 'Success',
+        message: `Extension "${extensionName}" removed from queue successfully`,
+        color: 'green'
+      });
+      // Refresh the data
+      fetchAdminData();
     } catch (error) {
       console.error('Error removing extension from queue:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to remove extension from queue',
+        message: error instanceof Error ? error.message : 'Failed to remove extension from queue',
         color: 'red'
       });
     }
