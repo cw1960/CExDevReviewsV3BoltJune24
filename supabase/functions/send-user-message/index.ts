@@ -90,15 +90,42 @@ Deno.serve(async (req) => {
     // Create service role client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Verify user is admin
-    const { data: profile, error: profileError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    // Verify user is admin - handle cases where admin might not have a profile yet
+    let isAdmin = false
+    let adminProfile = null
+    
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from('users')
+        .select('role, id, name, email')
+        .eq('id', user.id)
+        .single()
 
-    if (profileError || !profile || profile.role !== 'admin') {
-      console.error('❌ Authorization failed - user is not admin:', profileError)
+      if (profile && profile.role === 'admin') {
+        isAdmin = true
+        adminProfile = profile
+        console.log('✅ Admin found in users table:', user.id)
+      } else if (profileError) {
+        console.log('ℹ️ Admin not found in users table, checking email...')
+        // Check if this is a known admin email (you can add your admin emails here)
+        const adminEmails = ['chrism2homefolder@gmail.com', 'admin@chromeexdev.reviews', 'chris@chromeexdev.reviews']
+        if (adminEmails.includes(user.email || '')) {
+          isAdmin = true
+          console.log('✅ Admin verified by email:', user.email)
+        }
+      }
+    } catch (checkError) {
+      console.error('❌ Error checking admin status:', checkError)
+      // If we can't check the database, allow known admin emails
+      const adminEmails = ['chrism2homefolder@gmail.com', 'admin@chromeexdev.reviews', 'chris@chromeexdev.reviews']
+      if (adminEmails.includes(user.email || '')) {
+        isAdmin = true
+        console.log('✅ Admin verified by email (fallback):', user.email)
+      }
+    }
+
+    if (!isAdmin) {
+      console.error('❌ Authorization failed - user is not admin')
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -192,12 +219,16 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Insert message
+    // Insert message - use a system sender ID if admin profile doesn't exist
+    const senderId = adminProfile?.id || user.id || '00000000-0000-0000-0000-000000000001'
+    
+    console.log('📤 Inserting message with sender_id:', senderId)
+    
     const { data: messageData, error: insertError } = await supabase
       .from('user_messages')
       .insert({
         recipient_id,
-        sender_id: user.id,
+        sender_id: senderId,
         subject: subject.trim(),
         message: message.trim(),
         priority,
@@ -207,11 +238,17 @@ Deno.serve(async (req) => {
       .single()
 
     if (insertError) {
-      console.error('❌ Error inserting message:', insertError)
+      console.error('❌ Error inserting message:', {
+        message: insertError.message,
+        code: insertError.code,
+        details: insertError.details,
+        hint: insertError.hint
+      })
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Failed to send message: ' + insertError.message 
+          error: 'Failed to send message: ' + insertError.message,
+          details: insertError
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
