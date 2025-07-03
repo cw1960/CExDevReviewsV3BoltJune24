@@ -43,6 +43,7 @@ import {
   Edit,
   Bug,
   RefreshCcw,
+  Search,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -63,7 +64,7 @@ interface UserMessage {
   recipient_id: string;
   subject: string;
   message: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority: "low" | "medium" | "high" | "urgent";
   is_read: boolean;
   read_at: string | null;
   created_at: string;
@@ -100,15 +101,26 @@ export function AdminDashboardPage() {
   const [reportModalOpened, setReportModalOpened] = useState(false);
   const [selectedReport, setSelectedReport] = useState<EmailLog | null>(null);
   const [updatingReportStatus, setUpdatingReportStatus] = useState(false);
-  
+
   // Sent messages state
-  const [sentMessages, setSentMessages] = useState<UserMessageWithRecipient[]>([]);
+  const [sentMessages, setSentMessages] = useState<UserMessageWithRecipient[]>(
+    [],
+  );
   const [sentMessagesLoading, setSentMessagesLoading] = useState(false);
   const [messageModalOpened, setMessageModalOpened] = useState(false);
-  const [selectedMessage, setSelectedMessage] = useState<UserMessageWithRecipient | null>(null);
-  
+  const [selectedMessage, setSelectedMessage] =
+    useState<UserMessageWithRecipient | null>(null);
+
   // Queue modal state
   const [queueModalOpened, setQueueModalOpened] = useState(false);
+
+  // Search states for each tab
+  const [extensionsSearch, setExtensionsSearch] = useState("");
+  const [usersSearch, setUsersSearch] = useState("");
+  const [reviewsSearch, setReviewsSearch] = useState("");
+  const [creditsSearch, setCreditsSearch] = useState("");
+  const [problemsSearch, setProblemsSearch] = useState("");
+  const [messagesSearch, setMessagesSearch] = useState("");
 
   // Data states
   const [stats, setStats] = useState({
@@ -209,9 +221,14 @@ export function AdminDashboardPage() {
       console.log("🔄 Starting fetchSentMessages...");
 
       // Get current session to ensure authentication
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log("📱 Session check:", { hasSession: !!session, userId: session?.user?.id });
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      console.log("📱 Session check:", {
+        hasSession: !!session,
+        userId: session?.user?.id,
+      });
+
       if (!session) {
         throw new Error("No authenticated session");
       }
@@ -224,7 +241,7 @@ export function AdminDashboardPage() {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
-        }
+        },
       );
 
       console.log("📡 Edge function response:", { data, error });
@@ -267,54 +284,70 @@ export function AdminDashboardPage() {
     setQueueModalOpened(true);
   };
 
-  const handleRemoveFromQueue = async (extensionId: string, extensionName: string) => {
-    if (!confirm(`Are you sure you want to remove "${extensionName}" from the queue?\n\nThis will:\n- Remove the extension from queue\n- Refund the user's credit\n- Reset their monthly exchange count (if free tier)`)) {
+  const handleRemoveFromQueue = async (
+    extensionId: string,
+    extensionName: string,
+  ) => {
+    if (
+      !confirm(
+        `Are you sure you want to remove "${extensionName}" from the queue?\n\nThis will:\n- Remove the extension from queue\n- Refund the user's credit\n- Reset their monthly exchange count (if free tier)`,
+      )
+    ) {
       return;
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('admin-remove-from-queue', {
-        body: {
-          extension_id: extensionId,
-          admin_key: 'chrome_ex_dev_admin_2025'
-        }
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "admin-remove-from-queue",
+        {
+          body: {
+            extension_id: extensionId,
+            admin_key: "chrome_ex_dev_admin_2025",
+          },
+        },
+      );
 
       if (error) {
-        console.error('Edge function error:', error);
+        console.error("Edge function error:", error);
         throw error;
       }
 
       if (!data?.success) {
-        throw new Error(data?.error || 'Failed to remove extension from queue');
+        throw new Error(data?.error || "Failed to remove extension from queue");
       }
 
       notifications.show({
-        title: 'Success',
+        title: "Success",
         message: `Extension "${extensionName}" removed from queue successfully`,
-        color: 'green'
+        color: "green",
       });
       // Refresh the data
       fetchAdminData();
     } catch (error) {
-      console.error('Error removing extension from queue:', error);
+      console.error("Error removing extension from queue:", error);
       notifications.show({
-        title: 'Error',
-        message: error instanceof Error ? error.message : 'Failed to remove extension from queue',
-        color: 'red'
+        title: "Error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to remove extension from queue",
+        color: "red",
       });
     }
   };
 
-  const updateReportStatus = async (reportId: string, newStatus: 'pending' | 'resolved') => {
+  const updateReportStatus = async (
+    reportId: string,
+    newStatus: "pending" | "resolved",
+  ) => {
     try {
       setUpdatingReportStatus(true);
 
       const { data, error } = await supabase.functions.invoke(
         "update-problem-report-status",
         {
-          body: { report_id: reportId, status: newStatus }
-        }
+          body: { report_id: reportId, status: newStatus },
+        },
       );
 
       if (error) {
@@ -332,10 +365,10 @@ export function AdminDashboardPage() {
       }
 
       // Update the report in the main list
-      setProblemReports(prev => 
-        prev.map(report => 
-          report.id === reportId ? { ...report, status: newStatus } : report
-        )
+      setProblemReports((prev) =>
+        prev.map((report) =>
+          report.id === reportId ? { ...report, status: newStatus } : report,
+        ),
       );
 
       notifications.show({
@@ -343,7 +376,6 @@ export function AdminDashboardPage() {
         message: `Problem report marked as ${newStatus}`,
         color: "green",
       });
-
     } catch (error) {
       console.error("Error updating report status:", error);
       notifications.show({
@@ -360,35 +392,35 @@ export function AdminDashboardPage() {
     try {
       // The body is stored as JSON string with structured problem report data
       const reportData = JSON.parse(body);
-      
+
       return {
-        assignmentId: reportData.assignment_id || '',
-        extensionId: reportData.extension_id || '',
-        extensionName: reportData.extension_name || '',
-        reporterId: reportData.reporter_id || '',
-        reporterEmail: reportData.reporter_email || '',
-        issueType: reportData.issue_type || '',
-        description: reportData.description || '',
+        assignmentId: reportData.assignment_id || "",
+        extensionId: reportData.extension_id || "",
+        extensionName: reportData.extension_name || "",
+        reporterId: reportData.reporter_id || "",
+        reporterEmail: reportData.reporter_email || "",
+        issueType: reportData.issue_type || "",
+        description: reportData.description || "",
         assignmentCancelled: reportData.cancel_assignment || false,
-        timestamp: reportData.timestamp || '',
-        severity: reportData.severity || 'medium',
-        rawData: reportData
+        timestamp: reportData.timestamp || "",
+        severity: reportData.severity || "medium",
+        rawData: reportData,
       };
     } catch (error) {
-      console.error('Error parsing report body:', error);
+      console.error("Error parsing report body:", error);
       // Fallback for non-JSON content
       return {
-        assignmentId: '',
-        extensionId: '',
-        extensionName: '',
-        reporterId: '',
-        reporterEmail: '',
-        issueType: '',
-        description: body.substring(0, 200) + '...',
+        assignmentId: "",
+        extensionId: "",
+        extensionName: "",
+        reporterId: "",
+        reporterEmail: "",
+        issueType: "",
+        description: body.substring(0, 200) + "...",
         assignmentCancelled: false,
-        timestamp: '',
-        severity: 'unknown',
-        rawData: body
+        timestamp: "",
+        severity: "unknown",
+        rawData: body,
       };
     }
   };
@@ -494,9 +526,86 @@ export function AdminDashboardPage() {
     return assignment?.reviewer;
   };
 
+  // Filter functions for search functionality
+  const getFilteredExtensions = () => {
+    if (!extensionsSearch.trim()) return extensions;
+    const search = extensionsSearch.toLowerCase();
+    return extensions.filter(
+      (extension) =>
+        extension.name?.toLowerCase().includes(search) ||
+        extension.description?.toLowerCase().includes(search) ||
+        extension.owner?.name?.toLowerCase().includes(search) ||
+        extension.owner?.email?.toLowerCase().includes(search) ||
+        extension.status?.toLowerCase().includes(search),
+    );
+  };
+
+  const getFilteredUsers = () => {
+    if (!usersSearch.trim()) return users;
+    const search = usersSearch.toLowerCase();
+    return users.filter(
+      (user) =>
+        user.name?.toLowerCase().includes(search) ||
+        user.email?.toLowerCase().includes(search) ||
+        user.role?.toLowerCase().includes(search) ||
+        user.subscription_status?.toLowerCase().includes(search),
+    );
+  };
+
+  const getFilteredAssignments = () => {
+    if (!reviewsSearch.trim()) return assignments;
+    const search = reviewsSearch.toLowerCase();
+    return assignments.filter(
+      (assignment) =>
+        assignment.assignment_number?.toString().includes(search) ||
+        assignment.extension?.name?.toLowerCase().includes(search) ||
+        assignment.reviewer?.name?.toLowerCase().includes(search) ||
+        assignment.reviewer?.email?.toLowerCase().includes(search) ||
+        assignment.status?.toLowerCase().includes(search),
+    );
+  };
+
+  const getFilteredTransactions = () => {
+    if (!creditsSearch.trim()) return transactions;
+    const search = creditsSearch.toLowerCase();
+    return transactions.filter(
+      (transaction) =>
+        transaction.user_id?.toLowerCase().includes(search) ||
+        transaction.type?.toLowerCase().includes(search) ||
+        transaction.description?.toLowerCase().includes(search) ||
+        transaction.amount?.toString().includes(search),
+    );
+  };
+
+  const getFilteredProblemReports = () => {
+    if (!problemsSearch.trim()) return problemReports;
+    const search = problemsSearch.toLowerCase();
+    return problemReports.filter(
+      (report) =>
+        report.subject?.toLowerCase().includes(search) ||
+        report.body?.toLowerCase().includes(search) ||
+        report.to_email?.toLowerCase().includes(search) ||
+        report.status?.toLowerCase().includes(search) ||
+        report.error_message?.toLowerCase().includes(search),
+    );
+  };
+
+  const getFilteredSentMessages = () => {
+    if (!messagesSearch.trim()) return sentMessages;
+    const search = messagesSearch.toLowerCase();
+    return sentMessages.filter(
+      (message) =>
+        message.subject?.toLowerCase().includes(search) ||
+        message.message?.toLowerCase().includes(search) ||
+        message.recipient?.name?.toLowerCase().includes(search) ||
+        message.recipient?.email?.toLowerCase().includes(search) ||
+        message.priority?.toLowerCase().includes(search),
+    );
+  };
+
   // CONTROLLED ADMIN DASHBOARD COLOR FORCING - Fixed infinite loop
   const [colorForceExecuted, setColorForceExecuted] = useState(false);
-  
+
   useEffect(() => {
     // Only run once when stats are loaded and not loading
     if (loading || colorForceExecuted || stats.totalUsers === 0) {
@@ -824,11 +933,15 @@ export function AdminDashboardPage() {
           <Tabs.Tab value="problems" leftSection={<Bug size={16} />}>
             Problem Reports
             {(() => {
-              const pendingCount = problemReports.filter(report => report.status === 'pending').length;
-              return pendingCount > 0 && (
-                <Badge size="xs" color="red" ml="xs">
-                  {pendingCount}
-                </Badge>
+              const pendingCount = problemReports.filter(
+                (report) => report.status === "pending",
+              ).length;
+              return (
+                pendingCount > 0 && (
+                  <Badge size="xs" color="red" ml="xs">
+                    {pendingCount}
+                  </Badge>
+                )
               );
             })()}
           </Tabs.Tab>
@@ -875,10 +988,10 @@ export function AdminDashboardPage() {
             </Grid.Col>
 
             <Grid.Col span={{ base: 12, md: 4 }}>
-              <Card 
-                withBorder 
+              <Card
+                withBorder
                 onClick={handleQueueCardClick}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
                 className="hover:bg-gray-50"
               >
                 <Group justify="space-between" mb="md">
@@ -951,9 +1064,19 @@ export function AdminDashboardPage() {
             <Group justify="space-between" mb="md">
               <Text fw={600}>Extension Management</Text>
               <Text size="sm" c="dimmed">
-                {extensions.length} total extensions
+                {getFilteredExtensions().length} of {extensions.length}{" "}
+                extensions
               </Text>
             </Group>
+            <TextInput
+              placeholder="Search extensions by name, description, owner, or status..."
+              leftSection={<Search size={16} />}
+              value={extensionsSearch}
+              onChange={(event) =>
+                setExtensionsSearch(event.currentTarget.value)
+              }
+              mb="md"
+            />
             <ScrollArea h={400}>
               <Table>
                 <Table.Thead>
@@ -968,123 +1091,133 @@ export function AdminDashboardPage() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {extensions.map((extension) => (
-                  <Table.Tr key={extension.id}>
-                    <Table.Td>
-                      <Group>
-                        <Avatar size="sm" src={extension.logo_url} />
-                        <div>
-                          <Text
-                            fw={500}
-                            component="a"
-                            href={extension.chrome_store_url}
-                            target="_blank"
-                            style={{ textDecoration: "none", color: "inherit" }}
-                            className="hover:underline"
-                          >
-                            {extension.name}
-                          </Text>
-                          <Text size="sm" c="dimmed" truncate maw={200}>
-                            {extension.description}
-                          </Text>
-                        </div>
-                      </Group>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text
-                        size="sm"
-                        component="button"
-                        onClick={() =>
-                          extension.owner?.id &&
-                          navigateToUserProfile(extension.owner.id)
-                        }
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          color: "var(--mantine-color-blue-6)",
-                          textDecoration: "none",
-                        }}
-                        className="hover:underline"
-                      >
-                        {extension.owner?.name || "Unknown"}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge color={getStatusColor(extension.status)} size="sm">
-                        {getStatusLabel(extension.status)}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      {extension.status === "assigned" ? (
-                        (() => {
-                          const reviewer = getExtensionReviewer(extension.id);
-                          return reviewer ? (
+                  {getFilteredExtensions().map((extension) => (
+                    <Table.Tr key={extension.id}>
+                      <Table.Td>
+                        <Group>
+                          <Avatar size="sm" src={extension.logo_url} />
+                          <div>
                             <Text
-                              size="sm"
-                              component="button"
-                              onClick={() => navigateToUserProfile(reviewer.id)}
+                              fw={500}
+                              component="a"
+                              href={extension.chrome_store_url}
+                              target="_blank"
                               style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "var(--mantine-color-blue-6)",
                                 textDecoration: "none",
+                                color: "inherit",
                               }}
                               className="hover:underline"
                             >
-                              {reviewer.email}
+                              {extension.name}
                             </Text>
-                          ) : (
-                            <Text size="sm" c="dimmed">
-                              No reviewer
+                            <Text size="sm" c="dimmed" truncate maw={200}>
+                              {extension.description}
                             </Text>
-                          );
-                        })()
-                      ) : (
-                        <Text size="sm" c="dimmed">
-                          —
-                        </Text>
-                      )}
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        color={
-                          extension.owner?.subscription_status === "premium"
-                            ? "green"
-                            : "blue"
-                        }
-                        size="sm"
-                      >
-                        {extension.owner?.subscription_status === "premium"
-                          ? "Premium"
-                          : "Free"}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">
-                        {extension.created_at
-                          ? new Date(extension.created_at).toLocaleDateString()
-                          : "N/A"}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap="xs">
-                        <ActionIcon
-                          variant="light"
+                          </div>
+                        </Group>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text
                           size="sm"
+                          component="button"
                           onClick={() =>
-                            window.open(extension.chrome_store_url, "_blank")
+                            extension.owner?.id &&
+                            navigateToUserProfile(extension.owner.id)
                           }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "var(--mantine-color-blue-6)",
+                            textDecoration: "none",
+                          }}
+                          className="hover:underline"
                         >
-                          <Eye size={14} />
-                        </ActionIcon>
-                      </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                          {extension.owner?.name || "Unknown"}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={getStatusColor(extension.status)}
+                          size="sm"
+                        >
+                          {getStatusLabel(extension.status)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        {extension.status === "assigned" ? (
+                          (() => {
+                            const reviewer = getExtensionReviewer(extension.id);
+                            return reviewer ? (
+                              <Text
+                                size="sm"
+                                component="button"
+                                onClick={() =>
+                                  navigateToUserProfile(reviewer.id)
+                                }
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  color: "var(--mantine-color-blue-6)",
+                                  textDecoration: "none",
+                                }}
+                                className="hover:underline"
+                              >
+                                {reviewer.email}
+                              </Text>
+                            ) : (
+                              <Text size="sm" c="dimmed">
+                                No reviewer
+                              </Text>
+                            );
+                          })()
+                        ) : (
+                          <Text size="sm" c="dimmed">
+                            —
+                          </Text>
+                        )}
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            extension.owner?.subscription_status === "premium"
+                              ? "green"
+                              : "blue"
+                          }
+                          size="sm"
+                        >
+                          {extension.owner?.subscription_status === "premium"
+                            ? "Premium"
+                            : "Free"}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {extension.created_at
+                            ? new Date(
+                                extension.created_at,
+                              ).toLocaleDateString()
+                            : "N/A"}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap="xs">
+                          <ActionIcon
+                            variant="light"
+                            size="sm"
+                            onClick={() =>
+                              window.open(extension.chrome_store_url, "_blank")
+                            }
+                          >
+                            <Eye size={14} />
+                          </ActionIcon>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
             </ScrollArea>
           </Card>
         </Tabs.Panel>
@@ -1094,9 +1227,16 @@ export function AdminDashboardPage() {
             <Group justify="space-between" mb="md">
               <Text fw={600}>User Management</Text>
               <Text size="sm" c="dimmed">
-                {users.length} total users
+                {getFilteredUsers().length} of {users.length} users
               </Text>
             </Group>
+            <TextInput
+              placeholder="Search users by name, email, role, or subscription..."
+              leftSection={<Search size={16} />}
+              value={usersSearch}
+              onChange={(event) => setUsersSearch(event.currentTarget.value)}
+              mb="md"
+            />
             <ScrollArea h={400}>
               <Table>
                 <Table.Thead>
@@ -1111,80 +1251,80 @@ export function AdminDashboardPage() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {users.map((user) => (
-                  <Table.Tr key={user.id}>
-                    <Table.Td>
-                      <div>
-                        <Text
-                          fw={500}
-                          component="button"
-                          onClick={() => navigateToUserProfile(user.id)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            color: "var(--mantine-color-blue-6)",
-                            textDecoration: "none",
-                          }}
-                          className="hover:underline"
+                  {getFilteredUsers().map((user) => (
+                    <Table.Tr key={user.id}>
+                      <Table.Td>
+                        <div>
+                          <Text
+                            fw={500}
+                            component="button"
+                            onClick={() => navigateToUserProfile(user.id)}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "var(--mantine-color-blue-6)",
+                              textDecoration: "none",
+                            }}
+                            className="hover:underline"
+                          >
+                            {user.name || "No name"}
+                          </Text>
+                          <Text size="sm" c="dimmed">
+                            {user.email}
+                          </Text>
+                        </div>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge color={getRoleColor(user.role)} size="sm">
+                          {user.role}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text fw={600}>{user.credit_balance}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            user.has_completed_qualification ? "green" : "gray"
+                          }
+                          size="sm"
                         >
-                          {user.name || "No name"}
+                          {user.has_completed_qualification ? "Yes" : "No"}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            user.subscription_status === "premium"
+                              ? "green"
+                              : "blue"
+                          }
+                          size="sm"
+                        >
+                          {user.subscription_status === "premium"
+                            ? "Premium"
+                            : "Free"}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {new Date(user.created_at).toLocaleDateString()}
                         </Text>
-                        <Text size="sm" c="dimmed">
-                          {user.email}
-                        </Text>
-                      </div>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge color={getRoleColor(user.role)} size="sm">
-                        {user.role}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fw={600}>{user.credit_balance}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        color={
-                          user.has_completed_qualification ? "green" : "gray"
-                        }
-                        size="sm"
-                      >
-                        {user.has_completed_qualification ? "Yes" : "No"}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        color={
-                          user.subscription_status === "premium"
-                            ? "green"
-                            : "blue"
-                        }
-                        size="sm"
-                      >
-                        {user.subscription_status === "premium"
-                          ? "Premium"
-                          : "Free"}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">
-                        {new Date(user.created_at).toLocaleDateString()}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <ActionIcon
-                        variant="light"
-                        size="sm"
-                        onClick={() => navigateToUserProfile(user.id)}
-                      >
-                        <Edit size={14} />
-                      </ActionIcon>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                      </Table.Td>
+                      <Table.Td>
+                        <ActionIcon
+                          variant="light"
+                          size="sm"
+                          onClick={() => navigateToUserProfile(user.id)}
+                        >
+                          <Edit size={14} />
+                        </ActionIcon>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
             </ScrollArea>
           </Card>
         </Tabs.Panel>
@@ -1195,18 +1335,34 @@ export function AdminDashboardPage() {
               <Text fw={600}>Review Assignments</Text>
               <Group>
                 <Badge color="blue">
-                  {assignments.filter((a) => a.status === "assigned").length}{" "}
+                  {
+                    getFilteredAssignments().filter(
+                      (a) => a.status === "assigned",
+                    ).length
+                  }{" "}
                   Active
                 </Badge>
                 <Badge color="green">
-                  {assignments.filter((a) => a.status === "approved").length}{" "}
+                  {
+                    getFilteredAssignments().filter(
+                      (a) => a.status === "approved",
+                    ).length
+                  }{" "}
                   Completed
                 </Badge>
                 <Text size="sm" c="dimmed">
-                  {assignments.length} total assignments
+                  {getFilteredAssignments().length} of {assignments.length}{" "}
+                  assignments
                 </Text>
               </Group>
             </Group>
+            <TextInput
+              placeholder="Search assignments by number, extension, reviewer, or status..."
+              leftSection={<Search size={16} />}
+              value={reviewsSearch}
+              onChange={(event) => setReviewsSearch(event.currentTarget.value)}
+              mb="md"
+            />
             <ScrollArea h={400}>
               <Table>
                 <Table.Thead>
@@ -1220,85 +1376,85 @@ export function AdminDashboardPage() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {assignments.map((assignment) => (
-                  <Table.Tr key={assignment.id}>
-                    <Table.Td>
-                      <Text fw={500}>#{assignment.assignment_number}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text
-                        size="sm"
-                        component="a"
-                        href={assignment.extension?.chrome_store_url}
-                        target="_blank"
-                        style={{ textDecoration: "none", color: "inherit" }}
-                        className="hover:underline"
-                      >
-                        {assignment.extension?.name || "Unknown"}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text
-                        size="sm"
-                        component="button"
-                        onClick={() =>
-                          assignment.reviewer?.id &&
-                          navigateToUserProfile(assignment.reviewer.id)
-                        }
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          color: "var(--mantine-color-blue-6)",
-                          textDecoration: "none",
-                        }}
-                        className="hover:underline"
-                      >
-                        {assignment.reviewer?.name || "Unknown"}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        color={
-                          assignment.status === "assigned" ? "blue" : "green"
-                        }
-                        size="sm"
-                      >
-                        {assignment.status === "assigned"
-                          ? "In Progress"
-                          : "Completed"}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">
-                        {assignment.status === "approved" &&
-                        assignment.submitted_at
-                          ? `Completed: ${new Date(assignment.submitted_at).toLocaleDateString()}`
-                          : `Due: ${new Date(assignment.due_at).toLocaleDateString()}`}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">
-                        {assignment.rating ? (
-                          <Group gap="xs">
-                            {[...Array(assignment.rating)].map((_, i) => (
-                              <Star
-                                key={i}
-                                size={12}
-                                fill="#ffd43b"
-                                color="#ffd43b"
-                              />
-                            ))}
-                          </Group>
-                        ) : (
-                          "-"
-                        )}
-                      </Text>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                  {getFilteredAssignments().map((assignment) => (
+                    <Table.Tr key={assignment.id}>
+                      <Table.Td>
+                        <Text fw={500}>#{assignment.assignment_number}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text
+                          size="sm"
+                          component="a"
+                          href={assignment.extension?.chrome_store_url}
+                          target="_blank"
+                          style={{ textDecoration: "none", color: "inherit" }}
+                          className="hover:underline"
+                        >
+                          {assignment.extension?.name || "Unknown"}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text
+                          size="sm"
+                          component="button"
+                          onClick={() =>
+                            assignment.reviewer?.id &&
+                            navigateToUserProfile(assignment.reviewer.id)
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "var(--mantine-color-blue-6)",
+                            textDecoration: "none",
+                          }}
+                          className="hover:underline"
+                        >
+                          {assignment.reviewer?.name || "Unknown"}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            assignment.status === "assigned" ? "blue" : "green"
+                          }
+                          size="sm"
+                        >
+                          {assignment.status === "assigned"
+                            ? "In Progress"
+                            : "Completed"}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {assignment.status === "approved" &&
+                          assignment.submitted_at
+                            ? `Completed: ${new Date(assignment.submitted_at).toLocaleDateString()}`
+                            : `Due: ${new Date(assignment.due_at).toLocaleDateString()}`}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {assignment.rating ? (
+                            <Group gap="xs">
+                              {[...Array(assignment.rating)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  size={12}
+                                  fill="#ffd43b"
+                                  color="#ffd43b"
+                                />
+                              ))}
+                            </Group>
+                          ) : (
+                            "-"
+                          )}
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
             </ScrollArea>
           </Card>
         </Tabs.Panel>
@@ -1308,9 +1464,17 @@ export function AdminDashboardPage() {
             <Group justify="space-between" mb="md">
               <Text fw={600}>Credit Transactions</Text>
               <Text size="sm" c="dimmed">
-                {transactions.length} total transactions
+                {getFilteredTransactions().length} of {transactions.length}{" "}
+                transactions
               </Text>
             </Group>
+            <TextInput
+              placeholder="Search transactions by user, amount, type, or description..."
+              leftSection={<Search size={16} />}
+              value={creditsSearch}
+              onChange={(event) => setCreditsSearch(event.currentTarget.value)}
+              mb="md"
+            />
             <ScrollArea h={400}>
               <Table>
                 <Table.Thead>
@@ -1323,42 +1487,46 @@ export function AdminDashboardPage() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {transactions.map((transaction) => (
-                  <Table.Tr key={transaction.id}>
-                    <Table.Td>
-                      <Text size="sm">{transaction.user_id}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text
-                        fw={600}
-                        c={transaction.type === "earned" ? "green" : "red"}
-                      >
-                        {transaction.type === "earned" ? "+" : "-"}
-                        {Math.abs(transaction.amount)}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        color={transaction.type === "earned" ? "green" : "red"}
-                        size="sm"
-                      >
-                        {transaction.type}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm" truncate maw={200}>
-                        {transaction.description}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">
-                        {new Date(transaction.created_at).toLocaleDateString()}
-                      </Text>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                  {getFilteredTransactions().map((transaction) => (
+                    <Table.Tr key={transaction.id}>
+                      <Table.Td>
+                        <Text size="sm">{transaction.user_id}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text
+                          fw={600}
+                          c={transaction.type === "earned" ? "green" : "red"}
+                        >
+                          {transaction.type === "earned" ? "+" : "-"}
+                          {Math.abs(transaction.amount)}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            transaction.type === "earned" ? "green" : "red"
+                          }
+                          size="sm"
+                        >
+                          {transaction.type}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" truncate maw={200}>
+                          {transaction.description}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {new Date(
+                            transaction.created_at,
+                          ).toLocaleDateString()}
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
             </ScrollArea>
           </Card>
         </Tabs.Panel>
@@ -1377,10 +1545,30 @@ export function AdminDashboardPage() {
                   Refresh
                 </Button>
                 <Text size="sm" c="dimmed">
-                  {problemReports.length} total reports ({problemReports.filter(r => r.status === 'pending').length} pending, {problemReports.filter(r => r.status === 'resolved').length} resolved) • Click any row for details
+                  {getFilteredProblemReports().length} of{" "}
+                  {problemReports.length} reports (
+                  {
+                    getFilteredProblemReports().filter(
+                      (r) => r.status === "pending",
+                    ).length
+                  }{" "}
+                  pending,{" "}
+                  {
+                    getFilteredProblemReports().filter(
+                      (r) => r.status === "resolved",
+                    ).length
+                  }{" "}
+                  resolved) • Click any row for details
                 </Text>
               </Group>
             </Group>
+            <TextInput
+              placeholder="Search reports by subject, content, email, status, or error..."
+              leftSection={<Search size={16} />}
+              value={problemsSearch}
+              onChange={(event) => setProblemsSearch(event.currentTarget.value)}
+              mb="md"
+            />
             <ScrollArea h={400}>
               <Table>
                 <Table.Thead>
@@ -1399,69 +1587,78 @@ export function AdminDashboardPage() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {problemReports.map((report) => (
-                  <Table.Tr 
-                    key={report.id}
-                    onClick={() => handleReportClick(report)}
-                    style={{ cursor: 'pointer' }}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <Table.Td>
-                      <Text size="sm">
-                        {new Date(report.created_at).toLocaleString()}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        color={
-                          report.status === "resolved" 
-                            ? "green" 
-                            : report.status === "pending" 
-                            ? "orange" 
-                            : report.status === "sent"
-                            ? "blue"
-                            : "red"
-                        }
-                        size="sm"
-                      >
-                        {report.status === "resolved" ? "RESOLVED" : report.status.toUpperCase()}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm" fw={500} maw={300} truncate>
-                        {report.subject}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm" c="dimmed" maw={400} truncate>
-                        {report.body.replace(/<[^>]*>/g, '').substring(0, 100)}...
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      {report.error_message ? (
-                        <Text size="sm" c="red" maw={200} truncate>
-                          {report.error_message}
+                  {getFilteredProblemReports().map((report) => (
+                    <Table.Tr
+                      key={report.id}
+                      onClick={() => handleReportClick(report)}
+                      style={{ cursor: "pointer" }}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      <Table.Td>
+                        <Text size="sm">
+                          {new Date(report.created_at).toLocaleString()}
                         </Text>
-                      ) : (
-                        <Text size="sm" c="dimmed">
-                          —
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            report.status === "resolved"
+                              ? "green"
+                              : report.status === "pending"
+                                ? "orange"
+                                : report.status === "sent"
+                                  ? "blue"
+                                  : "red"
+                          }
+                          size="sm"
+                        >
+                          {report.status === "resolved"
+                            ? "RESOLVED"
+                            : report.status.toUpperCase()}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" fw={500} maw={300} truncate>
+                          {report.subject}
                         </Text>
-                      )}
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap="xs">
-                        <Eye size={14} />
-                        <Text size="sm" c="blue">View</Text>
-                      </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed" maw={400} truncate>
+                          {report.body
+                            .replace(/<[^>]*>/g, "")
+                            .substring(0, 100)}
+                          ...
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        {report.error_message ? (
+                          <Text size="sm" c="red" maw={200} truncate>
+                            {report.error_message}
+                          </Text>
+                        ) : (
+                          <Text size="sm" c="dimmed">
+                            —
+                          </Text>
+                        )}
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap="xs">
+                          <Eye size={14} />
+                          <Text size="sm" c="blue">
+                            View
+                          </Text>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
             </ScrollArea>
-            {problemReports.length === 0 && (
+            {getFilteredProblemReports().length === 0 && (
               <Text ta="center" c="dimmed" py="xl">
-                No problem reports found
+                {problemsSearch.trim()
+                  ? "No problem reports match your search"
+                  : "No problem reports found"}
               </Text>
             )}
           </Card>
@@ -1482,104 +1679,120 @@ export function AdminDashboardPage() {
                   Refresh
                 </Button>
                 <Text size="sm" c="dimmed">
-                  {sentMessages.length} total messages
+                  {getFilteredSentMessages().length} of {sentMessages.length}{" "}
+                  messages
                 </Text>
               </Group>
             </Group>
+            <TextInput
+              placeholder="Search messages by subject, content, recipient, or priority..."
+              leftSection={<Search size={16} />}
+              value={messagesSearch}
+              onChange={(event) => setMessagesSearch(event.currentTarget.value)}
+              mb="md"
+            />
             <ScrollArea h={400}>
               <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Date</Table.Th>
-                  <Table.Th>Recipient</Table.Th>
-                  <Table.Th>Subject</Table.Th>
-                  <Table.Th>Priority</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Read At</Table.Th>
-                  <Table.Th>Actions</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {sentMessages.map((message) => (
-                  <Table.Tr 
-                    key={message.id}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleMessageClick(message)}
-                    className="hover:bg-gray-50"
-                  >
-                    <Table.Td>
-                      <Text size="sm">
-                        {new Date(message.created_at).toLocaleDateString()}
-                      </Text>
-                      <Text size="xs" c="dimmed">
-                        {new Date(message.created_at).toLocaleTimeString()}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <div>
-                        <Text size="sm" fw={500}>
-                          {message.recipient?.name || 'Unknown User'}
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Date</Table.Th>
+                    <Table.Th>Recipient</Table.Th>
+                    <Table.Th>Subject</Table.Th>
+                    <Table.Th>Priority</Table.Th>
+                    <Table.Th>Status</Table.Th>
+                    <Table.Th>Read At</Table.Th>
+                    <Table.Th>Actions</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {getFilteredSentMessages().map((message) => (
+                    <Table.Tr
+                      key={message.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleMessageClick(message)}
+                      className="hover:bg-gray-50"
+                    >
+                      <Table.Td>
+                        <Text size="sm">
+                          {new Date(message.created_at).toLocaleDateString()}
                         </Text>
                         <Text size="xs" c="dimmed">
-                          {message.recipient?.email}
+                          {new Date(message.created_at).toLocaleTimeString()}
                         </Text>
-                      </div>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm" maw={200} truncate>
-                        {message.subject}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge 
-                        color={
-                          message.priority === 'urgent' ? 'red' :
-                          message.priority === 'high' ? 'orange' :
-                          message.priority === 'medium' ? 'yellow' : 'gray'
-                        }
-                        size="sm"
-                      >
-                        {message.priority.toUpperCase()}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge 
-                        color={message.is_read ? 'green' : 'blue'}
-                        size="sm"
-                      >
-                        {message.is_read ? 'READ' : 'SENT'}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      {message.read_at ? (
+                      </Table.Td>
+                      <Table.Td>
                         <div>
-                          <Text size="sm">
-                            {new Date(message.read_at).toLocaleDateString()}
+                          <Text size="sm" fw={500}>
+                            {message.recipient?.name || "Unknown User"}
                           </Text>
                           <Text size="xs" c="dimmed">
-                            {new Date(message.read_at).toLocaleTimeString()}
+                            {message.recipient?.email}
                           </Text>
                         </div>
-                      ) : (
-                        <Text size="sm" c="dimmed">
-                          Not read yet
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" maw={200} truncate>
+                          {message.subject}
                         </Text>
-                      )}
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap="xs">
-                        <Eye size={14} />
-                        <Text size="sm" c="blue">View</Text>
-                      </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={
+                            message.priority === "urgent"
+                              ? "red"
+                              : message.priority === "high"
+                                ? "orange"
+                                : message.priority === "medium"
+                                  ? "yellow"
+                                  : "gray"
+                          }
+                          size="sm"
+                        >
+                          {message.priority.toUpperCase()}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={message.is_read ? "green" : "blue"}
+                          size="sm"
+                        >
+                          {message.is_read ? "READ" : "SENT"}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        {message.read_at ? (
+                          <div>
+                            <Text size="sm">
+                              {new Date(message.read_at).toLocaleDateString()}
+                            </Text>
+                            <Text size="xs" c="dimmed">
+                              {new Date(message.read_at).toLocaleTimeString()}
+                            </Text>
+                          </div>
+                        ) : (
+                          <Text size="sm" c="dimmed">
+                            Not read yet
+                          </Text>
+                        )}
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap="xs">
+                          <Eye size={14} />
+                          <Text size="sm" c="blue">
+                            View
+                          </Text>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
             </ScrollArea>
-            {sentMessages.length === 0 && (
+            {getFilteredSentMessages().length === 0 && (
               <Text ta="center" c="dimmed" py="xl">
-                No messages sent yet
+                {messagesSearch.trim()
+                  ? "No messages match your search"
+                  : "No messages sent yet"}
               </Text>
             )}
           </Card>
@@ -1599,208 +1812,304 @@ export function AdminDashboardPage() {
             <Card withBorder p="md">
               <Stack gap="sm">
                 <Group justify="space-between">
-                  <Text fw={600} size="lg">Report Information</Text>
-                                     <Badge
-                     color={
-                       selectedReport.status === "resolved" 
-                         ? "green" 
-                         : selectedReport.status === "pending" 
-                         ? "orange" 
-                         : selectedReport.status === "sent"
-                         ? "blue"
-                         : "red"
-                     }
-                     size="lg"
-                   >
-                     {selectedReport.status === "resolved" ? "RESOLVED" : selectedReport.status.toUpperCase()}
-                   </Badge>
+                  <Text fw={600} size="lg">
+                    Report Information
+                  </Text>
+                  <Badge
+                    color={
+                      selectedReport.status === "resolved"
+                        ? "green"
+                        : selectedReport.status === "pending"
+                          ? "orange"
+                          : selectedReport.status === "sent"
+                            ? "blue"
+                            : "red"
+                    }
+                    size="lg"
+                  >
+                    {selectedReport.status === "resolved"
+                      ? "RESOLVED"
+                      : selectedReport.status.toUpperCase()}
+                  </Badge>
                 </Group>
                 <Group>
-                  <Text size="sm" c="dimmed">Date:</Text>
-                  <Text size="sm">{new Date(selectedReport.created_at).toLocaleString()}</Text>
+                  <Text size="sm" c="dimmed">
+                    Date:
+                  </Text>
+                  <Text size="sm">
+                    {new Date(selectedReport.created_at).toLocaleString()}
+                  </Text>
                 </Group>
                 <Group>
-                  <Text size="sm" c="dimmed">Email To:</Text>
+                  <Text size="sm" c="dimmed">
+                    Email To:
+                  </Text>
                   <Text size="sm">{selectedReport.to_email}</Text>
                 </Group>
                 {selectedReport.error_message && (
                   <div>
-                    <Text size="sm" c="red" fw={600}>Error Message:</Text>
-                    <Text size="sm" c="red">{selectedReport.error_message}</Text>
+                    <Text size="sm" c="red" fw={600}>
+                      Error Message:
+                    </Text>
+                    <Text size="sm" c="red">
+                      {selectedReport.error_message}
+                    </Text>
                   </div>
                 )}
               </Stack>
             </Card>
 
-                         {/* Problem Details */}
-             {(() => {
-               const parsed = parseReportBody(selectedReport.body);
-               return (
-                 <Card withBorder p="md">
-                   <Stack gap="md">
-                     <Group justify="space-between">
-                       <Text fw={600} size="lg">Problem Report Details</Text>
-                       {parsed.assignmentCancelled && (
-                         <Badge color="red" size="lg">Assignment Cancelled</Badge>
-                       )}
-                     </Group>
-                     
-                     <Grid>
-                       <Grid.Col span={{ base: 12, md: 6 }}>
-                         <Stack gap="sm">
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Extension Name:</Text>
-                             <Text size="md" fw={500}>{parsed.extensionName || 'Not specified'}</Text>
-                           </div>
-                           
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Assignment ID:</Text>
-                             <Text size="sm" ff="monospace" bg="gray.8" c="white" p="xs" style={{ borderRadius: '4px' }}>
-                               {parsed.assignmentId || 'Not specified'}
-                             </Text>
-                           </div>
-                           
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Reporter Email:</Text>
-                             <Text size="sm">{parsed.reporterEmail || 'Not specified'}</Text>
-                           </div>
-                         </Stack>
-                       </Grid.Col>
-                       
-                       <Grid.Col span={{ base: 12, md: 6 }}>
-                         <Stack gap="sm">
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Issue Type:</Text>
-                             <Badge 
-                               color={
-                                 parsed.issueType.toLowerCase().includes('removed') ? 'red' :
-                                 parsed.issueType.toLowerCase().includes('access') ? 'orange' :
-                                 'blue'
-                               } 
-                               size="md"
-                             >
-                               {parsed.issueType || 'Not specified'}
-                             </Badge>
-                           </div>
-                           
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Severity:</Text>
-                             <Badge 
-                               color={parsed.severity === 'high' ? 'red' : parsed.severity === 'medium' ? 'orange' : 'gray'}
-                               size="sm"
-                             >
-                               {parsed.severity?.toUpperCase() || 'UNKNOWN'}
-                             </Badge>
-                           </div>
-                           
-                           {parsed.timestamp && (
-                             <div>
-                               <Text size="sm" c="dimmed" fw={600}>Reported At:</Text>
-                               <Text size="sm">{new Date(parsed.timestamp).toLocaleString()}</Text>
-                             </div>
-                           )}
-                         </Stack>
-                       </Grid.Col>
-                     </Grid>
-                     
-                     {parsed.description && (
-                       <div>
-                         <Text size="sm" c="dimmed" fw={600} mb="xs">Reviewer Description:</Text>
-                         <Card bg="blue.0" p="md">
-                           <Text size="sm" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
-                             {parsed.description}
-                           </Text>
-                         </Card>
-                       </div>
-                     )}
-                   </Stack>
-                 </Card>
-               );
-             })()}
+            {/* Problem Details */}
+            {(() => {
+              const parsed = parseReportBody(selectedReport.body);
+              return (
+                <Card withBorder p="md">
+                  <Stack gap="md">
+                    <Group justify="space-between">
+                      <Text fw={600} size="lg">
+                        Problem Report Details
+                      </Text>
+                      {parsed.assignmentCancelled && (
+                        <Badge color="red" size="lg">
+                          Assignment Cancelled
+                        </Badge>
+                      )}
+                    </Group>
 
-                         {/* Technical Details */}
-             <Card withBorder p="md">
-               <Stack gap="sm">
-                 <Text fw={600} size="lg">Technical Details</Text>
-                 {(() => {
-                   const parsed = parseReportBody(selectedReport.body);
-                   return (
-                     <Grid>
-                       <Grid.Col span={{ base: 12, md: 6 }}>
-                         <Stack gap="xs">
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Extension ID:</Text>
-                             <Text size="xs" ff="monospace" bg="gray.8" c="white" p="xs" style={{ borderRadius: '4px' }}>
-                               {parsed.extensionId || 'Not available'}
-                             </Text>
-                           </div>
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Reporter ID:</Text>
-                             <Text size="xs" ff="monospace" bg="gray.8" c="white" p="xs" style={{ borderRadius: '4px' }}>
-                               {parsed.reporterId || 'Not available'}
-                             </Text>
-                           </div>
-                         </Stack>
-                       </Grid.Col>
-                       <Grid.Col span={{ base: 12, md: 6 }}>
-                         <Stack gap="xs">
-                           <div>
-                             <Text size="sm" c="dimmed" fw={600}>Report Status:</Text>
-                             <Badge 
-                               color={
-                                 selectedReport.status === 'resolved' ? 'green' : 
-                                 selectedReport.status === 'pending' ? 'orange' : 
-                                 selectedReport.status === 'sent' ? 'blue' : 'red'
-                               }
-                               size="sm"
-                             >
-                               {selectedReport.status === 'resolved' ? 'RESOLVED' : selectedReport.status.toUpperCase()}
-                             </Badge>
-                           </div>
-                           {selectedReport.error_message && (
-                             <div>
-                               <Text size="sm" c="red" fw={600}>Processing Error:</Text>
-                               <Text size="xs" c="red">{selectedReport.error_message}</Text>
-                             </div>
-                           )}
-                         </Stack>
-                       </Grid.Col>
-                     </Grid>
-                   );
-                 })()}
-               </Stack>
-             </Card>
+                    <Grid>
+                      <Grid.Col span={{ base: 12, md: 6 }}>
+                        <Stack gap="sm">
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Extension Name:
+                            </Text>
+                            <Text size="md" fw={500}>
+                              {parsed.extensionName || "Not specified"}
+                            </Text>
+                          </div>
 
-                         {/* Action Buttons */}
-             <Group justify="space-between">
-               <Group>
-                 {selectedReport.status === 'pending' ? (
-                   <Button 
-                     color="green"
-                     loading={updatingReportStatus}
-                     onClick={() => updateReportStatus(selectedReport.id, 'resolved')}
-                     leftSection={<CheckCircle size={16} />}
-                   >
-                     Mark as Resolved
-                   </Button>
-                 ) : (
-                   <Button 
-                     color="orange"
-                     loading={updatingReportStatus}
-                     onClick={() => updateReportStatus(selectedReport.id, 'pending')}
-                     leftSection={<Clock size={16} />}
-                   >
-                     Reopen as Pending
-                   </Button>
-                 )}
-               </Group>
-               <Button 
-                 variant="outline" 
-                 onClick={() => setReportModalOpened(false)}
-               >
-                 Close
-               </Button>
-             </Group>
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Assignment ID:
+                            </Text>
+                            <Text
+                              size="sm"
+                              ff="monospace"
+                              bg="gray.8"
+                              c="white"
+                              p="xs"
+                              style={{ borderRadius: "4px" }}
+                            >
+                              {parsed.assignmentId || "Not specified"}
+                            </Text>
+                          </div>
+
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Reporter Email:
+                            </Text>
+                            <Text size="sm">
+                              {parsed.reporterEmail || "Not specified"}
+                            </Text>
+                          </div>
+                        </Stack>
+                      </Grid.Col>
+
+                      <Grid.Col span={{ base: 12, md: 6 }}>
+                        <Stack gap="sm">
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Issue Type:
+                            </Text>
+                            <Badge
+                              color={
+                                parsed.issueType
+                                  .toLowerCase()
+                                  .includes("removed")
+                                  ? "red"
+                                  : parsed.issueType
+                                        .toLowerCase()
+                                        .includes("access")
+                                    ? "orange"
+                                    : "blue"
+                              }
+                              size="md"
+                            >
+                              {parsed.issueType || "Not specified"}
+                            </Badge>
+                          </div>
+
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Severity:
+                            </Text>
+                            <Badge
+                              color={
+                                parsed.severity === "high"
+                                  ? "red"
+                                  : parsed.severity === "medium"
+                                    ? "orange"
+                                    : "gray"
+                              }
+                              size="sm"
+                            >
+                              {parsed.severity?.toUpperCase() || "UNKNOWN"}
+                            </Badge>
+                          </div>
+
+                          {parsed.timestamp && (
+                            <div>
+                              <Text size="sm" c="dimmed" fw={600}>
+                                Reported At:
+                              </Text>
+                              <Text size="sm">
+                                {new Date(parsed.timestamp).toLocaleString()}
+                              </Text>
+                            </div>
+                          )}
+                        </Stack>
+                      </Grid.Col>
+                    </Grid>
+
+                    {parsed.description && (
+                      <div>
+                        <Text size="sm" c="dimmed" fw={600} mb="xs">
+                          Reviewer Description:
+                        </Text>
+                        <Card bg="blue.0" p="md">
+                          <Text
+                            size="sm"
+                            style={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}
+                          >
+                            {parsed.description}
+                          </Text>
+                        </Card>
+                      </div>
+                    )}
+                  </Stack>
+                </Card>
+              );
+            })()}
+
+            {/* Technical Details */}
+            <Card withBorder p="md">
+              <Stack gap="sm">
+                <Text fw={600} size="lg">
+                  Technical Details
+                </Text>
+                {(() => {
+                  const parsed = parseReportBody(selectedReport.body);
+                  return (
+                    <Grid>
+                      <Grid.Col span={{ base: 12, md: 6 }}>
+                        <Stack gap="xs">
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Extension ID:
+                            </Text>
+                            <Text
+                              size="xs"
+                              ff="monospace"
+                              bg="gray.8"
+                              c="white"
+                              p="xs"
+                              style={{ borderRadius: "4px" }}
+                            >
+                              {parsed.extensionId || "Not available"}
+                            </Text>
+                          </div>
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Reporter ID:
+                            </Text>
+                            <Text
+                              size="xs"
+                              ff="monospace"
+                              bg="gray.8"
+                              c="white"
+                              p="xs"
+                              style={{ borderRadius: "4px" }}
+                            >
+                              {parsed.reporterId || "Not available"}
+                            </Text>
+                          </div>
+                        </Stack>
+                      </Grid.Col>
+                      <Grid.Col span={{ base: 12, md: 6 }}>
+                        <Stack gap="xs">
+                          <div>
+                            <Text size="sm" c="dimmed" fw={600}>
+                              Report Status:
+                            </Text>
+                            <Badge
+                              color={
+                                selectedReport.status === "resolved"
+                                  ? "green"
+                                  : selectedReport.status === "pending"
+                                    ? "orange"
+                                    : selectedReport.status === "sent"
+                                      ? "blue"
+                                      : "red"
+                              }
+                              size="sm"
+                            >
+                              {selectedReport.status === "resolved"
+                                ? "RESOLVED"
+                                : selectedReport.status.toUpperCase()}
+                            </Badge>
+                          </div>
+                          {selectedReport.error_message && (
+                            <div>
+                              <Text size="sm" c="red" fw={600}>
+                                Processing Error:
+                              </Text>
+                              <Text size="xs" c="red">
+                                {selectedReport.error_message}
+                              </Text>
+                            </div>
+                          )}
+                        </Stack>
+                      </Grid.Col>
+                    </Grid>
+                  );
+                })()}
+              </Stack>
+            </Card>
+
+            {/* Action Buttons */}
+            <Group justify="space-between">
+              <Group>
+                {selectedReport.status === "pending" ? (
+                  <Button
+                    color="green"
+                    loading={updatingReportStatus}
+                    onClick={() =>
+                      updateReportStatus(selectedReport.id, "resolved")
+                    }
+                    leftSection={<CheckCircle size={16} />}
+                  >
+                    Mark as Resolved
+                  </Button>
+                ) : (
+                  <Button
+                    color="orange"
+                    loading={updatingReportStatus}
+                    onClick={() =>
+                      updateReportStatus(selectedReport.id, "pending")
+                    }
+                    leftSection={<Clock size={16} />}
+                  >
+                    Reopen as Pending
+                  </Button>
+                )}
+              </Group>
+              <Button
+                variant="outline"
+                onClick={() => setReportModalOpened(false)}
+              >
+                Close
+              </Button>
+            </Group>
           </Stack>
         )}
       </Modal>
@@ -1816,10 +2125,14 @@ export function AdminDashboardPage() {
           {(() => {
             // Filter extensions with status "queued" and sort by newest first
             const queuedExtensions = extensions
-              .filter(extension => extension.status === 'queued')
+              .filter((extension) => extension.status === "queued")
               .sort((a, b) => {
-                const dateA = new Date(a.submitted_to_queue_at || a.created_at).getTime();
-                const dateB = new Date(b.submitted_to_queue_at || b.created_at).getTime();
+                const dateA = new Date(
+                  a.submitted_to_queue_at || a.created_at,
+                ).getTime();
+                const dateB = new Date(
+                  b.submitted_to_queue_at || b.created_at,
+                ).getTime();
                 return dateB - dateA; // Reverse chronological order (newest first)
               });
 
@@ -1828,9 +2141,12 @@ export function AdminDashboardPage() {
                 <Card withBorder p="xl" bg="gray.0">
                   <Stack align="center" gap="md">
                     <Package size={48} color="#9ca3af" />
-                    <Text size="lg" fw={600} c="dimmed">No Extensions in Queue</Text>
+                    <Text size="lg" fw={600} c="dimmed">
+                      No Extensions in Queue
+                    </Text>
                     <Text size="sm" c="dimmed" ta="center">
-                      There are currently no extensions waiting for review assignment.
+                      There are currently no extensions waiting for review
+                      assignment.
                     </Text>
                   </Stack>
                 </Card>
@@ -1841,13 +2157,15 @@ export function AdminDashboardPage() {
               <div>
                 <Group justify="space-between" mb="md">
                   <Text fw={600} size="lg">
-                    {queuedExtensions.length} extension{queuedExtensions.length !== 1 ? 's' : ''} waiting for review
+                    {queuedExtensions.length} extension
+                    {queuedExtensions.length !== 1 ? "s" : ""} waiting for
+                    review
                   </Text>
                   <Badge color="orange" size="lg">
                     QUEUE
                   </Badge>
                 </Group>
-                
+
                 <Table>
                   <Table.Thead>
                     <Table.Tr>
@@ -1870,7 +2188,10 @@ export function AdminDashboardPage() {
                                 component="a"
                                 href={extension.chrome_store_url}
                                 target="_blank"
-                                style={{ textDecoration: "none", color: "inherit" }}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "inherit",
+                                }}
                                 className="hover:underline"
                               >
                                 {extension.name}
@@ -1919,13 +2240,21 @@ export function AdminDashboardPage() {
                           <div>
                             <Text size="sm">
                               {extension.submitted_to_queue_at
-                                ? new Date(extension.submitted_to_queue_at).toLocaleDateString()
-                                : new Date(extension.created_at).toLocaleDateString()}
+                                ? new Date(
+                                    extension.submitted_to_queue_at,
+                                  ).toLocaleDateString()
+                                : new Date(
+                                    extension.created_at,
+                                  ).toLocaleDateString()}
                             </Text>
                             <Text size="xs" c="dimmed">
                               {extension.submitted_to_queue_at
-                                ? new Date(extension.submitted_to_queue_at).toLocaleTimeString()
-                                : new Date(extension.created_at).toLocaleTimeString()}
+                                ? new Date(
+                                    extension.submitted_to_queue_at,
+                                  ).toLocaleTimeString()
+                                : new Date(
+                                    extension.created_at,
+                                  ).toLocaleTimeString()}
                             </Text>
                           </div>
                         </Table.Td>
@@ -1935,7 +2264,10 @@ export function AdminDashboardPage() {
                               variant="light"
                               size="sm"
                               onClick={() =>
-                                window.open(extension.chrome_store_url, "_blank")
+                                window.open(
+                                  extension.chrome_store_url,
+                                  "_blank",
+                                )
                               }
                             >
                               <Eye size={14} />
@@ -1945,7 +2277,9 @@ export function AdminDashboardPage() {
                                 variant="light"
                                 color="blue"
                                 size="sm"
-                                onClick={() => navigateToUserProfile(extension.owner.id)}
+                                onClick={() =>
+                                  navigateToUserProfile(extension.owner.id)
+                                }
                               >
                                 <Users size={14} />
                               </ActionIcon>
@@ -1954,7 +2288,12 @@ export function AdminDashboardPage() {
                               variant="filled"
                               color="red"
                               size="sm"
-                              onClick={() => handleRemoveFromQueue(extension.id, extension.name)}
+                              onClick={() =>
+                                handleRemoveFromQueue(
+                                  extension.id,
+                                  extension.name,
+                                )
+                              }
                             >
                               <XCircle size={14} />
                             </ActionIcon>
@@ -1967,10 +2306,10 @@ export function AdminDashboardPage() {
               </div>
             );
           })()}
-          
+
           <Group justify="flex-end" mt="md">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setQueueModalOpened(false)}
             >
               Close
@@ -1992,27 +2331,35 @@ export function AdminDashboardPage() {
             <Card withBorder p="md">
               <Stack gap="sm">
                 <Group justify="space-between">
-                  <Text fw={600} size="lg">Message Information</Text>
+                  <Text fw={600} size="lg">
+                    Message Information
+                  </Text>
                   <Badge
-                    color={selectedMessage.is_read ? 'green' : 'blue'}
+                    color={selectedMessage.is_read ? "green" : "blue"}
                     size="lg"
                   >
-                    {selectedMessage.is_read ? 'READ' : 'SENT'}
+                    {selectedMessage.is_read ? "READ" : "SENT"}
                   </Badge>
                 </Group>
                 <Grid>
                   <Grid.Col span={{ base: 12, md: 6 }}>
                     <Stack gap="xs">
                       <div>
-                        <Text size="sm" c="dimmed" fw={600}>Sent Date:</Text>
+                        <Text size="sm" c="dimmed" fw={600}>
+                          Sent Date:
+                        </Text>
                         <Text size="sm">
-                          {new Date(selectedMessage.created_at).toLocaleString()}
+                          {new Date(
+                            selectedMessage.created_at,
+                          ).toLocaleString()}
                         </Text>
                       </div>
                       <div>
-                        <Text size="sm" c="dimmed" fw={600}>Recipient:</Text>
+                        <Text size="sm" c="dimmed" fw={600}>
+                          Recipient:
+                        </Text>
                         <Text size="sm" fw={500}>
-                          {selectedMessage.recipient?.name || 'Unknown User'}
+                          {selectedMessage.recipient?.name || "Unknown User"}
                         </Text>
                         <Text size="xs" c="dimmed">
                           {selectedMessage.recipient?.email}
@@ -2023,12 +2370,18 @@ export function AdminDashboardPage() {
                   <Grid.Col span={{ base: 12, md: 6 }}>
                     <Stack gap="xs">
                       <div>
-                        <Text size="sm" c="dimmed" fw={600}>Priority:</Text>
-                        <Badge 
+                        <Text size="sm" c="dimmed" fw={600}>
+                          Priority:
+                        </Text>
+                        <Badge
                           color={
-                            selectedMessage.priority === 'urgent' ? 'red' :
-                            selectedMessage.priority === 'high' ? 'orange' :
-                            selectedMessage.priority === 'medium' ? 'yellow' : 'gray'
+                            selectedMessage.priority === "urgent"
+                              ? "red"
+                              : selectedMessage.priority === "high"
+                                ? "orange"
+                                : selectedMessage.priority === "medium"
+                                  ? "yellow"
+                                  : "gray"
                           }
                           size="sm"
                         >
@@ -2037,7 +2390,9 @@ export function AdminDashboardPage() {
                       </div>
                       {selectedMessage.read_at && (
                         <div>
-                          <Text size="sm" c="dimmed" fw={600}>Read At:</Text>
+                          <Text size="sm" c="dimmed" fw={600}>
+                            Read At:
+                          </Text>
                           <Text size="sm">
                             {new Date(selectedMessage.read_at).toLocaleString()}
                           </Text>
@@ -2053,18 +2408,25 @@ export function AdminDashboardPage() {
             <Card withBorder p="md">
               <Stack gap="md">
                 <div>
-                  <Text fw={600} size="lg" mb="xs">Subject</Text>
+                  <Text fw={600} size="lg" mb="xs">
+                    Subject
+                  </Text>
                   <Text size="md" fw={500}>
                     {selectedMessage.subject}
                   </Text>
                 </div>
-                
+
                 <Divider />
-                
+
                 <div>
-                  <Text fw={600} size="lg" mb="xs">Message</Text>
+                  <Text fw={600} size="lg" mb="xs">
+                    Message
+                  </Text>
                   <Card bg="gray.0" p="md">
-                    <Text size="sm" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+                    <Text
+                      size="sm"
+                      style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}
+                    >
                       {selectedMessage.message}
                     </Text>
                   </Card>
@@ -2074,8 +2436,8 @@ export function AdminDashboardPage() {
 
             {/* Close Button */}
             <Group justify="flex-end">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setMessageModalOpened(false)}
               >
                 Close
