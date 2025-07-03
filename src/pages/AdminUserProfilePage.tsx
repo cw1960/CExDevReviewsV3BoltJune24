@@ -107,7 +107,7 @@ export function AdminUserProfilePage() {
     initialValues: {
       subject: '',
       message: '',
-      priority: 'normal' as 'normal' | 'high' | 'urgent',
+      priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
       popup_on_login: false
     },
     validate: {
@@ -934,7 +934,8 @@ export function AdminUserProfilePage() {
             <Select
               label="Priority"
               data={[
-                { value: 'normal', label: 'Normal' },
+                { value: 'low', label: 'Low' },
+                { value: 'medium', label: 'Medium' },
                 { value: 'high', label: 'High' },
                 { value: 'urgent', label: 'Urgent (Red notification)' }
               ]}
