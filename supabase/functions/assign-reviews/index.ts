@@ -129,51 +129,50 @@ serve(async (req) => {
 
     console.log(`Separated into queues: ${premiumExtensions.length} premium, ${freeExtensions.length} free`)
 
-    // 3. Implement ratio-based assignment logic (3:1 premium to free ratio)
-    const PREMIUM_TO_FREE_RATIO = 3 // 3 premium assignments for every 1 free assignment
-    let totalAssignmentsCreated = 0
-    let premiumAssignmentsInCycle = 0
-    let assignmentCycle = 0
-
-    // Create a combined assignment queue based on the ratio
+    // 3. Implement ABSOLUTE PRIORITY logic for Premium subscribers
+    // Premium subscribers get processed FIRST (FIFO within premium)
+    // Only after ALL premium subscribers are processed, then free tier users (FIFO within free)
     const assignmentQueue: ExtensionWithOwner[] = []
-    let premiumIndex = 0
-    let freeIndex = 0
-
-    while ((premiumIndex < premiumExtensions.length || freeIndex < freeExtensions.length) && assignmentQueue.length < max_assignments) {
-      const cyclePosition = assignmentQueue.length % (PREMIUM_TO_FREE_RATIO + 1)
-      
-      // First 3 positions in each cycle (0, 1, 2) are for premium, position 3 is for free
-      if (cyclePosition < PREMIUM_TO_FREE_RATIO) {
-        // Try to assign premium extension
-        if (premiumIndex < premiumExtensions.length) {
-          assignmentQueue.push(premiumExtensions[premiumIndex])
-          premiumIndex++
-          console.log(`Added premium extension to queue: ${premiumExtensions[premiumIndex - 1].name}`)
-        } else if (freeIndex < freeExtensions.length) {
-          // If no premium extensions left, assign free extension
-          assignmentQueue.push(freeExtensions[freeIndex])
-          freeIndex++
-          console.log(`No premium extensions left, added free extension: ${freeExtensions[freeIndex - 1].name}`)
-        }
+    
+    console.log('🏆 Processing Premium Review Fast Track extensions first (absolute priority)...')
+    
+    // Add ALL premium extensions first (already sorted by FIFO from database query)
+    let premiumAdded = 0
+    for (const extension of premiumExtensions) {
+      if (assignmentQueue.length < max_assignments) {
+        assignmentQueue.push(extension)
+        premiumAdded++
+        console.log(`✅ Added premium extension: ${extension.name} (position ${assignmentQueue.length})`)
       } else {
-        // Position 3 in cycle - assign free extension
-        if (freeIndex < freeExtensions.length) {
-          assignmentQueue.push(freeExtensions[freeIndex])
-          freeIndex++
-          console.log(`Added free extension to queue (ratio slot): ${freeExtensions[freeIndex - 1].name}`)
-        } else if (premiumIndex < premiumExtensions.length) {
-          // If no free extensions left, assign premium extension
-          assignmentQueue.push(premiumExtensions[premiumIndex])
-          premiumIndex++
-          console.log(`No free extensions left, added premium extension: ${premiumExtensions[premiumIndex - 1].name}`)
-        }
+        break
       }
     }
-
-    console.log(`Created assignment queue with ${assignmentQueue.length} extensions`)
+    
+    console.log(`🎯 Premium extensions added: ${premiumAdded} of ${premiumExtensions.length}`)
+    
+    // Only add free extensions if there's still room and no premium extensions left to process
+    let freeAdded = 0
+    if (assignmentQueue.length < max_assignments && premiumAdded === premiumExtensions.length) {
+      console.log('📋 All premium extensions processed, now processing free tier extensions...')
+      
+      for (const extension of freeExtensions) {
+        if (assignmentQueue.length < max_assignments) {
+          assignmentQueue.push(extension)
+          freeAdded++
+          console.log(`✅ Added free extension: ${extension.name} (position ${assignmentQueue.length})`)
+        } else {
+          break
+        }
+      }
+    } else if (premiumAdded < premiumExtensions.length) {
+      console.log(`⏳ Still ${premiumExtensions.length - premiumAdded} premium extensions waiting (free tier must wait)`)
+    }
+    
+    console.log(`📊 Final assignment queue: ${assignmentQueue.length} extensions (${premiumAdded} premium, ${freeAdded} free)`)
+    console.log(`🚀 Premium subscribers get ABSOLUTE PRIORITY - no free tier processed until all premium done!`)
 
     // 4. Process each extension in the assignment queue
+    let totalAssignmentsCreated = 0
     for (const extension of assignmentQueue) {
       try {
         console.log(`Processing extension: ${extension.name} (ID: ${extension.id}) - Owner subscription: ${extension.owner.subscription_status || 'free'}`)
@@ -355,26 +354,31 @@ serve(async (req) => {
       }
     }
 
-    // 14. Log assignment statistics
-    const premiumAssigned = assignmentQueue.slice(0, totalAssignmentsCreated).filter(ext => 
+    // 14. Log assignment statistics with absolute priority logic
+    const actualPremiumAssigned = assignmentQueue.slice(0, totalAssignmentsCreated).filter(ext => 
       (ext.owner.subscription_status || 'free') === 'premium'
     ).length
-    const freeAssigned = totalAssignmentsCreated - premiumAssigned
+    const actualFreeAssigned = totalAssignmentsCreated - actualPremiumAssigned
 
-    console.log(`Review assignment process completed with freemium logic:`)
+    console.log(`Review assignment process completed with ABSOLUTE PRIORITY for Premium subscribers:`)
     console.log(`- Total assignments created: ${totalAssignmentsCreated}`)
-    console.log(`- Premium extensions assigned: ${premiumAssigned}`)
-    console.log(`- Free extensions assigned: ${freeAssigned}`)
-    console.log(`- Ratio achieved: ${premiumAssigned}:${freeAssigned}`)
+    console.log(`- Premium extensions assigned: ${actualPremiumAssigned}`)
+    console.log(`- Free extensions assigned: ${actualFreeAssigned}`)
+    console.log(`- Premium queue remaining: ${premiumExtensions.length - actualPremiumAssigned}`)
+    console.log(`- Free queue waiting: ${freeExtensions.length} (only processed after ALL premium done)`)
+    console.log(`🏆 Premium Review Fast Track: ABSOLUTE PRIORITY maintained!`)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Successfully created ${totalAssignmentsCreated} review assignments (${premiumAssigned} premium, ${freeAssigned} free)`,
+        message: `Successfully created ${totalAssignmentsCreated} review assignments with Premium Fast Track priority (${actualPremiumAssigned} premium, ${actualFreeAssigned} free)`,
         assignments_created: totalAssignmentsCreated,
-        premium_assignments: premiumAssigned,
-        free_assignments: freeAssigned,
-        extensions_processed: assignmentQueue.length
+        premium_assignments: actualPremiumAssigned,
+        free_assignments: actualFreeAssigned,
+        premium_queue_remaining: premiumExtensions.length - actualPremiumAssigned,
+        free_queue_waiting: freeExtensions.length,
+        extensions_processed: assignmentQueue.length,
+        priority_system: "absolute_premium_priority"
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

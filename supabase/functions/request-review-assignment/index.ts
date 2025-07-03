@@ -184,11 +184,19 @@ Deno.serve(async (req) => {
       )
     }
 
-    // 3. Find available extensions for review (FIFO order)
-    console.log('🔍 Step 3: Finding available extensions...')
+    // 3. Find available extensions for review with owner subscription info (Premium priority + FIFO order)
+    console.log('🔍 Step 3: Finding available extensions with Premium Fast Track priority...')
     const { data: availableExtensions, error: extensionsError } = await supabase
       .from('extensions')
-      .select('*')
+      .select(`
+        *,
+        owner:users!extensions_owner_id_fkey(
+          id,
+          name,
+          email,
+          subscription_status
+        )
+      `)
       .eq('status', 'queued')
       .neq('owner_id', user_id) // Can't review own extension
       .order('submitted_to_queue_at', { ascending: true }) // FIFO: First in, first out
@@ -279,9 +287,45 @@ Deno.serve(async (req) => {
       )
     }
 
-    // 5. Select the first eligible extension (FIFO)
-    const selectedExtension = eligibleExtensions[0]
-    console.log(`✅ Selected extension: ${selectedExtension.name} (ID: ${selectedExtension.id}) for user: ${user.name}`)
+    // 5. Select extension with Premium Fast Track priority (Premium first, then Free - FIFO within each tier)
+    console.log('🏆 Implementing Premium Review Fast Track selection logic...')
+    
+    // Separate extensions by subscription status
+    const premiumExtensions = eligibleExtensions.filter(ext => 
+      (ext.owner?.subscription_status || 'free') === 'premium'
+    )
+    const freeExtensions = eligibleExtensions.filter(ext => 
+      (ext.owner?.subscription_status || 'free') === 'free'
+    )
+    
+    console.log(`📊 Available extensions: ${premiumExtensions.length} premium, ${freeExtensions.length} free`)
+    
+    let selectedExtension
+    if (premiumExtensions.length > 0) {
+      // Premium subscribers get absolute priority - select first premium extension (FIFO)
+      selectedExtension = premiumExtensions[0]
+      console.log(`🎯 Selected PREMIUM extension: ${selectedExtension.name} (Fast Track priority)`)
+    } else if (freeExtensions.length > 0) {
+      // Only if no premium extensions available, select from free extensions (FIFO)
+      selectedExtension = freeExtensions[0]
+      console.log(`📋 Selected FREE extension: ${selectedExtension.name} (no premium in queue)`)
+    } else {
+      // This shouldn't happen since we already checked eligibleExtensions.length > 0
+      console.error('❌ No extensions available after priority filtering')
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'No extensions available for assignment.',
+          silent: silent
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 404,
+        }
+      )
+    }
+    
+    console.log(`✅ Final selection: ${selectedExtension.name} (Owner: ${selectedExtension.owner?.subscription_status || 'free'}) for reviewer: ${user.name}`)
 
     // 6. Create assignment batch
     console.log('🔍 Step 6: Creating assignment batch...')
