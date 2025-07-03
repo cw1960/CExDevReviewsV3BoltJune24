@@ -14,7 +14,7 @@ interface SendMessageRequest {
 }
 
 Deno.serve(async (req) => {
-  console.log('🚀 send-user-message function started [v6.0 - Simple Admin Check]')
+  console.log('🚀 send-user-message function started [v7.0 - JWT Compatible]')
   console.log('📝 Request method:', req.method)
   console.log('🌐 Request URL:', req.url)
   
@@ -28,8 +28,9 @@ Deno.serve(async (req) => {
     console.log('🔍 Checking environment variables...')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
 
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
       console.error('❌ Missing environment variables')
       return new Response(
         JSON.stringify({ 
@@ -71,27 +72,106 @@ Deno.serve(async (req) => {
       admin_key
     }: SendMessageRequest = requestBody
 
-    // SIMPLE ADMIN CHECK - if admin_key is provided, verify it
-    if (admin_key) {
-      const ADMIN_KEY = 'chrome_ex_dev_admin_2025'
-      if (admin_key !== ADMIN_KEY) {
-        console.error('❌ Invalid admin key provided')
-        return new Response(
-          JSON.stringify({ 
-            success: false, 
-            error: 'Invalid admin key'
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 403,
-          }
-        )
-      }
-      console.log('✅ Admin key verified - proceeding with admin privileges')
-    } else {
-      // If no admin key, you could add other auth checks here
-      console.log('ℹ️ No admin key provided - assuming regular user (add auth logic if needed)')
+    // Get the Authorization header for user authentication
+    const authHeader = req.headers.get('Authorization')
+    console.log('🔑 Authorization header:', authHeader ? 'Present' : 'Missing')
+
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Authorization header required'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
     }
+
+    // Create client with user auth for verification
+    const { createClient } = await import('npm:@supabase/supabase-js@2')
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    })
+
+    // Verify user authentication
+    const { data: { user }, error: authError } = await supabaseUser.auth.getUser()
+    console.log('👤 User result:', user ? `Found user: ${user.id}` : 'No user found')
+
+    if (authError || !user) {
+      console.error('❌ Authentication failed:', authError)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Authentication required',
+          details: authError?.message
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
+    }
+
+    // Create service role client for database operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+    // Check if user is admin - use multiple verification methods
+    let isAdmin = false
+    let adminProfile = null
+    
+    console.log('🔍 Checking admin status for user:', user.id, user.email)
+    
+    try {
+      // Method 1: Check users table for admin role
+      const { data: profile, error: profileError } = await supabase
+        .from('users')
+        .select('role, id, name, email')
+        .eq('id', user.id)
+        .single()
+
+      if (profile && profile.role === 'admin') {
+        isAdmin = true
+        adminProfile = profile
+        console.log('✅ Admin found in users table:', user.id)
+      } else {
+        console.log('ℹ️ User not found in users table or not admin role')
+      }
+    } catch (checkError) {
+      console.log('ℹ️ Error checking users table:', checkError)
+    }
+
+    // Method 2: Check by known admin emails (fallback)
+    if (!isAdmin) {
+      const adminEmails = ['chrism2homefolder@gmail.com', 'cristo@cristolopez.com', 'admin@chromeexdev.reviews', 'chris@chromeexdev.reviews']
+      if (adminEmails.includes(user.email || '')) {
+        isAdmin = true
+        console.log('✅ Admin verified by email:', user.email)
+      }
+    }
+
+    // Method 3: Check admin key (additional verification)
+    if (!isAdmin && admin_key === 'chrome_ex_dev_admin_2025') {
+      isAdmin = true
+      console.log('✅ Admin verified by admin key')
+    }
+
+    if (!isAdmin) {
+      console.error('❌ Authorization failed - user is not admin')
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Admin access required'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 403,
+        }
+      )
+    }
+
+    console.log('✅ Admin authentication successful')
 
     // Validate required fields
     if (!recipient_id || !subject?.trim() || !message?.trim()) {
@@ -122,10 +202,6 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Create service role client (bypasses ALL RLS/JWT issues)
-    const { createClient } = await import('npm:@supabase/supabase-js@2')
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
     console.log('🔍 Verifying recipient exists...')
     
     // Verify recipient exists
@@ -151,25 +227,17 @@ Deno.serve(async (req) => {
 
     console.log('✅ Recipient found:', recipient.email)
 
-    // Use system admin ID for all admin messages
-    const systemAdminId = '00000000-0000-0000-0000-000000000001'
+    // Use authenticated admin user ID as sender (or fallback to system admin)
+    const senderId = adminProfile?.id || user.id || '00000000-0000-0000-0000-000000000001'
     
-    console.log('📤 Inserting message with system admin sender...')
-    console.log('Message data:', {
-      recipient_id,
-      sender_id: systemAdminId,
-      subject: subject.trim(),
-      message: message.trim(),
-      priority,
-      popup_on_login
-    })
+    console.log('📤 Inserting message with sender:', senderId)
     
-    // Insert message using service role (completely bypasses RLS)
+    // Insert message using service role (bypasses RLS)
     const { data: messageData, error: insertError } = await supabase
       .from('user_messages')
       .insert({
         recipient_id,
-        sender_id: systemAdminId,
+        sender_id: senderId,
         subject: subject.trim(),
         message: message.trim(),
         priority,
