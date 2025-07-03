@@ -190,8 +190,7 @@ export function AdminUserProfilePage() {
           subject: values.subject.trim(),
           message: values.message.trim(),
           priority: values.priority,
-          popup_on_login: values.popup_on_login,
-          admin_key: 'chrome_ex_dev_admin_2025'
+          popup_on_login: values.popup_on_login
         }
       })
 
