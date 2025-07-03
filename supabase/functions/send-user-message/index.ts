@@ -7,44 +7,23 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-interface SendMessageRequest {
-  recipient_id: string
-  subject: string
-  message: string
-  priority?: 'normal' | 'high' | 'urgent'
-  popup_on_login?: boolean
-  admin_key: string
-}
-
 serve(async (req) => {
-  console.log('🚀 send-user-message function started [v7.0 - EXTREME DEBUG]')
+  console.log('🚀 send-user-message function started [v11.0 - FULL RESTORE FOR DASHBOARD TEST]')
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // Log all headers
-    console.log('📋 REQUEST HEADERS:')
-    req.headers.forEach((value, key) => {
-      if (key.toLowerCase() === 'authorization') {
-        console.log(`  ${key}: ${value.substring(0, 20)}...`)
-      } else {
-        console.log(`  ${key}: ${value}`)
-      }
-    })
-
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
 
     console.log('🔧 Environment check:', {
       hasUrl: !!supabaseUrl,
-      hasServiceKey: !!supabaseServiceKey,
-      hasAnonKey: !!supabaseAnonKey
+      hasServiceKey: !!supabaseServiceKey
     })
 
-    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
+    if (!supabaseUrl || !supabaseServiceKey) {
       console.error('❌ Missing environment variables')
       return new Response(
         JSON.stringify({ success: false, error: 'Server configuration error' }),
@@ -62,90 +41,18 @@ serve(async (req) => {
       adminKeyCorrect: body.admin_key === 'chrome_ex_dev_admin_2025'
     })
 
-    const { recipient_id, subject, message, priority, admin_key } = body
+    const { recipient_id, subject, message, priority, popup_on_login, admin_key } = body
 
-    // Check admin key first - if valid, bypass complex JWT checks
-    if (admin_key === 'chrome_ex_dev_admin_2025') {
-      console.log('✅ Valid admin key provided - bypassing JWT validation')
-    } else {
-      console.log('🔑 No admin key - performing full JWT authentication')
-      
-      const authHeader = req.headers.get('Authorization')
-      if (!authHeader) {
-        console.error('❌ No authorization header')
-        return new Response(
-          JSON.stringify({ success: false, error: 'Authorization required' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
-        )
-      }
-
-      console.log('🔍 JWT Token analysis:', {
-        hasBearer: authHeader.startsWith('Bearer '),
-        tokenLength: authHeader.length,
-        tokenPreview: authHeader.substring(0, 30) + '...'
-      })
-
-      // Create user client to verify JWT
-      const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
-        global: { headers: { Authorization: authHeader } }
-      })
-
-      console.log('👤 Attempting to get user from JWT...')
-      const { data: { user }, error: authError } = await supabaseUser.auth.getUser()
-      
-      console.log('👤 JWT Verification result:', {
-        hasUser: !!user,
-        userEmail: user?.email,
-        userId: user?.id,
-        errorMessage: authError?.message,
-        errorCode: authError?.code
-      })
-      
-      if (authError || !user) {
-        console.error('❌ JWT authentication failed:', authError?.message)
-        return new Response(
-          JSON.stringify({ 
-            success: false, 
-            error: 'Authentication failed',
-            details: authError?.message,
-            debug: 'JWT token is invalid or expired'
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
-        )
-      }
-
-      console.log('✅ JWT verified for user:', user.email)
-
-      // Check if authenticated user is admin
-      console.log('🔍 Checking admin status...')
-      const supabase = createClient(supabaseUrl, supabaseServiceKey)
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('role, email')
-        .eq('id', user.id)
-        .single()
-
-      console.log('👤 Profile lookup result:', {
-        found: !!profile,
-        role: profile?.role,
-        email: profile?.email,
-        errorMessage: profileError?.message
-      })
-
-      if (profileError || !profile || profile.role !== 'admin') {
-        console.error('❌ User is not admin:', {
-          profileError: profileError?.message,
-          userRole: profile?.role,
-          requiredRole: 'admin'
-        })
-        return new Response(
-          JSON.stringify({ success: false, error: 'Admin access required' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
-        )
-      }
-
-      console.log('✅ User confirmed as admin:', profile.email)
+    // VERIFY ADMIN KEY - this is our authentication
+    if (!admin_key || admin_key !== 'chrome_ex_dev_admin_2025') {
+      console.error('❌ Invalid or missing admin key')
+      return new Response(
+        JSON.stringify({ success: false, error: 'Valid admin key required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      )
     }
+
+    console.log('✅ Valid admin key provided - proceeding with message')
 
     if (!recipient_id || !subject || !message) {
       console.error('❌ Missing required fields:', {
@@ -159,11 +66,11 @@ serve(async (req) => {
       )
     }
 
-    // Use service role for all database operations
+    // Use service role client for ALL operations (bypasses RLS completely)
     console.log('🔧 Creating service role client...')
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Check if recipient exists
+    // Verify recipient exists
     console.log('🔍 Looking up recipient:', recipient_id)
     const { data: recipient, error: recipientError } = await supabase
       .from('users')
@@ -193,17 +100,18 @@ serve(async (req) => {
 
     console.log('✅ Recipient found:', recipient.email)
 
-    // Insert message using service role
+    // Insert message with service role (bypasses all RLS)
     console.log('💾 Inserting message into user_messages table...')
     const messagePayload = {
       recipient_id: recipient_id,
-      sender_id: null, // Will be null for system admin messages
+      sender_id: null, // System admin messages have null sender_id
       subject: subject,
       message: message,
       priority: priority || 'normal',
-      popup_on_login: false,
-      is_read: false // Correct column name
+      popup_on_login: popup_on_login || false,
+      is_read: false // Correct column name from schema
     }
+    
     console.log('📋 Message payload:', messagePayload)
 
     const { data: messageData, error: insertError } = await supabase
@@ -227,20 +135,25 @@ serve(async (req) => {
           success: false, 
           error: 'Failed to send message',
           details: insertError.message,
-          errorCode: insertError.code 
+          errorCode: insertError.code,
+          hint: insertError.hint 
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       )
     }
 
-    console.log('✅ Message sent successfully:', messageData.id)
+    console.log('✅ Message sent successfully to:', recipient.email)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         message_id: messageData.id,
-        recipient: recipient.email,
-        debug: 'Message sent successfully'
+        recipient: {
+          id: recipient.id,
+          email: recipient.email,
+          name: recipient.name
+        },
+        debug: 'Message sent via service role authentication with admin key'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     )
@@ -256,8 +169,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: false, 
         error: 'Internal server error',
-        details: error?.message || 'Unknown error',
-        stack: error?.stack
+        details: error?.message || 'Unknown error'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     )
