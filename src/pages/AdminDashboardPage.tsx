@@ -81,7 +81,7 @@ interface ExtensionWithOwner extends Extension {
 }
 
 interface AssignmentWithDetails extends ReviewAssignment {
-  extension: Extension;
+  extension: ExtensionWithOwner;
   reviewer: User;
 }
 
@@ -2616,9 +2616,23 @@ export function AdminDashboardPage() {
       >
         <Stack gap="md">
           <Group justify="space-between">
-            <Text fw={600} size="lg">
-              Reviews in Progress ({getActiveReviewsSorted().length})
-            </Text>
+            <div>
+              <Text fw={600} size="lg">
+                Reviews in Progress ({getActiveReviewsSorted().length})
+              </Text>
+              <Group gap="md" mt="xs">
+                <Badge color="green" size="sm">
+                  {getActiveReviewsSorted().filter(a => 
+                    a.extension?.owner?.subscription_status === "premium"
+                  ).length} Premium Fast Track
+                </Badge>
+                <Badge color="blue" size="sm">
+                  {getActiveReviewsSorted().filter(a => 
+                    a.extension?.owner?.subscription_status !== "premium"
+                  ).length} Free Tier
+                </Badge>
+              </Group>
+            </div>
             <Badge color="blue" size="lg">
               Sorted by Due Date
             </Badge>
@@ -2654,24 +2668,42 @@ export function AdminDashboardPage() {
                             size="sm"
                             radius="md"
                           />
-                          <div>
-                            <Text
-                              fw={600}
-                              size="sm"
-                              component="a"
-                              href={assignment.extension?.chrome_store_url}
-                              target="_blank"
-                              style={{
-                                textDecoration: "none",
-                                color: "inherit",
-                              }}
-                              className="hover:underline"
-                            >
-                              {assignment.extension?.name ||
-                                "Unknown Extension"}
-                            </Text>
+                          <div style={{ flex: 1 }}>
+                            <Group gap="xs" align="center" mb={4}>
+                              <Text
+                                fw={600}
+                                size="sm"
+                                component="a"
+                                href={assignment.extension?.chrome_store_url}
+                                target="_blank"
+                                style={{
+                                  textDecoration: "none",
+                                  color: "inherit",
+                                }}
+                                className="hover:underline"
+                              >
+                                {assignment.extension?.name ||
+                                  "Unknown Extension"}
+                              </Text>
+                              <Badge
+                                size="xs"
+                                color={
+                                  assignment.extension?.owner?.subscription_status === "premium"
+                                    ? "green"
+                                    : "blue"
+                                }
+                                variant="filled"
+                              >
+                                {assignment.extension?.owner?.subscription_status === "premium"
+                                  ? "Premium"
+                                  : "Free"}
+                              </Badge>
+                            </Group>
                             <Text size="xs" c="dimmed">
                               Assignment #{assignment.assignment_number}
+                            </Text>
+                            <Text size="xs" c="dimmed">
+                              Owner: {assignment.extension?.owner?.name || "Unknown"}
                             </Text>
                           </div>
                         </Group>

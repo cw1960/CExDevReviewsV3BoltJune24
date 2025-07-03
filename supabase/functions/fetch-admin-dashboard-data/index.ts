@@ -49,13 +49,16 @@ serve(async (req) => {
       throw extensionsError
     }
 
-    // Fetch all review assignments with extension and reviewer information
+    // Fetch all review assignments with extension (including owner) and reviewer information
     console.log('Fetching review assignments...')
     const { data: assignments, error: assignmentsError } = await supabase
       .from('review_assignments')
       .select(`
         *,
-        extension:extensions(*),
+        extension:extensions(
+          *,
+          owner:users(*)
+        ),
         reviewer:users(*)
       `)
       .order('assigned_at', { ascending: false })
