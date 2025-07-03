@@ -2547,7 +2547,8 @@ export function AdminDashboardPage() {
         opened={activeReviewsModalOpened}
         onClose={() => setActiveReviewsModalOpened(false)}
         title="Active Reviews"
-        size="xl"
+        size="95%"
+        centered={false}
       >
         <Stack gap="md">
           <Group justify="space-between">
@@ -2581,17 +2582,18 @@ export function AdminDashboardPage() {
                     p="md"
                     className="hover:bg-gray-50"
                   >
-                    <Grid align="center">
-                      <Grid.Col span={{ base: 12, md: 6 }}>
-                        <Group>
+                    <Grid align="center" gutter="sm">
+                      <Grid.Col span={{ base: 12, md: 4 }}>
+                        <Group gap="sm">
                           <Avatar
                             src={assignment.extension?.logo_url}
-                            size="md"
+                            size="sm"
                             radius="md"
                           />
                           <div>
                             <Text
                               fw={600}
+                              size="sm"
                               component="a"
                               href={assignment.extension?.chrome_store_url}
                               target="_blank"
@@ -2604,16 +2606,16 @@ export function AdminDashboardPage() {
                               {assignment.extension?.name ||
                                 "Unknown Extension"}
                             </Text>
-                            <Text size="sm" c="dimmed">
+                            <Text size="xs" c="dimmed">
                               Assignment #{assignment.assignment_number}
                             </Text>
                           </div>
                         </Group>
                       </Grid.Col>
 
-                      <Grid.Col span={{ base: 12, md: 3 }}>
+                      <Grid.Col span={{ base: 12, md: 2.5 }}>
                         <div>
-                          <Text size="sm" c="dimmed" fw={600}>
+                          <Text size="xs" c="dimmed" fw={600} mb={2}>
                             Reviewer:
                           </Text>
                           <Text
@@ -2629,6 +2631,7 @@ export function AdminDashboardPage() {
                               cursor: "pointer",
                               color: "var(--mantine-color-blue-6)",
                               textDecoration: "none",
+                              padding: 0,
                             }}
                             className="hover:underline"
                           >
@@ -2637,9 +2640,9 @@ export function AdminDashboardPage() {
                         </div>
                       </Grid.Col>
 
-                      <Grid.Col span={{ base: 12, md: 2 }}>
+                      <Grid.Col span={{ base: 12, md: 3 }}>
                         <div>
-                          <Text size="sm" c="dimmed" fw={600}>
+                          <Text size="xs" c="dimmed" fw={600} mb={2}>
                             Due Date:
                           </Text>
                           <Text
@@ -2681,26 +2684,29 @@ export function AdminDashboardPage() {
                         </div>
                       </Grid.Col>
 
-                      <Grid.Col span={{ base: 12, md: 1 }}>
-                        <Tooltip label="Cancel this assignment and put extension back in queue">
-                          <Button
-                            size="xs"
-                            color="red"
-                            variant="outline"
-                            onClick={() =>
-                              handleCancelAssignment(
-                                assignment.id,
-                                assignment.assignment_number.toString(),
-                                assignment.extension?.name ||
-                                  "Unknown Extension",
-                                assignment.reviewer?.name || "Unknown Reviewer",
-                              )
-                            }
-                            leftSection={<XCircle size={14} />}
-                          >
-                            Cancel
-                          </Button>
-                        </Tooltip>
+                      <Grid.Col span={{ base: 12, md: 2.5 }}>
+                        <Group justify="flex-end">
+                          <Tooltip label="Cancel this assignment and put extension back in queue">
+                            <Button
+                              size="xs"
+                              color="red"
+                              variant="outline"
+                              onClick={() =>
+                                handleCancelAssignment(
+                                  assignment.id,
+                                  assignment.assignment_number.toString(),
+                                  assignment.extension?.name ||
+                                    "Unknown Extension",
+                                  assignment.reviewer?.name ||
+                                    "Unknown Reviewer",
+                                )
+                              }
+                              leftSection={<XCircle size={14} />}
+                            >
+                              Cancel
+                            </Button>
+                          </Tooltip>
+                        </Group>
                       </Grid.Col>
                     </Grid>
                   </Card>
