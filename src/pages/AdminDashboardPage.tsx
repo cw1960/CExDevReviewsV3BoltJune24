@@ -22,6 +22,7 @@ import {
   Avatar,
   Divider,
   Drawer,
+  ScrollArea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -949,21 +950,25 @@ export function AdminDashboardPage() {
           <Card withBorder>
             <Group justify="space-between" mb="md">
               <Text fw={600}>Extension Management</Text>
+              <Text size="sm" c="dimmed">
+                {extensions.length} total extensions
+              </Text>
             </Group>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Extension</Table.Th>
-                  <Table.Th>Owner</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Reviewer</Table.Th>
-                  <Table.Th>Plan</Table.Th>
-                  <Table.Th>Submitted</Table.Th>
-                  <Table.Th>Actions</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {extensions.slice(0, 20).map((extension) => (
+            <ScrollArea h={400}>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Extension</Table.Th>
+                    <Table.Th>Owner</Table.Th>
+                    <Table.Th>Status</Table.Th>
+                    <Table.Th>Reviewer</Table.Th>
+                    <Table.Th>Plan</Table.Th>
+                    <Table.Th>Submitted</Table.Th>
+                    <Table.Th>Actions</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {extensions.map((extension) => (
                   <Table.Tr key={extension.id}>
                     <Table.Td>
                       <Group>
@@ -1080,6 +1085,7 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+            </ScrollArea>
           </Card>
         </Tabs.Panel>
 
@@ -1091,20 +1097,21 @@ export function AdminDashboardPage() {
                 {users.length} total users
               </Text>
             </Group>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>User</Table.Th>
-                  <Table.Th>Role</Table.Th>
-                  <Table.Th>Credits</Table.Th>
-                  <Table.Th>Qualified</Table.Th>
-                  <Table.Th>Plan</Table.Th>
-                  <Table.Th>Joined</Table.Th>
-                  <Table.Th>Actions</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {users.slice(0, 20).map((user) => (
+            <ScrollArea h={400}>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>User</Table.Th>
+                    <Table.Th>Role</Table.Th>
+                    <Table.Th>Credits</Table.Th>
+                    <Table.Th>Qualified</Table.Th>
+                    <Table.Th>Plan</Table.Th>
+                    <Table.Th>Joined</Table.Th>
+                    <Table.Th>Actions</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {users.map((user) => (
                   <Table.Tr key={user.id}>
                     <Table.Td>
                       <div>
@@ -1178,6 +1185,7 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+            </ScrollArea>
           </Card>
         </Tabs.Panel>
 
@@ -1194,21 +1202,25 @@ export function AdminDashboardPage() {
                   {assignments.filter((a) => a.status === "approved").length}{" "}
                   Completed
                 </Badge>
+                <Text size="sm" c="dimmed">
+                  {assignments.length} total assignments
+                </Text>
               </Group>
             </Group>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Assignment</Table.Th>
-                  <Table.Th>Extension</Table.Th>
-                  <Table.Th>Reviewer</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Date</Table.Th>
-                  <Table.Th>Rating</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {assignments.slice(0, 20).map((assignment) => (
+            <ScrollArea h={400}>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Assignment</Table.Th>
+                    <Table.Th>Extension</Table.Th>
+                    <Table.Th>Reviewer</Table.Th>
+                    <Table.Th>Status</Table.Th>
+                    <Table.Th>Date</Table.Th>
+                    <Table.Th>Rating</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {assignments.map((assignment) => (
                   <Table.Tr key={assignment.id}>
                     <Table.Td>
                       <Text fw={500}>#{assignment.assignment_number}</Text>
@@ -1287,6 +1299,7 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+            </ScrollArea>
           </Card>
         </Tabs.Panel>
 
@@ -1295,21 +1308,22 @@ export function AdminDashboardPage() {
             <Group justify="space-between" mb="md">
               <Text fw={600}>Credit Transactions</Text>
               <Text size="sm" c="dimmed">
-                Recent activity
+                {transactions.length} total transactions
               </Text>
             </Group>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>User</Table.Th>
-                  <Table.Th>Amount</Table.Th>
-                  <Table.Th>Type</Table.Th>
-                  <Table.Th>Description</Table.Th>
-                  <Table.Th>Date</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {transactions.slice(0, 20).map((transaction) => (
+            <ScrollArea h={400}>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>User</Table.Th>
+                    <Table.Th>Amount</Table.Th>
+                    <Table.Th>Type</Table.Th>
+                    <Table.Th>Description</Table.Th>
+                    <Table.Th>Date</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {transactions.map((transaction) => (
                   <Table.Tr key={transaction.id}>
                     <Table.Td>
                       <Text size="sm">{transaction.user_id}</Text>
@@ -1345,6 +1359,7 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+            </ScrollArea>
           </Card>
         </Tabs.Panel>
 
@@ -1366,24 +1381,25 @@ export function AdminDashboardPage() {
                 </Text>
               </Group>
             </Group>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Date</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Subject</Table.Th>
-                  <Table.Th>Body Preview</Table.Th>
-                  <Table.Th>Error</Table.Th>
-                  <Table.Th>
-                    <Group gap="xs">
-                      <Eye size={14} />
-                      <Text size="sm">Details</Text>
-                    </Group>
-                  </Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {problemReports.slice(0, 50).map((report) => (
+            <ScrollArea h={400}>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Date</Table.Th>
+                    <Table.Th>Status</Table.Th>
+                    <Table.Th>Subject</Table.Th>
+                    <Table.Th>Body Preview</Table.Th>
+                    <Table.Th>Error</Table.Th>
+                    <Table.Th>
+                      <Group gap="xs">
+                        <Eye size={14} />
+                        <Text size="sm">Details</Text>
+                      </Group>
+                    </Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {problemReports.map((report) => (
                   <Table.Tr 
                     key={report.id}
                     onClick={() => handleReportClick(report)}
@@ -1442,6 +1458,7 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+            </ScrollArea>
             {problemReports.length === 0 && (
               <Text ta="center" c="dimmed" py="xl">
                 No problem reports found
@@ -1469,7 +1486,8 @@ export function AdminDashboardPage() {
                 </Text>
               </Group>
             </Group>
-            <Table>
+            <ScrollArea h={400}>
+              <Table>
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>Date</Table.Th>
@@ -1558,6 +1576,7 @@ export function AdminDashboardPage() {
                 ))}
               </Table.Tbody>
             </Table>
+            </ScrollArea>
             {sentMessages.length === 0 && (
               <Text ta="center" c="dimmed" py="xl">
                 No messages sent yet
