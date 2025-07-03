@@ -105,6 +105,9 @@ export function AdminDashboardPage() {
   const [sentMessagesLoading, setSentMessagesLoading] = useState(false);
   const [messageModalOpened, setMessageModalOpened] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<UserMessageWithRecipient | null>(null);
+  
+  // Queue modal state
+  const [queueModalOpened, setQueueModalOpened] = useState(false);
 
   // Data states
   const [stats, setStats] = useState({
@@ -257,6 +260,10 @@ export function AdminDashboardPage() {
   const handleMessageClick = (message: UserMessageWithRecipient) => {
     setSelectedMessage(message);
     setMessageModalOpened(true);
+  };
+
+  const handleQueueCardClick = () => {
+    setQueueModalOpened(true);
   };
 
   const updateReportStatus = async (reportId: string, newStatus: 'pending' | 'resolved') => {
@@ -828,7 +835,12 @@ export function AdminDashboardPage() {
             </Grid.Col>
 
             <Grid.Col span={{ base: 12, md: 4 }}>
-              <Card withBorder>
+              <Card 
+                withBorder 
+                onClick={handleQueueCardClick}
+                style={{ cursor: 'pointer' }}
+                className="hover:bg-gray-50"
+              >
                 <Group justify="space-between" mb="md">
                   <Text fw={600}>Extensions in Queue</Text>
                   <Package size={20} />
@@ -1733,6 +1745,172 @@ export function AdminDashboardPage() {
              </Group>
           </Stack>
         )}
+      </Modal>
+
+      {/* Extensions in Queue Modal */}
+      <Modal
+        opened={queueModalOpened}
+        onClose={() => setQueueModalOpened(false)}
+        title="Extensions in Queue"
+        size="xl"
+      >
+        <Stack gap="md">
+          {(() => {
+            // Filter extensions with status "queued" and sort by newest first
+            const queuedExtensions = extensions
+              .filter(extension => extension.status === 'queued')
+              .sort((a, b) => {
+                const dateA = new Date(a.submitted_to_queue_at || a.created_at).getTime();
+                const dateB = new Date(b.submitted_to_queue_at || b.created_at).getTime();
+                return dateB - dateA; // Reverse chronological order (newest first)
+              });
+
+            if (queuedExtensions.length === 0) {
+              return (
+                <Card withBorder p="xl" bg="gray.0">
+                  <Stack align="center" gap="md">
+                    <Package size={48} color="#9ca3af" />
+                    <Text size="lg" fw={600} c="dimmed">No Extensions in Queue</Text>
+                    <Text size="sm" c="dimmed" ta="center">
+                      There are currently no extensions waiting for review assignment.
+                    </Text>
+                  </Stack>
+                </Card>
+              );
+            }
+
+            return (
+              <div>
+                <Group justify="space-between" mb="md">
+                  <Text fw={600} size="lg">
+                    {queuedExtensions.length} extension{queuedExtensions.length !== 1 ? 's' : ''} waiting for review
+                  </Text>
+                  <Badge color="orange" size="lg">
+                    QUEUE
+                  </Badge>
+                </Group>
+                
+                <Table>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>Extension</Table.Th>
+                      <Table.Th>Owner</Table.Th>
+                      <Table.Th>Plan</Table.Th>
+                      <Table.Th>Submitted to Queue</Table.Th>
+                      <Table.Th>Actions</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    {queuedExtensions.map((extension) => (
+                      <Table.Tr key={extension.id}>
+                        <Table.Td>
+                          <Group>
+                            <Avatar size="sm" src={extension.logo_url} />
+                            <div>
+                              <Text
+                                fw={500}
+                                component="a"
+                                href={extension.chrome_store_url}
+                                target="_blank"
+                                style={{ textDecoration: "none", color: "inherit" }}
+                                className="hover:underline"
+                              >
+                                {extension.name}
+                              </Text>
+                              <Text size="sm" c="dimmed" truncate maw={200}>
+                                {extension.description}
+                              </Text>
+                            </div>
+                          </Group>
+                        </Table.Td>
+                        <Table.Td>
+                          <Text
+                            size="sm"
+                            component="button"
+                            onClick={() =>
+                              extension.owner?.id &&
+                              navigateToUserProfile(extension.owner.id)
+                            }
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "var(--mantine-color-blue-6)",
+                              textDecoration: "none",
+                            }}
+                            className="hover:underline"
+                          >
+                            {extension.owner?.name || "Unknown"}
+                          </Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Badge
+                            color={
+                              extension.owner?.subscription_status === "premium"
+                                ? "green"
+                                : "blue"
+                            }
+                            size="sm"
+                          >
+                            {extension.owner?.subscription_status === "premium"
+                              ? "Premium"
+                              : "Free"}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          <div>
+                            <Text size="sm">
+                              {extension.submitted_to_queue_at
+                                ? new Date(extension.submitted_to_queue_at).toLocaleDateString()
+                                : new Date(extension.created_at).toLocaleDateString()}
+                            </Text>
+                            <Text size="xs" c="dimmed">
+                              {extension.submitted_to_queue_at
+                                ? new Date(extension.submitted_to_queue_at).toLocaleTimeString()
+                                : new Date(extension.created_at).toLocaleTimeString()}
+                            </Text>
+                          </div>
+                        </Table.Td>
+                        <Table.Td>
+                          <Group gap="xs">
+                            <ActionIcon
+                              variant="light"
+                              size="sm"
+                              onClick={() =>
+                                window.open(extension.chrome_store_url, "_blank")
+                              }
+                            >
+                              <Eye size={14} />
+                            </ActionIcon>
+                            {extension.owner?.id && (
+                              <ActionIcon
+                                variant="light"
+                                color="blue"
+                                size="sm"
+                                onClick={() => navigateToUserProfile(extension.owner.id)}
+                              >
+                                <Users size={14} />
+                              </ActionIcon>
+                            )}
+                          </Group>
+                        </Table.Td>
+                      </Table.Tr>
+                    ))}
+                  </Table.Tbody>
+                </Table>
+              </div>
+            );
+          })()}
+          
+          <Group justify="flex-end" mt="md">
+            <Button 
+              variant="outline" 
+              onClick={() => setQueueModalOpened(false)}
+            >
+              Close
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
 
       {/* Message Detail Modal */}
