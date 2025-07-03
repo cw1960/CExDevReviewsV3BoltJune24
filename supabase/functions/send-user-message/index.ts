@@ -8,7 +8,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  console.log('🚀 send-user-message function started [v11.0 - FULL RESTORE FOR DASHBOARD TEST]')
+  console.log('🚀 send-user-message function started [v12.0 - DUAL AUTH SYSTEM]')
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -31,8 +31,20 @@ serve(async (req) => {
       )
     }
 
-    const body = await req.json()
-    console.log('📥 Request body received:', {
+    // Get request body
+    let body
+    try {
+      body = await req.json()
+      console.log('📥 Request body parsed successfully')
+    } catch (error) {
+      console.error('❌ Failed to parse request body:', error.message)
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid JSON in request body' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
+    console.log('📥 Request data:', {
       hasRecipientId: !!body.recipient_id,
       hasSubject: !!body.subject,
       hasMessage: !!body.message,
@@ -68,23 +80,41 @@ serve(async (req) => {
 
     // Use service role client for ALL operations (bypasses RLS completely)
     console.log('🔧 Creating service role client...')
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { persistSession: false }
+    })
 
     // Verify recipient exists
     console.log('🔍 Looking up recipient:', recipient_id)
-    const { data: recipient, error: recipientError } = await supabase
-      .from('users')
-      .select('id, email, name')
-      .eq('id', recipient_id)
-      .single()
-
-    console.log('👤 Recipient lookup result:', {
-      found: !!recipient,
-      email: recipient?.email,
-      name: recipient?.name,
-      errorMessage: recipientError?.message,
-      errorCode: recipientError?.code
-    })
+    let recipient, recipientError
+    try {
+      const result = await supabase
+        .from('users')
+        .select('id, email, name')
+        .eq('id', recipient_id)
+        .single()
+      
+      recipient = result.data
+      recipientError = result.error
+      
+      console.log('👤 Recipient lookup result:', {
+        found: !!recipient,
+        email: recipient?.email,
+        name: recipient?.name,
+        errorMessage: recipientError?.message,
+        errorCode: recipientError?.code
+      })
+    } catch (error) {
+      console.error('❌ Exception during recipient lookup:', error.message)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Failed to lookup recipient',
+          details: error.message 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      )
+    }
 
     if (recipientError || !recipient) {
       console.error('❌ Recipient not found:', recipientError?.message)
@@ -92,7 +122,7 @@ serve(async (req) => {
         JSON.stringify({ 
           success: false, 
           error: 'Recipient not found',
-          details: recipientError?.message 
+          details: recipientError?.message || 'User does not exist'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
       )
@@ -114,19 +144,35 @@ serve(async (req) => {
     
     console.log('📋 Message payload:', messagePayload)
 
-    const { data: messageData, error: insertError } = await supabase
-      .from('user_messages')
-      .insert(messagePayload)
-      .select()
-      .single()
-
-    console.log('💾 Insert result:', {
-      success: !!messageData,
-      messageId: messageData?.id,
-      errorMessage: insertError?.message,
-      errorCode: insertError?.code,
-      errorDetails: insertError?.details
-    })
+    let messageData, insertError
+    try {
+      const result = await supabase
+        .from('user_messages')
+        .insert(messagePayload)
+        .select()
+        .single()
+      
+      messageData = result.data
+      insertError = result.error
+      
+      console.log('💾 Insert result:', {
+        success: !!messageData,
+        messageId: messageData?.id,
+        errorMessage: insertError?.message,
+        errorCode: insertError?.code,
+        errorDetails: insertError?.details
+      })
+    } catch (error) {
+      console.error('❌ Exception during message insert:', error.message)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Failed to insert message',
+          details: error.message 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      )
+    }
 
     if (insertError) {
       console.error('❌ Message insert failed:', insertError.message)
@@ -169,7 +215,8 @@ serve(async (req) => {
       JSON.stringify({ 
         success: false, 
         error: 'Internal server error',
-        details: error?.message || 'Unknown error'
+        details: error?.message || 'Unknown error',
+        stack: error?.stack
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     )
