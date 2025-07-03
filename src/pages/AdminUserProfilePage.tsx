@@ -178,13 +178,29 @@ export function AdminUserProfilePage() {
       setSendingMessage(true)
       console.log('Sending message via Edge Function...')
       
-      // Debug authentication state
-      const session = await supabase.auth.getSession()
-      console.log('Current session:', session.data.session ? 'Session exists' : 'No session')
-      console.log('User ID:', session.data.session?.user?.id)
-      console.log('Access token exists:', !!session.data.session?.access_token)
+      // Debug authentication state and force token refresh
+      console.log('🔧 Refreshing session before sending message...')
+      const { data: sessionData, error: sessionError } = await supabase.auth.refreshSession()
+      
+      if (sessionError) {
+        console.error('❌ Session refresh failed:', sessionError)
+        throw new Error('Session expired. Please log out and log in again.')
+      }
+      
+      const session = sessionData.session
+      console.log('✅ Session refreshed successfully')
+      console.log('User ID:', session?.user?.id)
+      console.log('User email:', session?.user?.email)
+      console.log('Access token exists:', !!session?.access_token)
+      
+      if (!session) {
+        throw new Error('No valid session found. Please log out and log in again.')
+      }
       
       const { data, error } = await supabase.functions.invoke('send-user-message', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        },
         body: {
           recipient_id: userData.user.id,
           subject: values.subject.trim(),
