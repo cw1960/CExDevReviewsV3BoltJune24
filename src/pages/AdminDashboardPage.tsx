@@ -266,6 +266,50 @@ export function AdminDashboardPage() {
     setQueueModalOpened(true);
   };
 
+  const handleRemoveFromQueue = async (extensionId: string, extensionName: string) => {
+    if (!confirm(`Are you sure you want to remove "${extensionName}" from the queue?\n\nThis will:\n- Remove the extension from queue\n- Refund the user's credit\n- Reset their monthly exchange count (if free tier)`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/supabase/functions/admin-remove-from-queue', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          extension_id: extensionId,
+          admin_key: 'chrome_ex_dev_admin_2025'
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        notifications.show({
+          title: 'Success',
+          message: `Extension "${extensionName}" removed from queue successfully`,
+          color: 'green'
+        });
+        // Refresh the data
+        fetchAdminData();
+      } else {
+        notifications.show({
+          title: 'Error',
+          message: result.error || 'Failed to remove extension from queue',
+          color: 'red'
+        });
+      }
+    } catch (error) {
+      console.error('Error removing extension from queue:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to remove extension from queue',
+        color: 'red'
+      });
+    }
+  };
+
   const updateReportStatus = async (reportId: string, newStatus: 'pending' | 'resolved') => {
     try {
       setUpdatingReportStatus(true);
@@ -1892,6 +1936,14 @@ export function AdminDashboardPage() {
                                 <Users size={14} />
                               </ActionIcon>
                             )}
+                            <ActionIcon
+                              variant="filled"
+                              color="red"
+                              size="sm"
+                              onClick={() => handleRemoveFromQueue(extension.id, extension.name)}
+                            >
+                              <XCircle size={14} />
+                            </ActionIcon>
                           </Group>
                         </Table.Td>
                       </Table.Tr>
