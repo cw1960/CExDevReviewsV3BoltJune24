@@ -17,7 +17,7 @@ interface SendMessageRequest {
 }
 
 serve(async (req) => {
-  console.log('🚀 send-user-message function started [v5.0 - JWT + ADMIN KEY HYBRID]')
+  console.log('🚀 send-user-message function started [v6.0 - MINIMAL JWT FIX]')
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -37,27 +37,26 @@ serve(async (req) => {
     }
 
     const body = await req.json()
-    console.log('📥 Request received with keys:', Object.keys(body))
+    console.log('📥 Request received')
 
     const { recipient_id, subject, message, priority, admin_key } = body
 
-    // Check for admin key first
+    // Check admin key first - if valid, bypass complex JWT checks
     if (admin_key === 'chrome_ex_dev_admin_2025') {
-      console.log('✅ Admin key provided - bypassing JWT auth')
+      console.log('✅ Valid admin key provided - bypassing JWT validation')
     } else {
-      // If no admin key, require JWT authentication
-      console.log('🔑 No admin key - checking JWT authentication')
+      console.log('🔑 No admin key - performing full JWT authentication')
       
       const authHeader = req.headers.get('Authorization')
       if (!authHeader) {
-        console.error('❌ No authorization header and no admin key')
+        console.error('❌ No authorization header')
         return new Response(
           JSON.stringify({ success: false, error: 'Authorization required' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
         )
       }
 
-      // Verify JWT token
+      // Create user client to verify JWT
       const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
         global: { headers: { Authorization: authHeader } }
       })
@@ -65,7 +64,7 @@ serve(async (req) => {
       const { data: { user }, error: authError } = await supabaseUser.auth.getUser()
       
       if (authError || !user) {
-        console.error('❌ JWT authentication failed:', authError)
+        console.error('❌ JWT authentication failed:', authError?.message)
         return new Response(
           JSON.stringify({ success: false, error: 'Authentication failed' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
@@ -74,7 +73,7 @@ serve(async (req) => {
 
       console.log('✅ JWT verified for user:', user.email)
 
-      // Check if user is admin
+      // Check if authenticated user is admin
       const supabase = createClient(supabaseUrl, supabaseServiceKey)
       const { data: profile, error: profileError } = await supabase
         .from('users')
@@ -113,7 +112,7 @@ serve(async (req) => {
       .single()
 
     if (recipientError || !recipient) {
-      console.error('❌ Recipient not found:', recipientError)
+      console.error('❌ Recipient not found:', recipientError?.message)
       return new Response(
         JSON.stringify({ success: false, error: 'Recipient not found' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
@@ -122,7 +121,7 @@ serve(async (req) => {
 
     console.log('✅ Recipient found:', recipient.email)
 
-    // Insert message using service role (bypasses all RLS)
+    // Insert message using service role
     console.log('💾 Inserting message...')
     const { data: messageData, error: insertError } = await supabase
       .from('user_messages')
@@ -139,7 +138,7 @@ serve(async (req) => {
       .single()
 
     if (insertError) {
-      console.error('❌ Message insert failed:', insertError)
+      console.error('❌ Message insert failed:', insertError.message)
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -162,7 +161,7 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('💥 Fatal error:', error)
+    console.error('💥 Fatal error:', error.message)
     
     return new Response(
       JSON.stringify({ 
