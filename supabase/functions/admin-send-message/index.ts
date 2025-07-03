@@ -71,7 +71,7 @@ serve(async (req) => {
         recipient_id: body.recipient_id,
         subject: body.subject,
         message: body.message,
-        priority: body.priority || 'normal',
+        priority: body.priority || 'medium',
         popup_on_login: body.popup_on_login || false,
         is_read: false,
         sender_id: null
