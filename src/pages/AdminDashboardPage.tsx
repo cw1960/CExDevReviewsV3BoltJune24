@@ -2218,18 +2218,28 @@ export function AdminDashboardPage() {
       >
         <Stack gap="md">
           {(() => {
-            // Filter extensions with status "queued" and sort by newest first
-            const queuedExtensions = extensions
-              .filter((extension) => extension.status === "queued")
+            // Filter extensions with status "queued" and implement absolute priority system
+            const allQueuedExtensions = extensions.filter((extension) => extension.status === "queued");
+            
+            // Separate into premium and free tiers
+            const premiumExtensions = allQueuedExtensions
+              .filter((extension) => extension.owner?.subscription_status === "premium")
               .sort((a, b) => {
-                const dateA = new Date(
-                  a.submitted_to_queue_at || a.created_at,
-                ).getTime();
-                const dateB = new Date(
-                  b.submitted_to_queue_at || b.created_at,
-                ).getTime();
-                return dateB - dateA; // Reverse chronological order (newest first)
+                const dateA = new Date(a.submitted_to_queue_at || a.created_at).getTime();
+                const dateB = new Date(b.submitted_to_queue_at || b.created_at).getTime();
+                return dateA - dateB; // FIFO: oldest first within premium tier
               });
+              
+            const freeExtensions = allQueuedExtensions
+              .filter((extension) => extension.owner?.subscription_status !== "premium")
+              .sort((a, b) => {
+                const dateA = new Date(a.submitted_to_queue_at || a.created_at).getTime();
+                const dateB = new Date(b.submitted_to_queue_at || b.created_at).getTime();
+                return dateA - dateB; // FIFO: oldest first within free tier
+              });
+            
+            // Combine with absolute priority: ALL premium first, then ALL free
+            const queuedExtensions = [...premiumExtensions, ...freeExtensions];
 
             if (queuedExtensions.length === 0) {
               return (
@@ -2251,19 +2261,40 @@ export function AdminDashboardPage() {
             return (
               <div>
                 <Group justify="space-between" mb="md">
-                  <Text fw={600} size="lg">
-                    {queuedExtensions.length} extension
-                    {queuedExtensions.length !== 1 ? "s" : ""} waiting for
-                    review
-                  </Text>
+                  <div>
+                    <Text fw={600} size="lg">
+                      {queuedExtensions.length} extension
+                      {queuedExtensions.length !== 1 ? "s" : ""} waiting for review
+                    </Text>
+                    <Group gap="md" mt="xs">
+                      <Badge color="green" size="sm">
+                        {premiumExtensions.length} Premium Fast Track
+                      </Badge>
+                      <Badge color="blue" size="sm">
+                        {freeExtensions.length} Free Tier
+                      </Badge>
+                    </Group>
+                  </div>
                   <Badge color="orange" size="lg">
                     QUEUE
                   </Badge>
                 </Group>
+                
+                {premiumExtensions.length > 0 && (
+                  <Alert color="green" mb="md" icon={<Package size={16} />}>
+                    <Text fw={500} size="sm">
+                      ⚡ Premium Fast Track users get ABSOLUTE PRIORITY
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      All {premiumExtensions.length} premium extension{premiumExtensions.length !== 1 ? "s" : ""} will be processed before any free tier extensions
+                    </Text>
+                  </Alert>
+                )}
 
                 <Table>
                   <Table.Thead>
                     <Table.Tr>
+                      <Table.Th>Position</Table.Th>
                       <Table.Th>Extension</Table.Th>
                       <Table.Th>Owner</Table.Th>
                       <Table.Th>Plan</Table.Th>
@@ -2272,8 +2303,40 @@ export function AdminDashboardPage() {
                     </Table.Tr>
                   </Table.Thead>
                   <Table.Tbody>
-                    {queuedExtensions.map((extension) => (
-                      <Table.Tr key={extension.id}>
+                    {queuedExtensions.map((extension, index) => {
+                      const isPremium = extension.owner?.subscription_status === "premium";
+                      const premiumPosition = isPremium ? premiumExtensions.findIndex(ext => ext.id === extension.id) + 1 : null;
+                      const freePosition = !isPremium ? freeExtensions.findIndex(ext => ext.id === extension.id) + 1 : null;
+                      
+                      return (
+                      <Table.Tr 
+                        key={extension.id}
+                        style={{
+                          backgroundColor: isPremium ? 'rgba(34, 197, 94, 0.05)' : 'rgba(59, 130, 246, 0.05)',
+                          borderLeft: isPremium ? '3px solid #22c55e' : '3px solid #3b82f6'
+                        }}
+                                             >
+                        <Table.Td>
+                          <Stack align="center" gap={2}>
+                            <Badge 
+                              size="xs" 
+                              color={isPremium ? "green" : "blue"}
+                              variant="filled"
+                            >
+                              #{index + 1}
+                            </Badge>
+                            {isPremium && (
+                              <Text size="xs" c="green.6" fw={600}>
+                                P{premiumPosition}
+                              </Text>
+                            )}
+                            {!isPremium && (
+                              <Text size="xs" c="blue.6" fw={600}>
+                                F{freePosition}
+                              </Text>
+                            )}
+                          </Stack>
+                        </Table.Td>
                         <Table.Td>
                           <Group>
                             <Avatar size="sm" src={extension.logo_url} />
@@ -2395,7 +2458,8 @@ export function AdminDashboardPage() {
                           </Group>
                         </Table.Td>
                       </Table.Tr>
-                    ))}
+                      );
+                    })}
                   </Table.Tbody>
                 </Table>
               </div>
