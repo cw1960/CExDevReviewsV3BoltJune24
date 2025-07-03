@@ -23,6 +23,7 @@ import {
   Divider,
   Drawer,
   ScrollArea,
+  Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -290,6 +291,76 @@ export function AdminDashboardPage() {
 
   const handleActiveReviewsCardClick = () => {
     setActiveReviewsModalOpened(true);
+  };
+
+  const handleCancelAssignment = async (
+    assignmentId: string,
+    assignmentNumber: string,
+    extensionName: string,
+    reviewerName: string,
+  ) => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to cancel Assignment #${assignmentNumber}?\n\n` +
+        `Extension: ${extensionName}\n` +
+        `Reviewer: ${reviewerName}\n\n` +
+        `This will:\n` +
+        `• Cancel the assignment and remove it from the reviewer\n` +
+        `• Put the extension back at the front of the review queue\n` +
+        `• The reviewer will NOT receive credit for this review\n\n` +
+        `This action cannot be undone.`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "admin-cancel-assignment",
+        {
+          body: {
+            assignment_id: assignmentId,
+            admin_key: "chrome_ex_dev_admin_2025",
+            reason: "Admin cancelled due to reviewer delay",
+          },
+        },
+      );
+
+      if (error) {
+        console.error("Error cancelling assignment:", error);
+        notifications.show({
+          title: "Error",
+          message: "Failed to cancel assignment. Please try again.",
+          color: "red",
+        });
+        return;
+      }
+
+      if (!data.success) {
+        console.error("Assignment cancellation failed:", data.error);
+        notifications.show({
+          title: "Error",
+          message: data.error || "Failed to cancel assignment.",
+          color: "red",
+        });
+        return;
+      }
+
+      notifications.show({
+        title: "Assignment Cancelled",
+        message: data.message,
+        color: "green",
+      });
+
+      // Refresh the data to show updated state
+      fetchAdminData();
+    } catch (error) {
+      console.error("Error cancelling assignment:", error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to cancel assignment. Please try again.",
+        color: "red",
+      });
+    }
   };
 
   const handleRemoveFromQueue = async (
@@ -2566,7 +2637,7 @@ export function AdminDashboardPage() {
                         </div>
                       </Grid.Col>
 
-                      <Grid.Col span={{ base: 12, md: 3 }}>
+                      <Grid.Col span={{ base: 12, md: 2 }}>
                         <div>
                           <Text size="sm" c="dimmed" fw={600}>
                             Due Date:
@@ -2608,6 +2679,28 @@ export function AdminDashboardPage() {
                             })()}
                           </Text>
                         </div>
+                      </Grid.Col>
+
+                      <Grid.Col span={{ base: 12, md: 1 }}>
+                        <Tooltip label="Cancel this assignment and put extension back in queue">
+                          <Button
+                            size="xs"
+                            color="red"
+                            variant="outline"
+                            onClick={() =>
+                              handleCancelAssignment(
+                                assignment.id,
+                                assignment.assignment_number.toString(),
+                                assignment.extension?.name ||
+                                  "Unknown Extension",
+                                assignment.reviewer?.name || "Unknown Reviewer",
+                              )
+                            }
+                            leftSection={<XCircle size={14} />}
+                          >
+                            Cancel
+                          </Button>
+                        </Tooltip>
                       </Grid.Col>
                     </Grid>
                   </Card>
