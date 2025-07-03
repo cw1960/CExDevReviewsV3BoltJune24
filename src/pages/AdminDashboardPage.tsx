@@ -114,6 +114,10 @@ export function AdminDashboardPage() {
   // Queue modal state
   const [queueModalOpened, setQueueModalOpened] = useState(false);
 
+  // Active reviews modal state
+  const [activeReviewsModalOpened, setActiveReviewsModalOpened] =
+    useState(false);
+
   // Search states for each tab
   const [extensionsSearch, setExtensionsSearch] = useState("");
   const [usersSearch, setUsersSearch] = useState("");
@@ -282,6 +286,10 @@ export function AdminDashboardPage() {
 
   const handleQueueCardClick = () => {
     setQueueModalOpened(true);
+  };
+
+  const handleActiveReviewsCardClick = () => {
+    setActiveReviewsModalOpened(true);
   };
 
   const handleRemoveFromQueue = async (
@@ -601,6 +609,17 @@ export function AdminDashboardPage() {
         message.recipient?.email?.toLowerCase().includes(search) ||
         message.priority?.toLowerCase().includes(search),
     );
+  };
+
+  // Get active reviews sorted by due date (soonest first)
+  const getActiveReviewsSorted = () => {
+    return assignments
+      .filter((assignment) => assignment.status === "assigned")
+      .sort((a, b) => {
+        const dateA = new Date(a.due_at).getTime();
+        const dateB = new Date(b.due_at).getTime();
+        return dateA - dateB; // Ascending order (soonest first)
+      });
   };
 
   // CONTROLLED ADMIN DASHBOARD COLOR FORCING - Fixed infinite loop
@@ -1013,7 +1032,12 @@ export function AdminDashboardPage() {
             </Grid.Col>
 
             <Grid.Col span={{ base: 12, md: 4 }}>
-              <Card withBorder>
+              <Card
+                withBorder
+                onClick={handleActiveReviewsCardClick}
+                style={{ cursor: "pointer" }}
+                className="hover:bg-gray-50"
+              >
                 <Group justify="space-between" mb="md">
                   <Text fw={600}>Active Reviews</Text>
                   <Star size={20} />
@@ -2445,6 +2469,162 @@ export function AdminDashboardPage() {
             </Group>
           </Stack>
         )}
+      </Modal>
+
+      {/* Active Reviews Modal */}
+      <Modal
+        opened={activeReviewsModalOpened}
+        onClose={() => setActiveReviewsModalOpened(false)}
+        title="Active Reviews"
+        size="xl"
+      >
+        <Stack gap="md">
+          <Group justify="space-between">
+            <Text fw={600} size="lg">
+              Reviews in Progress ({getActiveReviewsSorted().length})
+            </Text>
+            <Badge color="blue" size="lg">
+              Sorted by Due Date
+            </Badge>
+          </Group>
+
+          {getActiveReviewsSorted().length === 0 ? (
+            <Card withBorder p="xl">
+              <Stack align="center" gap="md">
+                <Star size={48} color="#9ca3af" />
+                <Text size="lg" fw={600} c="dimmed">
+                  No Active Reviews
+                </Text>
+                <Text size="sm" c="dimmed" ta="center">
+                  There are currently no reviews in progress.
+                </Text>
+              </Stack>
+            </Card>
+          ) : (
+            <ScrollArea h={500}>
+              <Stack gap="sm">
+                {getActiveReviewsSorted().map((assignment, index) => (
+                  <Card
+                    key={assignment.id}
+                    withBorder
+                    p="md"
+                    className="hover:bg-gray-50"
+                  >
+                    <Grid align="center">
+                      <Grid.Col span={{ base: 12, md: 6 }}>
+                        <Group>
+                          <Avatar
+                            src={assignment.extension?.logo_url}
+                            size="md"
+                            radius="md"
+                          />
+                          <div>
+                            <Text
+                              fw={600}
+                              component="a"
+                              href={assignment.extension?.chrome_store_url}
+                              target="_blank"
+                              style={{
+                                textDecoration: "none",
+                                color: "inherit",
+                              }}
+                              className="hover:underline"
+                            >
+                              {assignment.extension?.name ||
+                                "Unknown Extension"}
+                            </Text>
+                            <Text size="sm" c="dimmed">
+                              Assignment #{assignment.assignment_number}
+                            </Text>
+                          </div>
+                        </Group>
+                      </Grid.Col>
+
+                      <Grid.Col span={{ base: 12, md: 3 }}>
+                        <div>
+                          <Text size="sm" c="dimmed" fw={600}>
+                            Reviewer:
+                          </Text>
+                          <Text
+                            size="sm"
+                            component="button"
+                            onClick={() =>
+                              assignment.reviewer?.id &&
+                              navigateToUserProfile(assignment.reviewer.id)
+                            }
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "var(--mantine-color-blue-6)",
+                              textDecoration: "none",
+                            }}
+                            className="hover:underline"
+                          >
+                            {assignment.reviewer?.name || "Unknown"}
+                          </Text>
+                        </div>
+                      </Grid.Col>
+
+                      <Grid.Col span={{ base: 12, md: 3 }}>
+                        <div>
+                          <Text size="sm" c="dimmed" fw={600}>
+                            Due Date:
+                          </Text>
+                          <Text
+                            size="sm"
+                            fw={600}
+                            c={
+                              new Date(assignment.due_at) < new Date()
+                                ? "red"
+                                : new Date(assignment.due_at).getTime() -
+                                      new Date().getTime() <
+                                    24 * 60 * 60 * 1000
+                                  ? "orange"
+                                  : "green"
+                            }
+                          >
+                            {new Date(assignment.due_at).toLocaleDateString()}
+                          </Text>
+                          <Text size="xs" c="dimmed">
+                            {(() => {
+                              const now = new Date();
+                              const dueDate = new Date(assignment.due_at);
+                              const diffTime =
+                                dueDate.getTime() - now.getTime();
+                              const diffDays = Math.ceil(
+                                diffTime / (1000 * 60 * 60 * 24),
+                              );
+
+                              if (diffDays < 0) {
+                                return `${Math.abs(diffDays)} days overdue`;
+                              } else if (diffDays === 0) {
+                                return "Due today";
+                              } else if (diffDays === 1) {
+                                return "Due tomorrow";
+                              } else {
+                                return `${diffDays} days remaining`;
+                              }
+                            })()}
+                          </Text>
+                        </div>
+                      </Grid.Col>
+                    </Grid>
+                  </Card>
+                ))}
+              </Stack>
+            </ScrollArea>
+          )}
+
+          <Group justify="flex-end">
+            <Button
+              variant="outline"
+              onClick={() => setActiveReviewsModalOpened(false)}
+            >
+              Close
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
 
       <Drawer
