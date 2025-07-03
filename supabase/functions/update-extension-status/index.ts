@@ -14,7 +14,7 @@ interface UpdateExtensionStatusRequest {
 }
 
 serve(async (req) => {
-  console.log('🚀 update-extension-status function started')
+  console.log('🚀 update-extension-status function started [v2.0 - JWT Compatible]')
   
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -26,16 +26,14 @@ serve(async (req) => {
     console.log('🔍 Checking environment variables...')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
 
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('❌ Missing environment variables:', {
-        supabaseUrl: !!supabaseUrl,
-        supabaseServiceKey: !!supabaseServiceKey
-      })
+    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
+      console.error('❌ Missing environment variables')
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Server configuration error: Missing environment variables'
+          error: 'Server configuration error'
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -43,6 +41,47 @@ serve(async (req) => {
         }
       )
     }
+
+    // Handle JWT authentication when enforcement is ON
+    const authHeader = req.headers.get('Authorization')
+    console.log('🔑 Auth header present:', !!authHeader)
+    
+    if (!authHeader) {
+      console.error('❌ No authorization header')
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Authorization required'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
+    }
+
+    // Verify JWT token
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    })
+
+    const { data: { user }, error: authError } = await supabaseUser.auth.getUser()
+    
+    if (authError || !user) {
+      console.error('❌ Authentication failed:', authError)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Authentication failed'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
+    }
+
+    console.log('✅ User authenticated:', user.email)
 
     console.log('✅ Environment variables check passed')
     // Use service role key to bypass RLS
@@ -65,6 +104,43 @@ serve(async (req) => {
     }
 
     console.log(`🔄 Updating extension ${extension_id} status to: ${status}`)
+
+    // Verify user owns this extension (security check)
+    const { data: extensionCheck, error: checkError } = await supabase
+      .from('extensions')
+      .select('owner_id')
+      .eq('id', extension_id)
+      .single()
+
+    if (checkError || !extensionCheck) {
+      console.error('❌ Extension not found:', checkError)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Extension not found'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 404,
+        }
+      )
+    }
+
+    if (extensionCheck.owner_id !== user.id) {
+      console.error('❌ User does not own this extension')
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'You can only update your own extensions'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 403,
+        }
+      )
+    }
+
+    console.log('✅ User owns extension, proceeding with update')
 
     // Prepare update data
     const updateData: any = { status }
