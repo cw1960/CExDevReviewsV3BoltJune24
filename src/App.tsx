@@ -174,93 +174,93 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
-      <Route 
-        path="/auth" 
+      <Route
+        path="/auth"
         element={
           <PublicRoute>
             <AuthPage />
           </PublicRoute>
-        } 
+        }
       />
-      <Route 
-        path="/onboarding" 
+      <Route
+        path="/onboarding"
         element={
           <OnboardingRoute>
             <OnboardingPage />
           </OnboardingRoute>
-        } 
+        }
       />
-      <Route 
-        path="/qualification" 
+      <Route
+        path="/qualification"
         element={
           <QualificationRoute>
             <QualificationPage />
           </QualificationRoute>
-        } 
+        }
       />
-      <Route 
-        path="/dashboard" 
+      <Route
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <DashboardPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/admin" 
+      <Route
+        path="/admin"
         element={
           <ProtectedRoute>
             <AdminDashboardPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/admin/users/:userId" 
+      <Route
+        path="/admin/users/:userId"
         element={
           <ProtectedRoute>
             <AdminUserProfilePage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/extensions" 
+      <Route
+        path="/extensions"
         element={
           <ProtectedRoute>
             <ExtensionLibraryPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/reviews" 
+      <Route
+        path="/reviews"
         element={
           <ProtectedRoute>
             <ReviewQueuePage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/profile" 
+      <Route
+        path="/profile"
         element={
           <ProtectedRoute>
             <ProfilePage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/upgrade" 
+      <Route
+        path="/upgrade"
         element={
           <ProtectedRoute>
             <UpgradePage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/success" 
+      <Route
+        path="/success"
         element={
           <ProtectedRoute>
             <SuccessPage />
           </ProtectedRoute>
-        } 
+        }
       />
     </Routes>
   );

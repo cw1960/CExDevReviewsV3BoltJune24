@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,16 +8,16 @@ export default defineConfig({
   resolve: {
     alias: {
       // This is important for `stream` and other Node.js core modules
-      stream: 'stream-browserify',
+      stream: "stream-browserify",
     },
   },
   optimizeDeps: {
-    exclude: ['lucide-react'],
-    include: ['react-confetti'],
+    exclude: ["lucide-react"],
+    include: ["react-confetti"],
     esbuildOptions: {
       // Node.js global shims
       define: {
-        global: 'globalThis',
+        global: "globalThis",
       },
       // Enable esbuild polyfill plugins
       plugins: [

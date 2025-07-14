@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   Modal,
   Title,
@@ -10,17 +10,21 @@ import {
   Divider,
   List,
   ThemeIcon,
-  Box
-} from '@mantine/core'
-import { Shield, CheckCircle, AlertTriangle, Cookie } from 'lucide-react'
+  Box,
+} from "@mantine/core";
+import { Shield, CheckCircle, AlertTriangle, Cookie } from "lucide-react";
 
 interface CookieConsentModalProps {
-  opened: boolean
-  onAccept: () => void
-  onDecline: () => void
+  opened: boolean;
+  onAccept: () => void;
+  onDecline: () => void;
 }
 
-export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsentModalProps) {
+export function CookieConsentModal({
+  opened,
+  onAccept,
+  onDecline,
+}: CookieConsentModalProps) {
   return (
     <Modal
       opened={opened}
@@ -33,39 +37,49 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
       withCloseButton={false}
       styles={{
         content: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          border: 'none'
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          border: "none",
         },
         header: {
-          background: 'transparent',
-          borderBottom: 'none'
-        }
+          background: "transparent",
+          borderBottom: "none",
+        },
       }}
     >
       <Box p="md">
-        <Card 
-          shadow="xl" 
-          radius="lg" 
+        <Card
+          shadow="xl"
+          radius="lg"
           p="xl"
-          style={{ 
-            background: 'rgba(255,255,255,0.95)',
-            backdropFilter: 'blur(10px)'
+          style={{
+            background: "rgba(255,255,255,0.95)",
+            backdropFilter: "blur(10px)",
           }}
         >
           <Stack gap="xl">
             {/* Header */}
             <Stack align="center" gap="md">
-              <ThemeIcon size={60} radius="xl" variant="gradient" gradient={{ from: 'blue', to: 'purple' }}>
+              <ThemeIcon
+                size={60}
+                radius="xl"
+                variant="gradient"
+                gradient={{ from: "blue", to: "purple" }}
+              >
                 <Cookie size={30} />
               </ThemeIcon>
-              
+
               <Title order={2} ta="center" c="dark.8" size="1.5rem">
                 Cookie Preferences
               </Title>
-              
-              <Text size="md" ta="center" lh={1.6} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
-                We use cookies to enhance your experience and improve our service. 
-                Please choose your preference below.
+
+              <Text
+                size="md"
+                ta="center"
+                lh={1.6}
+                style={{ color: "rgba(255, 255, 255, 0.9)" }}
+              >
+                We use cookies to enhance your experience and improve our
+                service. Please choose your preference below.
               </Text>
             </Stack>
 
@@ -76,7 +90,7 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
               <Title order={3} size="1.1rem" c="dark.8">
                 How We Use Cookies
               </Title>
-              
+
               <List
                 spacing="sm"
                 size="sm"
@@ -88,20 +102,21 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
               >
                 <List.Item>
                   <Text size="sm">
-                    <strong>Essential Cookies:</strong> Required for basic website functionality, 
-                    user authentication, and security
+                    <strong>Essential Cookies:</strong> Required for basic
+                    website functionality, user authentication, and security
                   </Text>
                 </List.Item>
                 <List.Item>
                   <Text size="sm">
-                    <strong>Analytics Cookies:</strong> Help us understand how you use our service 
-                    to improve performance and user experience
+                    <strong>Analytics Cookies:</strong> Help us understand how
+                    you use our service to improve performance and user
+                    experience
                   </Text>
                 </List.Item>
                 <List.Item>
                   <Text size="sm">
-                    <strong>Preference Cookies:</strong> Remember your settings and preferences 
-                    for a personalized experience
+                    <strong>Preference Cookies:</strong> Remember your settings
+                    and preferences for a personalized experience
                   </Text>
                 </List.Item>
               </List>
@@ -116,10 +131,17 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
                   <Shield size={16} />
                 </ThemeIcon>
                 <Stack gap="xs" flex={1}>
-                  <Text fw={600} size="sm">Your Privacy Matters</Text>
-                  <Text size="xs" lh={1.4} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
-                    We respect your privacy and are committed to protecting your personal data. 
-                    You can change your cookie preferences at any time in your account settings.
+                  <Text fw={600} size="sm">
+                    Your Privacy Matters
+                  </Text>
+                  <Text
+                    size="xs"
+                    lh={1.4}
+                    style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                  >
+                    We respect your privacy and are committed to protecting your
+                    personal data. You can change your cookie preferences at any
+                    time in your account settings.
                   </Text>
                 </Stack>
               </Group>
@@ -132,26 +154,38 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
                   <AlertTriangle size={16} />
                 </ThemeIcon>
                 <Stack gap="xs" flex={1}>
-                  <Text fw={600} size="sm">Important Note</Text>
-                  <Text size="xs" lh={1.4} style={{ color: "rgba(255, 255, 255, 0.9)" }}>
-                    Declining cookies may limit some features of our service. Essential cookies 
-                    will still be used for basic functionality and security.
+                  <Text fw={600} size="sm">
+                    Important Note
+                  </Text>
+                  <Text
+                    size="xs"
+                    lh={1.4}
+                    style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                  >
+                    Declining cookies may limit some features of our service.
+                    Essential cookies will still be used for basic functionality
+                    and security.
                   </Text>
                 </Stack>
               </Group>
             </Card>
 
             {/* Privacy Policy Link */}
-            <Text size="xs" ta="center" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
-              For more information about how we handle your data, please read our{' '}
-              <Text 
-                component="a" 
-                href="/privacy" 
-                target="_blank" 
+            <Text
+              size="xs"
+              ta="center"
+              style={{ color: "rgba(255, 255, 255, 0.9)" }}
+            >
+              For more information about how we handle your data, please read
+              our{" "}
+              <Text
+                component="a"
+                href="/privacy"
+                target="_blank"
                 rel="noopener noreferrer"
-                c="blue.6" 
+                c="blue.6"
                 fw={600}
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: "none" }}
                 className="hover:underline"
               >
                 Privacy Policy
@@ -161,46 +195,51 @@ export function CookieConsentModal({ opened, onAccept, onDecline }: CookieConsen
 
             {/* Action Buttons */}
             <Group justify="center" gap="md" pt="md">
-              <Button 
-                variant="light" 
+              <Button
+                variant="light"
                 size="lg"
                 onClick={onDecline}
                 styles={{
                   root: {
-                    minWidth: '140px'
-                  }
+                    minWidth: "140px",
+                  },
                 }}
               >
                 Decline Optional
               </Button>
-              
-              <Button 
-                size="lg" 
+
+              <Button
+                size="lg"
                 onClick={onAccept}
                 styles={{
                   root: {
-                    background: 'linear-gradient(45deg, #10b981, #059669)',
-                    minWidth: '140px',
-                    fontSize: '1rem',
+                    background: "linear-gradient(45deg, #10b981, #059669)",
+                    minWidth: "140px",
+                    fontSize: "1rem",
                     fontWeight: 600,
-                    boxShadow: '0 4px 16px rgba(16, 185, 129, 0.3)',
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
-                      boxShadow: '0 6px 20px rgba(16, 185, 129, 0.4)'
-                    }
-                  }
+                    boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)",
+                    "&:hover": {
+                      transform: "translateY(-1px)",
+                      boxShadow: "0 6px 20px rgba(16, 185, 129, 0.4)",
+                    },
+                  },
                 }}
               >
                 Accept All
               </Button>
             </Group>
 
-            <Text size="xs" ta="center" style={{ fontStyle: 'italic', color: "rgba(255, 255, 255, 0.9)" }}>
-              You can update your cookie preferences anytime in your account settings
+            <Text
+              size="xs"
+              ta="center"
+              style={{ fontStyle: "italic", color: "rgba(255, 255, 255, 0.9)" }}
+            >
+              You can update your cookie preferences anytime in your account
+              settings
             </Text>
           </Stack>
         </Card>
       </Box>
     </Modal>
-  )
+  );
 }

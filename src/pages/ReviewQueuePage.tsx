@@ -98,7 +98,8 @@ export function ReviewQueuePage() {
 
   // Report Problem Modal State
   const [reportProblemModalOpen, setReportProblemModalOpen] = useState(false);
-  const [selectedProblemAssignment, setSelectedProblemAssignment] = useState<AssignmentWithExtension | null>(null);
+  const [selectedProblemAssignment, setSelectedProblemAssignment] =
+    useState<AssignmentWithExtension | null>(null);
   const [reportingProblem, setReportingProblem] = useState(false);
 
   const submissionForm = useForm({
@@ -130,7 +131,9 @@ export function ReviewQueuePage() {
       issue_type: (value) =>
         !value ? "Please select the type of issue" : null,
       description: (value) =>
-        value.length < 10 ? "Please provide at least 10 characters describing the issue" : null,
+        value.length < 10
+          ? "Please provide at least 10 characters describing the issue"
+          : null,
     },
   });
 
@@ -572,23 +575,29 @@ export function ReviewQueuePage() {
     setReportProblemModalOpen(true);
   };
 
-  const handleReportProblem = async (values: typeof reportProblemForm.values) => {
+  const handleReportProblem = async (
+    values: typeof reportProblemForm.values,
+  ) => {
     if (!selectedProblemAssignment || !profile?.id) return;
 
     setReportingProblem(true);
     try {
-      const { data, error } = await supabase.functions.invoke("report-assignment-problem", {
-        body: {
-          assignment_id: selectedProblemAssignment.id,
-          extension_id: selectedProblemAssignment.extension_id,
-          reporter_id: profile.id,
-          issue_type: values.issue_type,
-          description: values.description,
-          cancel_assignment: values.cancel_assignment,
-          extension_name: selectedProblemAssignment.extension?.name || "Unknown Extension",
-          reporter_email: profile.email || "Unknown Email",
+      const { data, error } = await supabase.functions.invoke(
+        "report-assignment-problem",
+        {
+          body: {
+            assignment_id: selectedProblemAssignment.id,
+            extension_id: selectedProblemAssignment.extension_id,
+            reporter_id: profile.id,
+            issue_type: values.issue_type,
+            description: values.description,
+            cancel_assignment: values.cancel_assignment,
+            extension_name:
+              selectedProblemAssignment.extension?.name || "Unknown Extension",
+            reporter_email: profile.email || "Unknown Email",
+          },
         },
-      });
+      );
 
       if (error) throw error;
 
@@ -598,7 +607,7 @@ export function ReviewQueuePage() {
 
       notifications.show({
         title: "Problem Reported",
-        message: values.cancel_assignment 
+        message: values.cancel_assignment
           ? "The assignment has been cancelled and the issue has been reported to our team."
           : "The issue has been reported to our team. Thank you for your feedback.",
         color: "green",
@@ -607,14 +616,15 @@ export function ReviewQueuePage() {
 
       setReportProblemModalOpen(false);
       setSelectedProblemAssignment(null);
-      
+
       // Refresh assignments to show updated status
       fetchAssignments();
     } catch (error: any) {
       console.error("Error reporting problem:", error);
       notifications.show({
         title: "Error",
-        message: error.message || "Failed to report the problem. Please try again.",
+        message:
+          error.message || "Failed to report the problem. Please try again.",
         color: "red",
       });
     } finally {
@@ -625,61 +635,75 @@ export function ReviewQueuePage() {
   // FORCE REVIEW QUEUE COLORS WITH JAVASCRIPT
   useEffect(() => {
     const forceReviewQueueColors = () => {
-      console.log('🎨 FORCING REVIEW QUEUE COLORS - JavaScript is running!');
-      
+      console.log("🎨 FORCING REVIEW QUEUE COLORS - JavaScript is running!");
+
       // Force header badges to be more vibrant
-      const badges = document.querySelectorAll('.mantine-Badge-root');
-      console.log('Found Review Queue badges:', badges.length);
-      
+      const badges = document.querySelectorAll(".mantine-Badge-root");
+      console.log("Found Review Queue badges:", badges.length);
+
       badges.forEach((badge) => {
         if (badge instanceof HTMLElement) {
           const text = badge.textContent?.trim();
-          
-          if (text?.includes('Active')) {
-            console.log('Setting BRIGHT BLUE for Active badge');
-            badge.style.backgroundColor = '#2563eb';
-            badge.style.color = '#ffffff';
-            badge.style.setProperty('background-color', '#2563eb', 'important');
-            badge.style.setProperty('color', '#ffffff', 'important');
-          } else if (text?.includes('Pending')) {
-            console.log('Setting BRIGHT ORANGE for Pending badge');
-            badge.style.backgroundColor = '#ea580c';
-            badge.style.color = '#ffffff';
-            badge.style.setProperty('background-color', '#ea580c', 'important');
-            badge.style.setProperty('color', '#ffffff', 'important');
-          } else if (text?.includes('Credits Earned')) {
-            console.log('Setting BRIGHT GREEN for Credits Earned badge');
-            badge.style.backgroundColor = '#059669';
-            badge.style.color = '#ffffff';
-            badge.style.setProperty('background-color', '#059669', 'important');
-            badge.style.setProperty('color', '#ffffff', 'important');
-          } else if (text?.includes('Pending Approval')) {
-            console.log('Setting BRIGHT ORANGE for Pending Approval badge');
-            badge.style.backgroundColor = '#f59e0b';
-            badge.style.color = '#ffffff';
-            badge.style.setProperty('background-color', '#f59e0b', 'important');
-            badge.style.setProperty('color', '#ffffff', 'important');
+
+          if (text?.includes("Active")) {
+            console.log("Setting BRIGHT BLUE for Active badge");
+            badge.style.backgroundColor = "#2563eb";
+            badge.style.color = "#ffffff";
+            badge.style.setProperty("background-color", "#2563eb", "important");
+            badge.style.setProperty("color", "#ffffff", "important");
+          } else if (text?.includes("Pending")) {
+            console.log("Setting BRIGHT ORANGE for Pending badge");
+            badge.style.backgroundColor = "#ea580c";
+            badge.style.color = "#ffffff";
+            badge.style.setProperty("background-color", "#ea580c", "important");
+            badge.style.setProperty("color", "#ffffff", "important");
+          } else if (text?.includes("Credits Earned")) {
+            console.log("Setting BRIGHT GREEN for Credits Earned badge");
+            badge.style.backgroundColor = "#059669";
+            badge.style.color = "#ffffff";
+            badge.style.setProperty("background-color", "#059669", "important");
+            badge.style.setProperty("color", "#ffffff", "important");
+          } else if (text?.includes("Pending Approval")) {
+            console.log("Setting BRIGHT ORANGE for Pending Approval badge");
+            badge.style.backgroundColor = "#f59e0b";
+            badge.style.color = "#ffffff";
+            badge.style.setProperty("background-color", "#f59e0b", "important");
+            badge.style.setProperty("color", "#ffffff", "important");
           }
         }
       });
 
       // Force assignment status badges to be more vibrant
-      const statusBadges = document.querySelectorAll('[data-assignment-status]');
+      const statusBadges = document.querySelectorAll(
+        "[data-assignment-status]",
+      );
       statusBadges.forEach((badge) => {
         if (badge instanceof HTMLElement) {
-          const status = badge.getAttribute('data-assignment-status');
+          const status = badge.getAttribute("data-assignment-status");
           switch (status) {
-            case 'assigned':
-              badge.style.backgroundColor = '#8b5cf6';
-              badge.style.setProperty('background-color', '#8b5cf6', 'important');
+            case "assigned":
+              badge.style.backgroundColor = "#8b5cf6";
+              badge.style.setProperty(
+                "background-color",
+                "#8b5cf6",
+                "important",
+              );
               break;
-            case 'submitted':
-              badge.style.backgroundColor = '#f59e0b';
-              badge.style.setProperty('background-color', '#f59e0b', 'important');
+            case "submitted":
+              badge.style.backgroundColor = "#f59e0b";
+              badge.style.setProperty(
+                "background-color",
+                "#f59e0b",
+                "important",
+              );
               break;
-            case 'approved':
-              badge.style.backgroundColor = '#10b981';
-              badge.style.setProperty('background-color', '#10b981', 'important');
+            case "approved":
+              badge.style.backgroundColor = "#10b981";
+              badge.style.setProperty(
+                "background-color",
+                "#10b981",
+                "important",
+              );
               break;
           }
         }
@@ -689,9 +713,9 @@ export function ReviewQueuePage() {
       const stars = document.querySelectorAll('svg[fill="#ffd43b"]');
       stars.forEach((star) => {
         if (star instanceof SVGElement) {
-          star.style.fill = '#fbbf24';
-          star.style.color = '#fbbf24';
-          star.style.setProperty('fill', '#fbbf24', 'important');
+          star.style.fill = "#fbbf24";
+          star.style.color = "#fbbf24";
+          star.style.setProperty("fill", "#fbbf24", "important");
         }
       });
     };
@@ -699,7 +723,7 @@ export function ReviewQueuePage() {
     // Run immediately and also with a small delay to ensure DOM is ready
     forceReviewQueueColors();
     const timeout = setTimeout(forceReviewQueueColors, 100);
-    
+
     return () => clearTimeout(timeout);
   }, [assignments]);
 
@@ -925,7 +949,7 @@ export function ReviewQueuePage() {
                                 </Button>
                               </Tooltip>
                             )}
-                            
+
                             <Button
                               variant="light"
                               size="md"
@@ -1394,10 +1418,12 @@ export function ReviewQueuePage() {
                   />
                   <div>
                     <Text fw={600} size="sm">
-                      {selectedProblemAssignment.extension?.name || "Unknown Extension"}
+                      {selectedProblemAssignment.extension?.name ||
+                        "Unknown Extension"}
                     </Text>
                     <Text size="xs" c="dimmed">
-                      Assignment ID: {selectedProblemAssignment.id.slice(0, 8)}...
+                      Assignment ID: {selectedProblemAssignment.id.slice(0, 8)}
+                      ...
                     </Text>
                   </div>
                 </Group>
@@ -1408,10 +1434,22 @@ export function ReviewQueuePage() {
                 placeholder="Select the issue type"
                 required
                 data={[
-                  { value: "extension_removed", label: "Extension removed from Chrome Web Store" },
-                  { value: "extension_unavailable", label: "Extension is not available/accessible" },
-                  { value: "invalid_url", label: "Chrome Web Store URL is invalid or broken" },
-                  { value: "permission_issue", label: "Cannot install due to permission restrictions" },
+                  {
+                    value: "extension_removed",
+                    label: "Extension removed from Chrome Web Store",
+                  },
+                  {
+                    value: "extension_unavailable",
+                    label: "Extension is not available/accessible",
+                  },
+                  {
+                    value: "invalid_url",
+                    label: "Chrome Web Store URL is invalid or broken",
+                  },
+                  {
+                    value: "permission_issue",
+                    label: "Cannot install due to permission restrictions",
+                  },
                   { value: "technical_error", label: "Technical error or bug" },
                   { value: "other", label: "Other issue" },
                 ]}
@@ -1430,20 +1468,19 @@ export function ReviewQueuePage() {
               <Checkbox
                 label="Cancel this assignment"
                 description="Check this if you want to cancel this assignment due to this issue. This will remove it from your queue."
-                {...reportProblemForm.getInputProps("cancel_assignment", { type: "checkbox" })}
+                {...reportProblemForm.getInputProps("cancel_assignment", {
+                  type: "checkbox",
+                })}
               />
 
-              <Alert 
-                icon={<AlertCircle size={16} />} 
-                color="blue" 
-                radius="md"
-              >
+              <Alert icon={<AlertCircle size={16} />} color="blue" radius="md">
                 <Text fw={500} mb="xs">
                   What happens next?
                 </Text>
                 <Text size="sm">
-                  Your report will be sent to our admin team for review. If you choose to cancel the assignment, 
-                  it will be immediately removed from your queue and you won't be penalized.
+                  Your report will be sent to our admin team for review. If you
+                  choose to cancel the assignment, it will be immediately
+                  removed from your queue and you won't be penalized.
                 </Text>
               </Alert>
 
@@ -1459,11 +1496,7 @@ export function ReviewQueuePage() {
                   type="submit"
                   color="orange"
                   leftSection={
-                    reportingProblem ? (
-                      <Loader size={16} />
-                    ) : (
-                      <Flag size={16} />
-                    )
+                    reportingProblem ? <Loader size={16} /> : <Flag size={16} />
                   }
                   loading={reportingProblem}
                   disabled={reportingProblem}

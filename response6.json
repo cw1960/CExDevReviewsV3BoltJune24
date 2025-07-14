@@ -1,1 +1,1 @@
-{"code":401,"message":"Missing authorization header"}
+{ "code": 401, "message": "Missing authorization header" }

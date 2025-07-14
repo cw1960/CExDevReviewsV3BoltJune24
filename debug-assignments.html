@@ -1,171 +1,192 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Debug Assignments</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Assignment Debug</h1>
     <button onclick="requestAssignment()">Request Assignment</button>
     <button onclick="checkAssignmentsDirect()">Check Database Direct</button>
-    <button onclick="checkCurrentAssignment()">Check Current Assignment Status</button>
-    <button onclick="fixDataInconsistency()" style="background-color: orange; color: white;">Fix Data Inconsistency</button>
+    <button onclick="checkCurrentAssignment()">
+      Check Current Assignment Status
+    </button>
+    <button
+      onclick="fixDataInconsistency()"
+      style="background-color: orange; color: white"
+    >
+      Fix Data Inconsistency
+    </button>
     <div id="result"></div>
 
     <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-        
-        const supabase = createClient(
-            'https://uobpkhtmgoqgmnuispls.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvYnBraHRtZ29xZ21udWlzcGxzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg3MzAzOTcsImV4cCI6MjAzNDMwNjM5N30.c_pK5TKKEEyBMnQWJnSfnWNhLV_lVOuqJxcPjZfpHWU'
-        )
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-        window.requestAssignment = async function() {
-            const userId = '63458152-f352-4858-917c-30f9110df6a9'
-            const resultDiv = document.getElementById('result')
-            
-            try {
-                resultDiv.innerHTML = '<p>Testing Edge Function...</p>'
-                
-                // Test the Edge Function
-                const { data, error } = await supabase.functions.invoke('request-review-assignment', {
-                    body: { user_id: userId }
-                })
+      const supabase = createClient(
+        "https://uobpkhtmgoqgmnuispls.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvYnBraHRtZ29xZ21udWlzcGxzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg3MzAzOTcsImV4cCI6MjAzNDMwNjM5N30.c_pK5TKKEEyBMnQWJnSfnWNhLV_lVOuqJxcPjZfpHWU",
+      );
 
-                if (error) {
-                    resultDiv.innerHTML = `<h3>Edge Function Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`
-                    return
-                }
+      window.requestAssignment = async function () {
+        const userId = "63458152-f352-4858-917c-30f9110df6a9";
+        const resultDiv = document.getElementById("result");
 
-                resultDiv.innerHTML = `<h3>Edge Function Success:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`
-                
-            } catch (err) {
-                resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`
-            }
+        try {
+          resultDiv.innerHTML = "<p>Testing Edge Function...</p>";
+
+          // Test the Edge Function
+          const { data, error } = await supabase.functions.invoke(
+            "request-review-assignment",
+            {
+              body: { user_id: userId },
+            },
+          );
+
+          if (error) {
+            resultDiv.innerHTML = `<h3>Edge Function Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`;
+            return;
+          }
+
+          resultDiv.innerHTML = `<h3>Edge Function Success:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        } catch (err) {
+          resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`;
         }
+      };
 
-        window.fixDataInconsistency = async function() {
-            const resultDiv = document.getElementById('result')
-            
-            try {
-                resultDiv.innerHTML = '<p>Fixing data inconsistency for View Image Button assignment...</p>'
-                
-                // Call a function to fix the assignment status
-                const { data, error } = await supabase.functions.invoke('fix-assignment-status', {
-                    body: { 
-                        assignment_id: '8f0318af-2e4e-47bb-95da-54e6f0d2c8b0',
-                        new_status: 'approved',
-                        submitted_at: '2025-06-23T00:00:00.000Z'
-                    }
-                })
+      window.fixDataInconsistency = async function () {
+        const resultDiv = document.getElementById("result");
 
-                if (error) {
-                    resultDiv.innerHTML = `<h3>Fix Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`
-                    return
-                }
+        try {
+          resultDiv.innerHTML =
+            "<p>Fixing data inconsistency for View Image Button assignment...</p>";
 
-                resultDiv.innerHTML = `<h3>✅ Data Inconsistency Fixed!</h3><p>The View Image Button assignment has been marked as approved to match your UI.</p><p>You should now be able to request new assignments.</p><pre>${JSON.stringify(data, null, 2)}</pre>`
-                
-            } catch (err) {
-                resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`
-            }
+          // Call a function to fix the assignment status
+          const { data, error } = await supabase.functions.invoke(
+            "fix-assignment-status",
+            {
+              body: {
+                assignment_id: "8f0318af-2e4e-47bb-95da-54e6f0d2c8b0",
+                new_status: "approved",
+                submitted_at: "2025-06-23T00:00:00.000Z",
+              },
+            },
+          );
+
+          if (error) {
+            resultDiv.innerHTML = `<h3>Fix Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`;
+            return;
+          }
+
+          resultDiv.innerHTML = `<h3>✅ Data Inconsistency Fixed!</h3><p>The View Image Button assignment has been marked as approved to match your UI.</p><p>You should now be able to request new assignments.</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        } catch (err) {
+          resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`;
         }
+      };
 
-        window.checkCurrentAssignment = async function() {
-            const userId = '63458152-f352-4858-917c-30f9110df6a9'
-            const resultDiv = document.getElementById('result')
-            
-            try {
-                resultDiv.innerHTML = '<p>Checking current assignment status via function...</p>'
-                
-                // Call a function to check assignments (this will use service role internally)
-                const { data, error } = await supabase.functions.invoke('fetch-review-assignments-for-reviewer', {
-                    body: { user_id: userId }
-                })
+      window.checkCurrentAssignment = async function () {
+        const userId = "63458152-f352-4858-917c-30f9110df6a9";
+        const resultDiv = document.getElementById("result");
 
-                if (error) {
-                    resultDiv.innerHTML = `<h3>Assignment Check Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`
-                    return
-                }
+        try {
+          resultDiv.innerHTML =
+            "<p>Checking current assignment status via function...</p>";
 
-                // Parse and display the assignments in a user-friendly way
-                if (data.success && data.data) {
-                    const assignments = data.data
-                    const activeAssignments = assignments.filter(a => a.status === 'assigned')
-                    
-                    let html = `<h3>Assignment Status Summary:</h3>`
-                    html += `<p><strong>Total Assignments:</strong> ${assignments.length}</p>`
-                    html += `<p><strong>Active Assignments:</strong> ${activeAssignments.length}</p>`
-                    
-                    if (activeAssignments.length > 0) {
-                        html += `<h4>🔴 Active Assignment (Preventing New Requests):</h4>`
-                        const active = activeAssignments[0]
-                        html += `<div style="border: 2px solid red; padding: 10px; margin: 10px 0;">`
-                        html += `<p><strong>Assignment #${active.assignment_number}</strong></p>`
-                        html += `<p><strong>Extension:</strong> ${active.extension?.name || 'Unknown'}</p>`
-                        html += `<p><strong>Assigned:</strong> ${new Date(active.assigned_at).toLocaleString()}</p>`
-                        html += `<p><strong>Due:</strong> ${new Date(active.due_at).toLocaleString()}</p>`
-                        html += `<p><strong>Status:</strong> ${active.status}</p>`
-                        if (active.extension?.chrome_store_url) {
-                            html += `<p><strong>Chrome Store:</strong> <a href="${active.extension.chrome_store_url}" target="_blank">View Extension</a></p>`
-                        }
-                        html += `</div>`
-                        html += `<p><strong>⚠️ DATA INCONSISTENCY DETECTED:</strong> This assignment shows as completed in your UI but is still 'assigned' in the database. Click "Fix Data Inconsistency" to resolve this.</p>`
-                    } else {
-                        html += `<p><strong>✅ No active assignments found.</strong> You should be able to request new assignments.</p>`
-                    }
-                    
-                    html += `<h4>📊 All Assignments:</h4>`
-                    html += `<pre>${JSON.stringify(assignments, null, 2)}</pre>`
-                    
-                    resultDiv.innerHTML = html
-                } else {
-                    resultDiv.innerHTML = `<h3>Current Assignment Status:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`
-                }
-                
-            } catch (err) {
-                resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`
+          // Call a function to check assignments (this will use service role internally)
+          const { data, error } = await supabase.functions.invoke(
+            "fetch-review-assignments-for-reviewer",
+            {
+              body: { user_id: userId },
+            },
+          );
+
+          if (error) {
+            resultDiv.innerHTML = `<h3>Assignment Check Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`;
+            return;
+          }
+
+          // Parse and display the assignments in a user-friendly way
+          if (data.success && data.data) {
+            const assignments = data.data;
+            const activeAssignments = assignments.filter(
+              (a) => a.status === "assigned",
+            );
+
+            let html = `<h3>Assignment Status Summary:</h3>`;
+            html += `<p><strong>Total Assignments:</strong> ${assignments.length}</p>`;
+            html += `<p><strong>Active Assignments:</strong> ${activeAssignments.length}</p>`;
+
+            if (activeAssignments.length > 0) {
+              html += `<h4>🔴 Active Assignment (Preventing New Requests):</h4>`;
+              const active = activeAssignments[0];
+              html += `<div style="border: 2px solid red; padding: 10px; margin: 10px 0;">`;
+              html += `<p><strong>Assignment #${active.assignment_number}</strong></p>`;
+              html += `<p><strong>Extension:</strong> ${active.extension?.name || "Unknown"}</p>`;
+              html += `<p><strong>Assigned:</strong> ${new Date(active.assigned_at).toLocaleString()}</p>`;
+              html += `<p><strong>Due:</strong> ${new Date(active.due_at).toLocaleString()}</p>`;
+              html += `<p><strong>Status:</strong> ${active.status}</p>`;
+              if (active.extension?.chrome_store_url) {
+                html += `<p><strong>Chrome Store:</strong> <a href="${active.extension.chrome_store_url}" target="_blank">View Extension</a></p>`;
+              }
+              html += `</div>`;
+              html += `<p><strong>⚠️ DATA INCONSISTENCY DETECTED:</strong> This assignment shows as completed in your UI but is still 'assigned' in the database. Click "Fix Data Inconsistency" to resolve this.</p>`;
+            } else {
+              html += `<p><strong>✅ No active assignments found.</strong> You should be able to request new assignments.</p>`;
             }
+
+            html += `<h4>📊 All Assignments:</h4>`;
+            html += `<pre>${JSON.stringify(assignments, null, 2)}</pre>`;
+
+            resultDiv.innerHTML = html;
+          } else {
+            resultDiv.innerHTML = `<h3>Current Assignment Status:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+          }
+        } catch (err) {
+          resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`;
         }
+      };
 
-        window.checkAssignmentsDirect = async function() {
-            const userId = '63458152-f352-4858-917c-30f9110df6a9'
-            const resultDiv = document.getElementById('result')
-            
-            try {
-                resultDiv.innerHTML = '<p>Testing direct database access...</p>'
-                
-                // Check assignments directly from database
-                const { data: assignments, error } = await supabase
-                    .from('review_assignments')
-                    .select('*')
-                    .eq('reviewer_id', userId)
-                    .order('created_at', { ascending: false })
+      window.checkAssignmentsDirect = async function () {
+        const userId = "63458152-f352-4858-917c-30f9110df6a9";
+        const resultDiv = document.getElementById("result");
 
-                if (error) {
-                    resultDiv.innerHTML = `<h3>Database Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`
-                    return
-                }
+        try {
+          resultDiv.innerHTML = "<p>Testing direct database access...</p>";
 
-                resultDiv.innerHTML = `
+          // Check assignments directly from database
+          const { data: assignments, error } = await supabase
+            .from("review_assignments")
+            .select("*")
+            .eq("reviewer_id", userId)
+            .order("created_at", { ascending: false });
+
+          if (error) {
+            resultDiv.innerHTML = `<h3>Database Error:</h3><pre>${JSON.stringify(error, null, 2)}</pre>`;
+            return;
+          }
+
+          resultDiv.innerHTML = `
                     <h3>Direct Database Access Success:</h3>
                     <h4>All Assignments for User:</h4>
                     <pre>${JSON.stringify(assignments, null, 2)}</pre>
                     
                     <h4>Active Assignments (status = 'assigned'):</h4>
-                    <pre>${JSON.stringify(assignments.filter(a => a.status === 'assigned'), null, 2)}</pre>
+                    <pre>${JSON.stringify(
+                      assignments.filter((a) => a.status === "assigned"),
+                      null,
+                      2,
+                    )}</pre>
                     
                     <h4>Summary:</h4>
                     <ul>
                         <li>Total assignments: ${assignments.length}</li>
-                        <li>Active (assigned): ${assignments.filter(a => a.status === 'assigned').length}</li>
-                        <li>Submitted: ${assignments.filter(a => a.status === 'submitted').length}</li>
-                        <li>Approved: ${assignments.filter(a => a.status === 'approved').length}</li>
+                        <li>Active (assigned): ${assignments.filter((a) => a.status === "assigned").length}</li>
+                        <li>Submitted: ${assignments.filter((a) => a.status === "submitted").length}</li>
+                        <li>Approved: ${assignments.filter((a) => a.status === "approved").length}</li>
                     </ul>
-                `
-            } catch (err) {
-                resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`
-            }
+                `;
+        } catch (err) {
+          resultDiv.innerHTML = `<h3>JavaScript Error:</h3><pre>${err.message}</pre>`;
         }
+      };
     </script>
-</body>
-</html> 
+  </body>
+</html>

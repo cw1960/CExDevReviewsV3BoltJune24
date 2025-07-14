@@ -25,16 +25,23 @@ interface PersonalStats {
 }
 
 const CYCLE_LENGTH_DAYS = 28;
-const CYCLE_REVIEW_LIMIT = 4;
+const CYCLE_REVIEW_LIMIT = 1;
 
 // Simplified timeout helper with better error handling
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operation: string): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  operation: string,
+): Promise<T> {
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`${operation} timeout after ${timeoutMs}ms`)), timeoutMs)
-    )
-  ])
+      setTimeout(
+        () => reject(new Error(`${operation} timeout after ${timeoutMs}ms`)),
+        timeoutMs,
+      ),
+    ),
+  ]);
 }
 
 Deno.serve(async (req) => {
@@ -161,11 +168,12 @@ Deno.serve(async (req) => {
       );
     }
     const totalReviewsSubmitted = submittedAssignments?.length || 0;
-    const reviewsSubmittedThisCycle = submittedAssignments?.filter((a) => {
-      if (!a.submitted_at) return false;
-      const submitted = new Date(a.submitted_at);
-      return submitted >= cycleStart && submitted < cycleEnd;
-    }).length || 0;
+    const reviewsSubmittedThisCycle =
+      submittedAssignments?.filter((a) => {
+        if (!a.submitted_at) return false;
+        const submitted = new Date(a.submitted_at);
+        return submitted >= cycleStart && submitted < cycleEnd;
+      }).length || 0;
     const reviewsLeftToSubmit = Math.max(
       0,
       CYCLE_REVIEW_LIMIT - reviewsSubmittedThisCycle,
@@ -213,11 +221,12 @@ Deno.serve(async (req) => {
         );
       }
       totalReviewsReceived = receivedAssignments?.length || 0;
-      reviewsReceivedThisCycle = receivedAssignments?.filter((a) => {
-        if (!a.submitted_at) return false;
-        const submitted = new Date(a.submitted_at);
-        return submitted >= cycleStart && submitted < cycleEnd;
-      }).length || 0;
+      reviewsReceivedThisCycle =
+        receivedAssignments?.filter((a) => {
+          if (!a.submitted_at) return false;
+          const submitted = new Date(a.submitted_at);
+          return submitted >= cycleStart && submitted < cycleEnd;
+        }).length || 0;
     }
     const reviewsLeftToReceive = Math.max(
       0,

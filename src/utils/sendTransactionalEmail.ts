@@ -1,66 +1,75 @@
-import { supabase } from '../lib/supabase'
+import { supabase } from "../lib/supabase";
 
 interface MailerLiteEmailParams {
-  to: string
-  subject: string
-  html: string
-  type: string
-  custom_data?: Record<string, any>
+  to: string;
+  subject: string;
+  html: string;
+  type: string;
+  custom_data?: Record<string, any>;
 }
 
 export async function sendTransactionalEmail(params: MailerLiteEmailParams) {
   try {
-    const { data, error } = await supabase.functions.invoke('mailerlite-integration', {
-      body: {
-        user_email: params.to,
-        event_type: params.type,
-        subject: params.subject,
-        html_content: params.html,
-        custom_data: params.custom_data || {}
-      }
-    })
+    const { data, error } = await supabase.functions.invoke(
+      "mailerlite-integration",
+      {
+        body: {
+          user_email: params.to,
+          event_type: params.type,
+          subject: params.subject,
+          html_content: params.html,
+          custom_data: params.custom_data || {},
+        },
+      },
+    );
 
     if (error) {
-      console.error('Error sending email via MailerLite:', error)
-      throw error
+      console.error("Error sending email via MailerLite:", error);
+      throw error;
     }
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Failed to send email via MailerLite:', error)
-    throw error
+    console.error("Failed to send email via MailerLite:", error);
+    throw error;
   }
 }
 
 // Helper function to trigger MailerLite events without email content
 export async function triggerMailerLiteEvent(
-  userEmail: string, 
-  eventType: string, 
-  customData: Record<string, any> = {}
+  userEmail: string,
+  eventType: string,
+  customData: Record<string, any> = {},
 ) {
   try {
-    const { data, error } = await supabase.functions.invoke('mailerlite-integration', {
-      body: {
-        user_email: userEmail,
-        event_type: eventType,
-        custom_data: customData
-      }
-    })
+    const { data, error } = await supabase.functions.invoke(
+      "mailerlite-integration",
+      {
+        body: {
+          user_email: userEmail,
+          event_type: eventType,
+          custom_data: customData,
+        },
+      },
+    );
 
     if (error) {
-      console.error('Error triggering MailerLite event:', error)
-      throw error
+      console.error("Error triggering MailerLite event:", error);
+      throw error;
     }
 
-    return data
+    return data;
   } catch (error) {
-    console.error('Failed to trigger MailerLite event:', error)
-    throw error
+    console.error("Failed to trigger MailerLite event:", error);
+    throw error;
   }
 }
 
 // Email templates
-export const createApprovalEmail = (extensionName: string, userName: string) => `
+export const createApprovalEmail = (
+  extensionName: string,
+  userName: string,
+) => `
 <!DOCTYPE html>
 <html>
 <head>
@@ -89,9 +98,13 @@ export const createApprovalEmail = (extensionName: string, userName: string) => 
   </div>
 </body>
 </html>
-`
+`;
 
-export const createRejectionEmail = (extensionName: string, userName: string, reason: string) => `
+export const createRejectionEmail = (
+  extensionName: string,
+  userName: string,
+  reason: string,
+) => `
 <!DOCTYPE html>
 <html>
 <head>
@@ -124,4 +137,4 @@ export const createRejectionEmail = (extensionName: string, userName: string, re
   </div>
 </body>
 </html>
-`
+`;

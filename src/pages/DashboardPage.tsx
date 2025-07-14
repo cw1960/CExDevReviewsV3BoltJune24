@@ -507,12 +507,12 @@ export function DashboardPage() {
       // Get the updated profile data
       const updatedProfile = profile; // This should have the latest data after refresh
 
-      // Check if user has reached their monthly limit (4 submissions for free tier)
-      if ((updatedProfile.exchanges_this_month || 0) >= 4) {
+      // Check if user has reached their monthly limit (1 submission for free tier)
+      if ((updatedProfile.exchanges_this_month || 0) >= 1) {
         notifications.show({
           title: "Monthly Limit Reached",
           message:
-            "You have reached your monthly submission limit of 4 extensions for the free tier. Upgrade to premium for unlimited submissions.",
+            "You have reached your monthly submission limit of 1 extension for the free tier. Upgrade to premium for unlimited submissions.",
           color: "orange",
           autoClose: 8000,
         });
@@ -927,7 +927,7 @@ export function DashboardPage() {
                               extension.status === "library") &&
                               profile?.credit_balance > 0 &&
                               (profile?.subscription_status !== "free" ||
-                                ((profile?.exchanges_this_month || 0) < 4 && (
+                                ((profile?.exchanges_this_month || 0) < 1 && (
                                   <Button
                                     size="xs"
                                     onClick={() =>
@@ -935,11 +935,11 @@ export function DashboardPage() {
                                     }
                                     disabled={
                                       profile?.subscription_status === "free" &&
-                                      (profile?.exchanges_this_month || 0) >= 4
+                                      (profile?.exchanges_this_month || 0) >= 1
                                     }
                                   >
                                     {profile?.subscription_status === "free" &&
-                                    (profile?.exchanges_this_month || 0) >= 4
+                                    (profile?.exchanges_this_month || 0) >= 1
                                       ? "Monthly Limit Reached"
                                       : "Submit to Queue"}
                                   </Button>
@@ -947,7 +947,7 @@ export function DashboardPage() {
                             {extension.status === "rejected" &&
                               profile?.credit_balance > 0 &&
                               (profile?.subscription_status !== "free" ||
-                                ((profile?.exchanges_this_month || 0) < 4 && (
+                                ((profile?.exchanges_this_month || 0) < 1 && (
                                   <Button
                                     size="xs"
                                     color="orange"
@@ -956,11 +956,11 @@ export function DashboardPage() {
                                     }
                                     disabled={
                                       !isPremium &&
-                                      (profile?.exchanges_this_month || 0) >= 4
+                                      (profile?.exchanges_this_month || 0) >= 1
                                     }
                                   >
                                     {!isPremium &&
-                                    (profile?.exchanges_this_month || 0) >= 4
+                                    (profile?.exchanges_this_month || 0) >= 1
                                       ? "Monthly Limit Reached"
                                       : "Re-submit to Queue"}
                                   </Button>

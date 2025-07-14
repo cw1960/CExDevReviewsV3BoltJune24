@@ -2219,25 +2219,41 @@ export function AdminDashboardPage() {
         <Stack gap="md">
           {(() => {
             // Filter extensions with status "queued" and implement absolute priority system
-            const allQueuedExtensions = extensions.filter((extension) => extension.status === "queued");
-            
+            const allQueuedExtensions = extensions.filter(
+              (extension) => extension.status === "queued",
+            );
+
             // Separate into premium and free tiers
             const premiumExtensions = allQueuedExtensions
-              .filter((extension) => extension.owner?.subscription_status === "premium")
+              .filter(
+                (extension) =>
+                  extension.owner?.subscription_status === "premium",
+              )
               .sort((a, b) => {
-                const dateA = new Date(a.submitted_to_queue_at || a.created_at).getTime();
-                const dateB = new Date(b.submitted_to_queue_at || b.created_at).getTime();
+                const dateA = new Date(
+                  a.submitted_to_queue_at || a.created_at,
+                ).getTime();
+                const dateB = new Date(
+                  b.submitted_to_queue_at || b.created_at,
+                ).getTime();
                 return dateA - dateB; // FIFO: oldest first within premium tier
               });
-              
+
             const freeExtensions = allQueuedExtensions
-              .filter((extension) => extension.owner?.subscription_status !== "premium")
+              .filter(
+                (extension) =>
+                  extension.owner?.subscription_status !== "premium",
+              )
               .sort((a, b) => {
-                const dateA = new Date(a.submitted_to_queue_at || a.created_at).getTime();
-                const dateB = new Date(b.submitted_to_queue_at || b.created_at).getTime();
+                const dateA = new Date(
+                  a.submitted_to_queue_at || a.created_at,
+                ).getTime();
+                const dateB = new Date(
+                  b.submitted_to_queue_at || b.created_at,
+                ).getTime();
                 return dateA - dateB; // FIFO: oldest first within free tier
               });
-            
+
             // Combine with absolute priority: ALL premium first, then ALL free
             const queuedExtensions = [...premiumExtensions, ...freeExtensions];
 
@@ -2264,7 +2280,8 @@ export function AdminDashboardPage() {
                   <div>
                     <Text fw={600} size="lg">
                       {queuedExtensions.length} extension
-                      {queuedExtensions.length !== 1 ? "s" : ""} waiting for review
+                      {queuedExtensions.length !== 1 ? "s" : ""} waiting for
+                      review
                     </Text>
                     <Group gap="md" mt="xs">
                       <Badge color="green" size="sm">
@@ -2279,14 +2296,16 @@ export function AdminDashboardPage() {
                     QUEUE
                   </Badge>
                 </Group>
-                
+
                 {premiumExtensions.length > 0 && (
                   <Alert color="green" mb="md" icon={<Package size={16} />}>
                     <Text fw={500} size="sm">
                       ⚡ Premium Fast Track users get ABSOLUTE PRIORITY
                     </Text>
                     <Text size="xs" c="dimmed">
-                      All {premiumExtensions.length} premium extension{premiumExtensions.length !== 1 ? "s" : ""} will be processed before any free tier extensions
+                      All {premiumExtensions.length} premium extension
+                      {premiumExtensions.length !== 1 ? "s" : ""} will be
+                      processed before any free tier extensions
                     </Text>
                   </Alert>
                 )}
@@ -2304,160 +2323,175 @@ export function AdminDashboardPage() {
                   </Table.Thead>
                   <Table.Tbody>
                     {queuedExtensions.map((extension, index) => {
-                      const isPremium = extension.owner?.subscription_status === "premium";
-                      const premiumPosition = isPremium ? premiumExtensions.findIndex(ext => ext.id === extension.id) + 1 : null;
-                      const freePosition = !isPremium ? freeExtensions.findIndex(ext => ext.id === extension.id) + 1 : null;
-                      
+                      const isPremium =
+                        extension.owner?.subscription_status === "premium";
+                      const premiumPosition = isPremium
+                        ? premiumExtensions.findIndex(
+                            (ext) => ext.id === extension.id,
+                          ) + 1
+                        : null;
+                      const freePosition = !isPremium
+                        ? freeExtensions.findIndex(
+                            (ext) => ext.id === extension.id,
+                          ) + 1
+                        : null;
+
                       return (
-                      <Table.Tr 
-                        key={extension.id}
-                        style={{
-                          backgroundColor: isPremium ? 'rgba(34, 197, 94, 0.05)' : 'rgba(59, 130, 246, 0.05)',
-                          borderLeft: isPremium ? '3px solid #22c55e' : '3px solid #3b82f6'
-                        }}
-                                             >
-                        <Table.Td>
-                          <Stack align="center" gap={2}>
-                            <Badge 
-                              size="xs" 
-                              color={isPremium ? "green" : "blue"}
-                              variant="filled"
-                            >
-                              #{index + 1}
-                            </Badge>
-                            {isPremium && (
-                              <Text size="xs" c="green.6" fw={600}>
-                                P{premiumPosition}
-                              </Text>
-                            )}
-                            {!isPremium && (
-                              <Text size="xs" c="blue.6" fw={600}>
-                                F{freePosition}
-                              </Text>
-                            )}
-                          </Stack>
-                        </Table.Td>
-                        <Table.Td>
-                          <Group>
-                            <Avatar size="sm" src={extension.logo_url} />
-                            <div>
-                              <Text
-                                fw={500}
-                                component="a"
-                                href={extension.chrome_store_url}
-                                target="_blank"
-                                style={{
-                                  textDecoration: "none",
-                                  color: "inherit",
-                                }}
-                                className="hover:underline"
+                        <Table.Tr
+                          key={extension.id}
+                          style={{
+                            backgroundColor: isPremium
+                              ? "rgba(34, 197, 94, 0.05)"
+                              : "rgba(59, 130, 246, 0.05)",
+                            borderLeft: isPremium
+                              ? "3px solid #22c55e"
+                              : "3px solid #3b82f6",
+                          }}
+                        >
+                          <Table.Td>
+                            <Stack align="center" gap={2}>
+                              <Badge
+                                size="xs"
+                                color={isPremium ? "green" : "blue"}
+                                variant="filled"
                               >
-                                {extension.name}
+                                #{index + 1}
+                              </Badge>
+                              {isPremium && (
+                                <Text size="xs" c="green.6" fw={600}>
+                                  P{premiumPosition}
+                                </Text>
+                              )}
+                              {!isPremium && (
+                                <Text size="xs" c="blue.6" fw={600}>
+                                  F{freePosition}
+                                </Text>
+                              )}
+                            </Stack>
+                          </Table.Td>
+                          <Table.Td>
+                            <Group>
+                              <Avatar size="sm" src={extension.logo_url} />
+                              <div>
+                                <Text
+                                  fw={500}
+                                  component="a"
+                                  href={extension.chrome_store_url}
+                                  target="_blank"
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                  }}
+                                  className="hover:underline"
+                                >
+                                  {extension.name}
+                                </Text>
+                                <Text size="sm" c="dimmed" truncate maw={200}>
+                                  {extension.description}
+                                </Text>
+                              </div>
+                            </Group>
+                          </Table.Td>
+                          <Table.Td>
+                            <Text
+                              size="sm"
+                              component="button"
+                              onClick={() =>
+                                extension.owner?.id &&
+                                navigateToUserProfile(extension.owner.id)
+                              }
+                              style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "var(--mantine-color-blue-6)",
+                                textDecoration: "none",
+                              }}
+                              className="hover:underline"
+                            >
+                              {extension.owner?.name || "Unknown"}
+                            </Text>
+                          </Table.Td>
+                          <Table.Td>
+                            <Badge
+                              color={
+                                extension.owner?.subscription_status ===
+                                "premium"
+                                  ? "green"
+                                  : "blue"
+                              }
+                              size="sm"
+                            >
+                              {extension.owner?.subscription_status ===
+                              "premium"
+                                ? "Premium"
+                                : "Free"}
+                            </Badge>
+                          </Table.Td>
+                          <Table.Td>
+                            <div>
+                              <Text size="sm">
+                                {extension.submitted_to_queue_at
+                                  ? new Date(
+                                      extension.submitted_to_queue_at,
+                                    ).toLocaleDateString()
+                                  : new Date(
+                                      extension.created_at,
+                                    ).toLocaleDateString()}
                               </Text>
-                              <Text size="sm" c="dimmed" truncate maw={200}>
-                                {extension.description}
+                              <Text size="xs" c="dimmed">
+                                {extension.submitted_to_queue_at
+                                  ? new Date(
+                                      extension.submitted_to_queue_at,
+                                    ).toLocaleTimeString()
+                                  : new Date(
+                                      extension.created_at,
+                                    ).toLocaleTimeString()}
                               </Text>
                             </div>
-                          </Group>
-                        </Table.Td>
-                        <Table.Td>
-                          <Text
-                            size="sm"
-                            component="button"
-                            onClick={() =>
-                              extension.owner?.id &&
-                              navigateToUserProfile(extension.owner.id)
-                            }
-                            style={{
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                              color: "var(--mantine-color-blue-6)",
-                              textDecoration: "none",
-                            }}
-                            className="hover:underline"
-                          >
-                            {extension.owner?.name || "Unknown"}
-                          </Text>
-                        </Table.Td>
-                        <Table.Td>
-                          <Badge
-                            color={
-                              extension.owner?.subscription_status === "premium"
-                                ? "green"
-                                : "blue"
-                            }
-                            size="sm"
-                          >
-                            {extension.owner?.subscription_status === "premium"
-                              ? "Premium"
-                              : "Free"}
-                          </Badge>
-                        </Table.Td>
-                        <Table.Td>
-                          <div>
-                            <Text size="sm">
-                              {extension.submitted_to_queue_at
-                                ? new Date(
-                                    extension.submitted_to_queue_at,
-                                  ).toLocaleDateString()
-                                : new Date(
-                                    extension.created_at,
-                                  ).toLocaleDateString()}
-                            </Text>
-                            <Text size="xs" c="dimmed">
-                              {extension.submitted_to_queue_at
-                                ? new Date(
-                                    extension.submitted_to_queue_at,
-                                  ).toLocaleTimeString()
-                                : new Date(
-                                    extension.created_at,
-                                  ).toLocaleTimeString()}
-                            </Text>
-                          </div>
-                        </Table.Td>
-                        <Table.Td>
-                          <Group gap="xs">
-                            <ActionIcon
-                              variant="light"
-                              size="sm"
-                              onClick={() =>
-                                window.open(
-                                  extension.chrome_store_url,
-                                  "_blank",
-                                )
-                              }
-                            >
-                              <Eye size={14} />
-                            </ActionIcon>
-                            {extension.owner?.id && (
+                          </Table.Td>
+                          <Table.Td>
+                            <Group gap="xs">
                               <ActionIcon
                                 variant="light"
-                                color="blue"
                                 size="sm"
                                 onClick={() =>
-                                  navigateToUserProfile(extension.owner.id)
+                                  window.open(
+                                    extension.chrome_store_url,
+                                    "_blank",
+                                  )
                                 }
                               >
-                                <Users size={14} />
+                                <Eye size={14} />
                               </ActionIcon>
-                            )}
-                            <ActionIcon
-                              variant="filled"
-                              color="red"
-                              size="sm"
-                              onClick={() =>
-                                handleRemoveFromQueue(
-                                  extension.id,
-                                  extension.name,
-                                )
-                              }
-                            >
-                              <XCircle size={14} />
-                            </ActionIcon>
-                          </Group>
-                        </Table.Td>
-                      </Table.Tr>
+                              {extension.owner?.id && (
+                                <ActionIcon
+                                  variant="light"
+                                  color="blue"
+                                  size="sm"
+                                  onClick={() =>
+                                    navigateToUserProfile(extension.owner.id)
+                                  }
+                                >
+                                  <Users size={14} />
+                                </ActionIcon>
+                              )}
+                              <ActionIcon
+                                variant="filled"
+                                color="red"
+                                size="sm"
+                                onClick={() =>
+                                  handleRemoveFromQueue(
+                                    extension.id,
+                                    extension.name,
+                                  )
+                                }
+                              >
+                                <XCircle size={14} />
+                              </ActionIcon>
+                            </Group>
+                          </Table.Td>
+                        </Table.Tr>
                       );
                     })}
                   </Table.Tbody>
@@ -2622,14 +2656,22 @@ export function AdminDashboardPage() {
               </Text>
               <Group gap="md" mt="xs">
                 <Badge color="green" size="sm">
-                  {getActiveReviewsSorted().filter(a => 
-                    a.extension?.owner?.subscription_status === "premium"
-                  ).length} Premium Fast Track
+                  {
+                    getActiveReviewsSorted().filter(
+                      (a) =>
+                        a.extension?.owner?.subscription_status === "premium",
+                    ).length
+                  }{" "}
+                  Premium Fast Track
                 </Badge>
                 <Badge color="blue" size="sm">
-                  {getActiveReviewsSorted().filter(a => 
-                    a.extension?.owner?.subscription_status !== "premium"
-                  ).length} Free Tier
+                  {
+                    getActiveReviewsSorted().filter(
+                      (a) =>
+                        a.extension?.owner?.subscription_status !== "premium",
+                    ).length
+                  }{" "}
+                  Free Tier
                 </Badge>
               </Group>
             </div>
@@ -2688,13 +2730,15 @@ export function AdminDashboardPage() {
                               <Badge
                                 size="xs"
                                 color={
-                                  assignment.extension?.owner?.subscription_status === "premium"
+                                  assignment.extension?.owner
+                                    ?.subscription_status === "premium"
                                     ? "green"
                                     : "blue"
                                 }
                                 variant="filled"
                               >
-                                {assignment.extension?.owner?.subscription_status === "premium"
+                                {assignment.extension?.owner
+                                  ?.subscription_status === "premium"
                                   ? "Premium"
                                   : "Free"}
                               </Badge>
@@ -2703,7 +2747,8 @@ export function AdminDashboardPage() {
                               Assignment #{assignment.assignment_number}
                             </Text>
                             <Text size="xs" c="dimmed">
-                              Owner: {assignment.extension?.owner?.name || "Unknown"}
+                              Owner:{" "}
+                              {assignment.extension?.owner?.name || "Unknown"}
                             </Text>
                           </div>
                         </Group>

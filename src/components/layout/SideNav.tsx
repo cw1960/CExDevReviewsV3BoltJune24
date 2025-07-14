@@ -10,7 +10,7 @@ import {
   Alert,
   ActionIcon,
   Indicator,
-  Badge
+  Badge,
 } from "@mantine/core";
 import {
   Home,
@@ -21,17 +21,20 @@ import {
   LogOut,
   Shield,
   AlertCircle,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useSubscription } from "../../hooks/useSubscription";
 
 interface SideNavProps {
-  unreadMessageCount?: number
-  onMessagesClick?: () => void
+  unreadMessageCount?: number;
+  onMessagesClick?: () => void;
 }
 
-export function SideNav({ unreadMessageCount = 0, onMessagesClick }: SideNavProps) {
+export function SideNav({
+  unreadMessageCount = 0,
+  onMessagesClick,
+}: SideNavProps) {
   const { profile, signOut } = useAuth();
   const { isPremium } = useSubscription();
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Container,
   Title,
@@ -11,45 +11,46 @@ import {
   ThemeIcon,
   Loader,
   Center,
-  Alert
-} from '@mantine/core'
-import { CheckCircle, ArrowRight, AlertTriangle } from 'lucide-react'
-import { useSubscription } from '../hooks/useSubscription'
-import { useAuth } from '../contexts/AuthContext'
+  Alert,
+} from "@mantine/core";
+import { CheckCircle, ArrowRight, AlertTriangle } from "lucide-react";
+import { useSubscription } from "../hooks/useSubscription";
+import { useAuth } from "../contexts/AuthContext";
 
 export function SuccessPage() {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { refreshSubscription, planName, loading: subscriptionLoading } = useSubscription()
-  const { refreshProfile } = useAuth()
-  const [verifying, setVerifying] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const {
+    refreshSubscription,
+    planName,
+    loading: subscriptionLoading,
+  } = useSubscription();
+  const { refreshProfile } = useAuth();
+  const [verifying, setVerifying] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const sessionId = searchParams.get('session_id')
+  const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
     if (!sessionId) {
-      setError('No session ID found')
-      setVerifying(false)
-      return
+      setError("No session ID found");
+      setVerifying(false);
+      return;
     }
 
     // Wait a moment for webhook processing, then refresh data
     const timer = setTimeout(async () => {
       try {
-        await Promise.all([
-          refreshSubscription(),
-          refreshProfile()
-        ])
+        await Promise.all([refreshSubscription(), refreshProfile()]);
       } catch (err) {
-        console.error('Error refreshing data:', err)
+        console.error("Error refreshing data:", err);
       } finally {
-        setVerifying(false)
+        setVerifying(false);
       }
-    }, 3000) // Wait 3 seconds for webhook processing
+    }, 3000); // Wait 3 seconds for webhook processing
 
-    return () => clearTimeout(timer)
-  }, [sessionId, refreshSubscription, refreshProfile])
+    return () => clearTimeout(timer);
+  }, [sessionId, refreshSubscription, refreshProfile]);
 
   if (!sessionId) {
     return (
@@ -64,7 +65,7 @@ export function SuccessPage() {
           </Alert>
         </Center>
       </Container>
-    )
+    );
   }
 
   if (verifying || subscriptionLoading) {
@@ -75,12 +76,13 @@ export function SuccessPage() {
             <Loader size="lg" />
             <Text size="lg">Verifying your purchase...</Text>
             <Text size="sm" c="dimmed">
-              Please wait while we confirm your payment and activate your subscription.
+              Please wait while we confirm your payment and activate your
+              subscription.
             </Text>
           </Stack>
         </Center>
       </Container>
-    )
+    );
   }
 
   if (error) {
@@ -96,7 +98,7 @@ export function SuccessPage() {
           </Alert>
         </Center>
       </Container>
-    )
+    );
   }
 
   return (
@@ -111,7 +113,8 @@ export function SuccessPage() {
             Payment Successful! 🎉
           </Title>
           <Text size="lg" ta="center" c="dimmed" maw={600}>
-            Thank you for your purchase. Your payment has been processed successfully.
+            Thank you for your purchase. Your payment has been processed
+            successfully.
           </Text>
         </Stack>
 
@@ -127,7 +130,7 @@ export function SuccessPage() {
             </Group>
             <Group justify="space-between">
               <Text fw={600}>Session ID:</Text>
-              <Text size="sm" c="dimmed" style={{ fontFamily: 'monospace' }}>
+              <Text size="sm" c="dimmed" style={{ fontFamily: "monospace" }}>
                 {sessionId.substring(0, 20)}...
               </Text>
             </Group>
@@ -136,19 +139,19 @@ export function SuccessPage() {
 
         <Stack align="center" gap="md">
           <Text ta="center" c="dimmed">
-            You now have access to 3x faster reviews, unlimited extensions,
-            and advanced analytics.
+            You now have access to 3x faster reviews, unlimited extensions, and
+            advanced analytics.
           </Text>
-          
-          <Button 
+
+          <Button
             size="lg"
             rightSection={<ArrowRight size={20} />}
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
           >
             Go to Dashboard
           </Button>
         </Stack>
       </Stack>
     </Container>
-  )
+  );
 }

@@ -79,11 +79,11 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
     const freeStats = stats as PersonalStats;
     const reviewSubmitPct = Math.min(
       100,
-      (freeStats.reviewsSubmittedThisCycle / 4) * 100,
+      (freeStats.reviewsSubmittedThisCycle / 1) * 100,
     );
     const reviewReceivePct = Math.min(
       100,
-      (freeStats.reviewsReceivedThisCycle / 4) * 100,
+      (freeStats.reviewsReceivedThisCycle / 1) * 100,
     );
 
     return (
@@ -129,7 +129,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       fontSize: "1.1rem",
                     }}
                   >
-                    {freeStats.reviewsSubmittedThisCycle} / 4
+                    {freeStats.reviewsSubmittedThisCycle} / 1
                   </Text>
                 </Group>
                 <Progress
@@ -149,7 +149,7 @@ export const PersonalStatsPanel: React.FC<PersonalStatsPanelProps> = ({
                       fontSize: "1.1rem",
                     }}
                   >
-                    {freeStats.reviewsReceivedThisCycle} / 4
+                    {freeStats.reviewsReceivedThisCycle} / 1
                   </Text>
                 </Group>
                 <Progress

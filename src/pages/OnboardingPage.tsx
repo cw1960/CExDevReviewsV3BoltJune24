@@ -54,11 +54,11 @@ export function OnboardingPage() {
     setLoading(true);
     try {
       console.log("🔄 Starting profile update...");
-      
+
       // Use quick update to avoid timeout issues
       await updateProfileQuick({ onboarding_complete: true });
       console.log("✅ Profile update completed successfully");
-      
+
       notifications.show({
         title: "Setup Complete!",
         message:
@@ -66,18 +66,17 @@ export function OnboardingPage() {
         color: "green",
         icon: <Sparkles size={16} />,
       });
-      
+
       // Reset loading immediately since update was successful
       console.log("🔄 Resetting loading to false");
       setLoading(false);
-      
+
       // Short delay to ensure profile state updates, then navigate
       console.log("⏰ Setting timeout for navigation...");
       setTimeout(() => {
         console.log("🔄 Navigating to qualification...");
         navigate("/qualification");
       }, 300);
-      
     } catch (error: any) {
       console.error("❌ Error in handleSkipExtension:", error);
       notifications.show({
@@ -95,7 +94,7 @@ export function OnboardingPage() {
     // Complete onboarding
     try {
       await updateProfileQuick({ onboarding_complete: true });
-      
+
       notifications.show({
         title: "Extension Added Successfully!",
         message:
@@ -103,7 +102,7 @@ export function OnboardingPage() {
         color: "green",
         icon: <Package size={16} />,
       });
-      
+
       // Short delay to ensure profile state updates, then navigate
       setTimeout(() => {
         navigate("/qualification");

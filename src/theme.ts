@@ -54,7 +54,7 @@ export const animations = {
 };
 
 export const theme = createTheme({
-  colorScheme: 'dark', // Use dark mode theme
+  colorScheme: "dark", // Use dark mode theme
   primaryColor: "blue",
   colors: {
     blue: primaryColor,

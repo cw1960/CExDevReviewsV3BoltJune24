@@ -1,1 +1,1 @@
-{"code":401,"message":"Invalid JWT"}
+{ "code": 401, "message": "Invalid JWT" }
