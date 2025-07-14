@@ -808,7 +808,7 @@ export function LandingPage() {
                           <strong>1 extension</strong> in the network
                         </List.Item>
                         <List.Item>
-                          <strong>4 reviews per month</strong> (28-day cycle)
+                          <strong>1 review per month</strong> (28-day cycle)
                         </List.Item>
                         <List.Item>
                           <strong>Standard queue</strong> processing (1-2 day
@@ -1031,7 +1031,7 @@ export function LandingPage() {
                     </List.Item>
                     <List.Item>
                       <strong>Write 1 quality review</strong> to earn your first
-                      credit
+                      credit (1 review per cycle for free users)
                     </List.Item>
                     <List.Item>
                       <strong>Submit for your extension for review</strong> and
