@@ -947,6 +947,17 @@ export function ReviewQueuePage() {
                                     ? `Complete ${getTimeUntilReviewable(assignment)} waiting period before reviewing`
                                     : ""
                                 }
+                                styles={{
+                                  tooltip: {
+                                    backgroundColor: "#222",
+                                    color: "#fff",
+                                    fontWeight: 500,
+                                    fontSize: "1rem",
+                                    borderRadius: 8,
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                                    padding: "8px 16px",
+                                  },
+                                }}
                               >
                                 <Button
                                   size="md"
