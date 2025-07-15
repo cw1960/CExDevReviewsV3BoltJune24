@@ -102,6 +102,11 @@ export function ReviewQueuePage() {
     useState<AssignmentWithExtension | null>(null);
   const [reportingProblem, setReportingProblem] = useState(false);
 
+  // Add state to track loading for each assignment
+  const [markingInstalledId, setMarkingInstalledId] = useState<string | null>(
+    null,
+  );
+
   const submissionForm = useForm({
     initialValues: {
       submitted_date: new Date(),
@@ -297,6 +302,7 @@ export function ReviewQueuePage() {
   };
 
   const handleMarkInstalled = async (assignment: AssignmentWithExtension) => {
+    setMarkingInstalledId(assignment.id.toString());
     try {
       const currentTime = new Date().toISOString();
       const earliestReviewTime = new Date(
@@ -327,6 +333,8 @@ export function ReviewQueuePage() {
         message: "Failed to mark extension as installed",
         color: "red",
       });
+    } finally {
+      setMarkingInstalledId(null);
     }
   };
 
@@ -921,6 +929,14 @@ export function ReviewQueuePage() {
                                 size="md"
                                 radius="md"
                                 onClick={() => handleMarkInstalled(assignment)}
+                                loading={
+                                  markingInstalledId ===
+                                  assignment.id.toString()
+                                }
+                                disabled={
+                                  markingInstalledId ===
+                                  assignment.id.toString()
+                                }
                               >
                                 Mark as Installed
                               </Button>
