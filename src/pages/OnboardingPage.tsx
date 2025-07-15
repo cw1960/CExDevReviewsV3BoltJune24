@@ -266,11 +266,28 @@ export function OnboardingPage() {
                     Welcome to the Community
                   </Badge>
 
-                  <Title order={1} ta="center" c="dark.8">
+                  <Title
+                    order={1}
+                    ta="center"
+                    c="dark.8"
+                    style={{
+                      color: "#fff",
+                      textShadow: "0 2px 8px rgba(0,0,0,0.25)",
+                    }}
+                  >
                     Welcome, {profile?.name}! 🎉
                   </Title>
 
-                  <Text size="lg" ta="center" c="dimmed" lh={1.6}>
+                  <Text
+                    size="lg"
+                    ta="center"
+                    lh={1.6}
+                    style={{
+                      color: "#f3f4f6",
+                      fontWeight: 500,
+                      textShadow: "0 1px 4px rgba(0,0,0,0.18)",
+                    }}
+                  >
                     You're now part of an exclusive community of Chrome
                     extension developers who help each other grow through
                     authentic review exchanges.
