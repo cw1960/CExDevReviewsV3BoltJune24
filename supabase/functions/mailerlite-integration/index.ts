@@ -108,6 +108,10 @@ serve(async (req) => {
       credit_earned: "credit_earned",
       subscription_upgraded: "premium_users",
       qualification_completed: "qualified_reviewers",
+      // Added reviewer reminder groups
+      reviewer_24hr_reminder: "reviewer_24hr_reminder",
+      reviewer_6hr_reminder: "reviewer_6hr_reminder",
+      review_overdue_reminder: "review_overdue_reminder",
     };
 
     const groupName = eventGroupMapping[event_type];
