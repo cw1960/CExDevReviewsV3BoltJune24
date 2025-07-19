@@ -480,6 +480,28 @@ export function ExtensionLibraryPage() {
         </Alert>
       )}
 
+      {!profile?.has_completed_first_review && extensions.length > 0 && (
+        <Alert
+          icon={<AlertCircle size={16} />}
+          title="First Review Required"
+          color="blue"
+          mb="md"
+        >
+          You must complete your first review assignment before submitting
+          extensions to the queue. This ensures everyone contributes to the
+          community before receiving reviews.
+          <Button
+            variant="light"
+            size="sm"
+            mt="sm"
+            ml="sm"
+            onClick={() => navigate("/reviews")}
+          >
+            Request Review Assignment
+          </Button>
+        </Alert>
+      )}
+
       {extensions.length === 0 ? (
         <Card withBorder p="xl" radius="lg" shadow="sm">
           <Stack align="center" gap="xl" py="xl">
@@ -570,7 +592,8 @@ export function ExtensionLibraryPage() {
                       </ActionIcon>
                       {(extension.status === "verified" ||
                         extension.status === "library") &&
-                        (profile?.credit_balance ?? 0) > 0 && (
+                        (profile?.credit_balance ?? 0) > 0 &&
+                        profile?.has_completed_first_review && (
                           <Button
                             size="xs"
                             radius="md"
@@ -587,7 +610,8 @@ export function ExtensionLibraryPage() {
                           </Button>
                         )}
                       {extension.status === "rejected" &&
-                        (profile?.credit_balance ?? 0) > 0 && (
+                        (profile?.credit_balance ?? 0) > 0 &&
+                        profile?.has_completed_first_review && (
                           <Button
                             size="xs"
                             color="orange"

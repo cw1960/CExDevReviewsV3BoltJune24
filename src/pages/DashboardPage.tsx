@@ -926,6 +926,7 @@ export function DashboardPage() {
                             {(extension.status === "verified" ||
                               extension.status === "library") &&
                               profile?.credit_balance > 0 &&
+                              profile?.has_completed_first_review &&
                               (profile?.subscription_status !== "free" ||
                                 ((profile?.exchanges_this_month || 0) < 1 && (
                                   <Button
@@ -946,6 +947,7 @@ export function DashboardPage() {
                                 )))}
                             {extension.status === "rejected" &&
                               profile?.credit_balance > 0 &&
+                              profile?.has_completed_first_review &&
                               (profile?.subscription_status !== "free" ||
                                 ((profile?.exchanges_this_month || 0) < 1 && (
                                   <Button
@@ -981,6 +983,36 @@ export function DashboardPage() {
                   </Card>
                 ))
               )}
+
+              {!profile?.has_completed_first_review &&
+                extensions.length > 0 && (
+                  <Alert
+                    icon={<AlertCircle size={16} />}
+                    color="blue"
+                    radius="md"
+                    styles={{
+                      root: {
+                        background: "rgba(59, 130, 246, 0.1)",
+                        border: "1px solid rgba(59, 130, 246, 0.3)",
+                      },
+                    }}
+                  >
+                    <Text size="sm" c="blue.3">
+                      <strong>First Review Required:</strong> You must complete
+                      your first review assignment before submitting extensions
+                      to the queue. This ensures everyone contributes to the
+                      community before receiving reviews.
+                      <Button
+                        variant="light"
+                        size="xs"
+                        ml="md"
+                        onClick={() => navigate("/reviews")}
+                      >
+                        Request Review Assignment
+                      </Button>
+                    </Text>
+                  </Alert>
+                )}
             </Stack>
           </Card>
         </Grid.Col>
