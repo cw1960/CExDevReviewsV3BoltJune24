@@ -182,8 +182,11 @@ serve(async (req) => {
       );
     }
 
-    if (!user.has_completed_first_review) {
-      console.log("❌ User has not completed their first review");
+    // Only block if user is trying to create an extension with status "queued" without completing first review
+    if (extensionData.status === "queued" && !user.has_completed_first_review) {
+      console.log(
+        "❌ User has not completed their first review and is trying to submit to queue",
+      );
       return new Response(
         JSON.stringify({
           success: false,
