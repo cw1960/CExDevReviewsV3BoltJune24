@@ -160,6 +160,46 @@ serve(async (req) => {
 
     console.log("✅ User verification passed");
 
+    // Check if user has completed their first review before allowing extension submission
+    console.log("🔍 Checking if user has completed their first review...");
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("id, has_completed_first_review")
+      .eq("id", extensionData.owner_id)
+      .single();
+
+    if (userError || !user) {
+      console.error("❌ User fetch error:", userError);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Failed to verify user review status",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        },
+      );
+    }
+
+    if (!user.has_completed_first_review) {
+      console.log("❌ User has not completed their first review");
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error:
+            "You must complete your first review before submitting an extension to the queue. Please request a review assignment and complete it first.",
+          code: "FIRST_REVIEW_REQUIRED",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 403,
+        },
+      );
+    }
+
+    console.log("✅ User has completed their first review");
+
     console.log(`🔄 Creating extension: ${extensionData.name}`);
     console.log("📊 Final extension data to insert:", {
       owner_id: extensionData.owner_id,

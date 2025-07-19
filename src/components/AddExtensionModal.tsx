@@ -324,6 +324,14 @@ export function AddExtensionModal({
             createResponse?.error ||
             error?.message ||
             "Failed to create extension";
+
+          // Handle the specific first review required error
+          if (createResponse?.code === "FIRST_REVIEW_REQUIRED") {
+            throw new Error(
+              "You must complete your first review before submitting an extension to the queue. Please request a review assignment and complete it first.",
+            );
+          }
+
           throw new Error(`Creation failed: ${errorMessage}`);
         }
         result = createResponse.data;
@@ -462,6 +470,27 @@ export function AddExtensionModal({
               ? "Edit Extension Details"
               : "Add New Extension"}
           </Badge>
+
+          {!initialExtensionData?.id && (
+            <Alert
+              icon={<AlertCircle size={16} />}
+              color="blue"
+              radius="md"
+              styles={{
+                root: {
+                  background: "rgba(59, 130, 246, 0.1)",
+                  border: "1px solid rgba(59, 130, 246, 0.3)",
+                },
+              }}
+            >
+              <Text size="sm" c="blue.3">
+                <strong>First Review Required:</strong> You must complete your
+                first review assignment before submitting an extension to the
+                queue. This ensures everyone contributes to the community before
+                receiving reviews.
+              </Text>
+            </Alert>
+          )}
 
           <Card
             shadow="md"

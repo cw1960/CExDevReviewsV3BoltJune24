@@ -281,8 +281,46 @@ serve(async (req) => {
     }
     console.log("✅ Step 3 completed: Credit awarded successfully");
 
-    // 4. CREATE REVIEW RELATIONSHIP (CRITICAL FOR YOUR ISSUE)
-    console.log("📝 Step 4: Creating review relationship...");
+    // 4. CHECK IF THIS IS THE USER'S FIRST COMPLETED REVIEW
+    console.log(
+      "📝 Step 4: Checking if this is the user's first completed review...",
+    );
+    const { data: userReviewCount, error: reviewCountError } = await supabase
+      .from("review_assignments")
+      .select("id")
+      .eq("reviewer_id", assignment.reviewer_id)
+      .eq("status", "approved");
+
+    if (reviewCountError) {
+      console.error("❌ Error checking user's review count:", reviewCountError);
+    } else {
+      // If this is their first approved review, mark them as having completed their first review
+      if (userReviewCount && userReviewCount.length === 1) {
+        console.log(
+          "🎉 This is the user's first completed review! Marking as first review completed...",
+        );
+        const { error: updateUserError } = await supabase
+          .from("users")
+          .update({ has_completed_first_review: true })
+          .eq("id", assignment.reviewer_id);
+
+        if (updateUserError) {
+          console.error(
+            "❌ Error updating user's first review status:",
+            updateUserError,
+          );
+        } else {
+          console.log("✅ User marked as having completed their first review");
+        }
+      } else {
+        console.log(
+          `📊 User has completed ${userReviewCount?.length || 0} reviews (not their first)`,
+        );
+      }
+    }
+
+    // 5. CREATE REVIEW RELATIONSHIP (CRITICAL FOR YOUR ISSUE)
+    console.log("📝 Step 5: Creating review relationship...");
     console.log("🔗 Relationship details:", {
       reviewer_id: assignment.reviewer_id,
       reviewed_owner_id: assignment.extension.owner_id,
@@ -317,8 +355,8 @@ serve(async (req) => {
       console.log("📋 Relationship data:", relationshipData);
     }
 
-    // 5. CHECK BATCH COMPLETION
-    console.log("📝 Step 5: Checking if batch is completed...");
+    // 6. CHECK BATCH COMPLETION
+    console.log("📝 Step 6: Checking if batch is completed...");
     const { data: batchAssignments, error: batchError } = await supabase
       .from("review_assignments")
       .select("status")
@@ -348,7 +386,7 @@ serve(async (req) => {
         if (batchUpdateError) {
           console.error("❌ Error updating batch status:", batchUpdateError);
         } else {
-          console.log("✅ Step 5 completed: Batch marked as completed");
+          console.log("✅ Step 6 completed: Batch marked as completed");
         }
       } else {
         console.log(
