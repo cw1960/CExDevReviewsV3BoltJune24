@@ -12,6 +12,7 @@ import {
   ThemeIcon,
   Box,
   Divider,
+  Alert,
 } from "@mantine/core";
 import {
   Sparkles,
@@ -21,6 +22,7 @@ import {
   Crown,
   CheckCircle,
   ArrowRight,
+  AlertCircle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Database } from "../types/database";
@@ -45,6 +47,10 @@ export function WelcomeModal({
 
   const handleUpgradeClick = () => {
     navigate("/upgrade");
+  };
+
+  const handleRequestAssignment = () => {
+    navigate("/reviews");
   };
 
   return (
@@ -110,6 +116,28 @@ export function WelcomeModal({
 
             <Divider w="100%" />
 
+            {/* Important Notice - First Review Required */}
+            <Alert
+              icon={<AlertCircle size={20} />}
+              title="Important: First Review Required"
+              color="blue"
+              variant="light"
+              styles={{
+                root: {
+                  background: "rgba(59, 130, 246, 0.1)",
+                  border: "1px solid rgba(59, 130, 246, 0.3)",
+                },
+              }}
+            >
+              <Text size="sm" c="blue.8">
+                <strong>
+                  Before you can submit your extensions to the review queue,
+                </strong>{" "}
+                you must complete your first review assignment. This ensures
+                everyone contributes to the community before receiving reviews.
+              </Text>
+            </Alert>
+
             {/* Key Points */}
             <Stack gap="lg" w="100%">
               <Card withBorder p="md" bg="blue.0">
@@ -149,8 +177,8 @@ export function WelcomeModal({
                         size="sm"
                         style={{ color: "rgba(255, 255, 255, 0.9)" }}
                       >
-                        Join Review Fast Track to add all your extensions and
-                        get 3x faster reviews!
+                        Your extension is in your library. Complete your first
+                        review to unlock queue submission!
                       </Text>
                     </Stack>
                   </Group>
@@ -164,14 +192,14 @@ export function WelcomeModal({
                   </ThemeIcon>
                   <Stack gap={4} flex={1}>
                     <Text fw={600} size="md">
-                      Get Your First Reviews
+                      Start with Your First Review
                     </Text>
                     <Text
                       size="sm"
                       style={{ color: "rgba(255, 255, 255, 0.9)" }}
                     >
-                      Click "Submit to Queue" to spend 1 credit and get your
-                      extension assigned to a reviewer
+                      Request a review assignment to help another developer and
+                      earn credits for your own reviews
                     </Text>
                   </Stack>
                 </Group>
@@ -218,17 +246,26 @@ export function WelcomeModal({
               >
                 <List.Item>
                   <Text size="sm">
-                    Submit your extension to the Review Queue (costs 1 credit)
+                    <strong>First:</strong> Request a review assignment to
+                    complete your first review
                   </Text>
                 </List.Item>
                 <List.Item>
                   <Text size="sm">
-                    Request review assignments to earn more credits
+                    <strong>Then:</strong> Submit your extension to the Review
+                    Queue (costs 1 credit)
                   </Text>
                 </List.Item>
                 <List.Item>
                   <Text size="sm">
-                    Consider joining Review Fast Track for 3x faster reviews
+                    <strong>Continue:</strong> Request more review assignments
+                    to earn additional credits
+                  </Text>
+                </List.Item>
+                <List.Item>
+                  <Text size="sm">
+                    <strong>Optional:</strong> Consider joining Review Fast
+                    Track for 3x faster reviews
                   </Text>
                 </List.Item>
               </List>
@@ -236,6 +273,26 @@ export function WelcomeModal({
 
             {/* Action Buttons */}
             <Group justify="center" gap="md" w="100%">
+              <Button
+                variant="light"
+                size="lg"
+                onClick={handleRequestAssignment}
+                leftSection={<Star size={18} />}
+                styles={{
+                  root: {
+                    background: "linear-gradient(45deg, #f59e0b, #d97706)",
+                    color: "white",
+                    border: "none",
+                    "&:hover": {
+                      transform: "translateY(-1px)",
+                      boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)",
+                    },
+                  },
+                }}
+              >
+                Request Review Assignment
+              </Button>
+
               <Button
                 variant="light"
                 size="lg"
