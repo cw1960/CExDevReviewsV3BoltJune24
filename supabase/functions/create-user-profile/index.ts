@@ -146,6 +146,7 @@ serve(async (req) => {
         cookie_preferences: "not_set",
         cookie_consent_timestamp: new Date().toISOString(),
         has_completed_qualification: false,
+        has_completed_first_review: false, // New users must complete first review before submitting extensions
         role: "user",
       })
       .select()

@@ -17,6 +17,7 @@ export interface Database {
           credit_balance: number;
           subscription_status: string | null;
           has_completed_qualification: boolean;
+          has_completed_first_review: boolean;
           created_at: string;
           updated_at: string;
           role: "admin" | "moderator" | "user";
@@ -33,6 +34,7 @@ export interface Database {
           credit_balance?: number;
           subscription_status?: string | null;
           has_completed_qualification?: boolean;
+          has_completed_first_review?: boolean;
           created_at?: string;
           updated_at?: string;
           role?: "admin" | "moderator" | "user";
@@ -49,6 +51,7 @@ export interface Database {
           credit_balance?: number;
           subscription_status?: string | null;
           has_completed_qualification?: boolean;
+          has_completed_first_review?: boolean;
           created_at?: string;
           updated_at?: string;
           role?: "admin" | "moderator" | "user";
