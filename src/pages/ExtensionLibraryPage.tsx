@@ -480,7 +480,7 @@ export function ExtensionLibraryPage() {
         </Alert>
       )}
 
-      {!profile?.has_completed_first_review && extensions.length > 0 && (
+      {!profile?.has_completed_qualification && extensions.length > 0 && (
         <Alert
           icon={<AlertCircle size={16} />}
           title="First Review Required"
@@ -593,7 +593,7 @@ export function ExtensionLibraryPage() {
                       {(extension.status === "verified" ||
                         extension.status === "library") &&
                         (profile?.credit_balance ?? 0) > 0 &&
-                        profile?.has_completed_first_review && (
+                        profile?.has_completed_qualification && (
                           <Button
                             size="xs"
                             radius="md"
@@ -611,7 +611,7 @@ export function ExtensionLibraryPage() {
                         )}
                       {extension.status === "rejected" &&
                         (profile?.credit_balance ?? 0) > 0 &&
-                        profile?.has_completed_first_review && (
+                        profile?.has_completed_qualification && (
                           <Button
                             size="xs"
                             color="orange"
