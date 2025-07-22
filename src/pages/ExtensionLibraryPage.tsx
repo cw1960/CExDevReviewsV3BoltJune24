@@ -281,7 +281,7 @@ export function ExtensionLibraryPage() {
       case "rejected":
         return "Rejected";
       default:
-        return status.replace("_", " ");
+        return String(status).replace("_", " ");
     }
   };
 
@@ -480,16 +480,36 @@ export function ExtensionLibraryPage() {
         </Alert>
       )}
 
+      {/* Alert for qualification requirement */}
       {!profile?.has_completed_qualification && extensions.length > 0 && (
+        <Alert
+          icon={<AlertCircle size={16} />}
+          title="Qualification Required"
+          color="blue"
+          mb="md"
+        >
+          You must complete your reviewer qualification before submitting extensions to the queue.
+          <Button
+            variant="light"
+            size="sm"
+            mt="sm"
+            ml="sm"
+            onClick={() => navigate("/qualification")}
+          >
+            Complete Qualification
+          </Button>
+        </Alert>
+      )}
+
+      {/* Alert for first review requirement */}
+      {profile?.has_completed_qualification && !profile?.has_completed_first_review && extensions.length > 0 && (
         <Alert
           icon={<AlertCircle size={16} />}
           title="First Review Required"
           color="blue"
           mb="md"
         >
-          You must complete your first review assignment before submitting
-          extensions to the queue. This ensures everyone contributes to the
-          community before receiving reviews.
+          You must complete your first review assignment before submitting extensions to the queue. This ensures everyone contributes to the community before receiving reviews.
           <Button
             variant="light"
             size="sm"
@@ -593,7 +613,8 @@ export function ExtensionLibraryPage() {
                       {(extension.status === "verified" ||
                         extension.status === "library") &&
                         (profile?.credit_balance ?? 0) > 0 &&
-                        profile?.has_completed_qualification && (
+                        profile?.has_completed_qualification &&
+                        profile?.has_completed_first_review && (
                           <Button
                             size="xs"
                             radius="md"
@@ -611,7 +632,8 @@ export function ExtensionLibraryPage() {
                         )}
                       {extension.status === "rejected" &&
                         (profile?.credit_balance ?? 0) > 0 &&
-                        profile?.has_completed_qualification && (
+                        profile?.has_completed_qualification &&
+                        profile?.has_completed_first_review && (
                           <Button
                             size="xs"
                             color="orange"
