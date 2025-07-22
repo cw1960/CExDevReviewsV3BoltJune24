@@ -176,6 +176,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             credit_balance: profileData.credit_balance,
             has_completed_qualification:
               profileData.has_completed_qualification,
+            has_completed_first_review: profileData.has_completed_first_review,
             onboarding_complete: profileData.onboarding_complete,
             cookie_preferences: profileData.cookie_preferences,
             cookie_consent_timestamp: profileData.cookie_consent_timestamp,
@@ -422,11 +423,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, profile]);
 
+  // NEW: Direct profile refresh that bypasses Edge Function
   const refreshProfile = useCallback(async () => {
-    if (user) {
-      await fetchProfile(user.id);
+    if (!user) {
+      console.log("🔄 No user found for profile refresh");
+      return;
     }
-  }, [user, fetchProfile]);
+
+    console.log("🔄 Starting direct profile refresh for user:", user.id);
+    setIsProfileRefreshing(true);
+
+    try {
+      // Direct database query to get the latest profile data
+      const { data: profileData, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("❌ Direct profile refresh error:", error);
+        throw error;
+      }
+
+      if (profileData) {
+        console.log("✅ Direct profile refresh successful:", {
+          id: profileData.id,
+          email: profileData.email,
+          has_completed_qualification: profileData.has_completed_qualification,
+          has_completed_first_review: profileData.has_completed_first_review,
+          credit_balance: profileData.credit_balance,
+        });
+
+        // Update both state and localStorage
+        setProfile(profileData);
+        localStorage.setItem("profile", JSON.stringify(profileData));
+      } else {
+        console.error("❌ No profile data returned from direct refresh");
+      }
+    } catch (error) {
+      console.error("💥 Error in direct profile refresh:", error);
+      throw error;
+    } finally {
+      setIsProfileRefreshing(false);
+    }
+  }, [user]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
