@@ -1,0 +1,14 @@
+name: Send Email Reminders
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Email Reminders
+        run: |
+          curl -X POST 'https://uobpkhtmgoqgmnuispls.supabase.co/functions/v1/send-review-reminders' \
+            -H 'Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'
